@@ -5,6 +5,15 @@ import sys
 from pathlib import Path
 
 
+# Reviewed capabilities: changing a stage requires changing this explicit registry.
+STAGES = {
+    "analyze": ("investigator", "bug-resolution", "Read, Glob, Grep", "read_only", "analysis_v2", []),
+    "plan": ("planner", "bug-planning", "Read, Glob, Grep", "read_only", "plan_v2", ["analyze"]),
+    "fix": ("fixer", "bug-fixing", "Read, Glob, Grep, Edit, Write, Bash", "mutation", "fix_v1", ["plan"]),
+    "test": ("tester", "bug-testing", "Read, Glob, Grep, Bash", "execution", "test_v1", ["fix"]),
+}
+
+
 def frontmatter(path):
     """Read our deliberately flat frontmatter subset; reject ambiguous syntax."""
     text = path.read_text(encoding="utf-8")
@@ -36,7 +45,7 @@ def check_graph(graph):
         node = nodes[name]
         if not isinstance(node.get("implemented"), bool) or not isinstance(node.get("requires"), list):
             raise ValueError(f"Invalid graph node: {name}")
-        expected_effects = {"analyze": "read_only", "plan": "read_only", "fix": "mutation"}
+        expected_effects = {stage: spec[3] for stage, spec in STAGES.items()}
         if node["implemented"] and node.get("effect") != expected_effects.get(name):
             raise ValueError("Unexpected effect for implemented stage")
         visiting.add(name)
@@ -49,13 +58,12 @@ def check_graph(graph):
 
     for name in nodes:
         visit(name)
-    if nodes.get("analyze", {}).get("requires") != [] or nodes.get("plan", {}).get("requires") != ["analyze"]:
-        raise ValueError("The analyze-to-plan dependency must be preserved")
-    if nodes.get("fix", {}).get("requires") != ["plan"]:
-        raise ValueError("The plan-to-fix dependency must be preserved")
-    for stage, contract in (("analyze", "analysis_v2"), ("plan", "plan_v2"), ("fix", "fix_v1")):
-        if nodes[stage].get("result_contract") != contract:
-            raise ValueError("Requirement-aware v2 result contracts are required")
+    for stage, spec in STAGES.items():
+        if nodes.get(stage, {}).get("requires") != spec[5]:
+            label = "analyze-to-plan" if stage in ("analyze", "plan") else "plan-to-fix" if stage == "fix" else "fix-to-test"
+            raise ValueError(f"The {label} dependency must be preserved")
+        if nodes[stage].get("result_contract") != spec[4]:
+            raise ValueError("Requirement-aware v2 result contracts and declared stage contracts are required")
 
 
 def check(root):
@@ -65,9 +73,7 @@ def check(root):
         raise ValueError("Plugin namespace must be doforme")
     if set(manifest) - {"name", "version", "description", "author", "repository", "keywords"}:
         raise ValueError("Review new manifest capabilities before accepting them")
-    components = (("analyze", "investigator", "bug-resolution"),
-                  ("plan", "planner", "bug-planning"),
-                  ("fix", "fixer", "bug-fixing"))
+    components = [(name, spec[0], spec[1]) for name, spec in STAGES.items()]
     for command_name, agent_name, skill_name in components:
         command_path = root / f"commands/{command_name}.md"
         command = frontmatter(command_path)
@@ -78,7 +84,7 @@ def check(root):
         if set(command) - {*required, "description", "argument-hint"}:
             raise ValueError("Review new command capabilities")
         agent = frontmatter(root / f"agents/{agent_name}.md")
-        expected_tools = "Read, Glob, Grep, Edit, Write, Bash" if agent_name == "fixer" else "Read, Glob, Grep"
+        expected_tools = STAGES[command_name][2]
         if agent.get("name") != agent_name or agent.get("tools") != expected_tools:
             raise ValueError(f"{agent_name} must have only {expected_tools}")
         if set(agent) != {"name", "description", "tools"}:

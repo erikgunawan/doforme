@@ -10,7 +10,7 @@ gates remain design only; there is no automatic graph execution.
 | --- | --- |
 | plan | explicit complete analyze contract v2 report, valid_bug, concrete evidence re-read against current source, same issue/repo, grounded cause hypothesis, medium/high root-cause confidence, resolved material gaps |
 | fix | complete plan v2, confirmed S/R/AC coverage, known matching Git revision, clean baseline, fresh sources, direct authorization for exact edit paths and safe validation commands |
-| test | implemented changes plus validation criteria |
+| test | complete fix v1 and plan v2, same HEAD and scoped diff, confirmed AC assertion coverage, direct safe command/artifact authorization |
 | review | passing relevant validation, documented limitations |
 | pr | completed review, repository access, publication authorization |
 

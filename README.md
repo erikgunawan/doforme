@@ -1,7 +1,7 @@
 # doforme
 
 Claude Code plugin untuk investigasi bug dan perencanaan perbaikan berbasis evidence
-pada repository lokal. Versi 0.4 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
+pada repository lokal. Versi 0.5 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
 implementasi dan test source, membandingkan hipotesis penyebab, lalu mengembalikan
 laporan terstruktur di percakapan. `/doforme:plan` mengubah laporan yang sudah
 diverifikasi menjadi rencana perbaikan. Kedua command tetap read-only, tanpa
@@ -139,8 +139,7 @@ migration, commit, push, PR, atau penutupan issue.
 Laporan fix v1 mencatat path yang berubah, otorisasi, revision, exact command,
 exit code, hasil setiap AC, diff boundaries, dan partial edits bila gagal/blocked.
 `complete` berarti scoped technical validation lulus; business_acceptance tetap
-not_evaluated, resolution_status not_established, review_status pending. Tahap
-`/test` untuk validasi lebih luas dan `/review` belum diimplementasikan.
+not_evaluated, resolution_status not_established, review_status pending. Tahap `/test` tersedia untuk validasi terpisah; `/review` belum diimplementasikan.
 
 Fixer mempunyai Read/Glob/Grep/Edit/Write/Bash; **bukan sandbox path/command yang
 dijamin OS**. Normal Claude permissions dan instruksi scope tetap diperlukan;
@@ -175,8 +174,8 @@ keterbatasan. Ketidakpastian tetap eksplisit. Report hanya tampil di percakapan.
 
 ```text
 .claude-plugin/plugin.json             metadata plugin
-commands/{analyze,plan,fix}.md             entry point dan argument forwarding
-agents/{investigator,planner,fixer}.md        batas tool baca/pencarian
+commands/{analyze,plan,fix,test}.md             entry point dan argument forwarding
+agents/{investigator,planner,fixer,tester}.md        batas tool baca/pencarian
 skills/bug-resolution/SKILL.md          metode investigasi reusable
 skills/bug-resolution/references/       report v2, requirement, graph/dependency/state
 skills/bug-planning/                    metode planning dan template rencana
@@ -188,11 +187,11 @@ tests/                                 regresi checker dan fixture smoke test
 Metode dan kontrak Markdown tidak bergantung pada provider; adapter command dan
 agent adalah bagian khusus Claude Code. Graph portabel di
 [workflow.json](skills/bug-resolution/references/workflow.json) mendeklarasikan
-`analyze → plan → fix → test → review → pr`; analyze, plan, dan fix tersedia.
+`analyze → plan → fix → test → review → pr`; analyze, plan, fix, dan test tersedia.
 Checker mendeteksi cycle, prerequisite yang hilang, atau analyze yang dilewati.
 Dependency semantik diperiksa oleh planner dengan evidence, bukan sekadar status
 atau keberadaan file. State tetap berupa hasil percakapan, tanpa engine, database,
-scheduler, resume, atau automatic transitions. `/test`, `/review`, `/endtoend`, GitHub Actions,
+scheduler, resume, atau automatic transitions. `/review`, `/endtoend`, GitHub Actions,
 dan Telegram belum diimplementasikan.
 
 ## Pengujian
@@ -230,3 +229,15 @@ Referensi resmi: [plugin manifest](https://code.claude.com/docs/en/plugins-refer
 [agent tool restrictions](https://code.claude.com/docs/en/sub-agents),
 [permissions](https://code.claude.com/docs/en/permissions).
 Belum disiapkan untuk publikasi katalog; lisensi distribusi belum ditetapkan.
+
+
+## Validasi terpisah setelah fix (v0.5)
+
+`/doforme:test PLAN.md FIX.md; authorize exact-command; artifacts none` membaca
+ulang requirement, assertion, dan working diff, lalu menjalankan command yang
+benar-benar diotorisasi. Tester tidak memiliki Edit/Write. Setiap AC dicatat
+passed/failed/skipped/not_run; skipped bukan pass. Tidak ada auto-fix, install,
+source cleanup, commit, remote publication, atau klaim business acceptance.
+Bash tetap dapat memiliki side effect: runner harus diperiksa dan permission
+host tetap berlaku. Input reports boleh inline agar tidak menambah file repo.
+Lihat [kontrak test](skills/bug-testing/SKILL.md).

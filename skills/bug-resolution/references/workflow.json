@@ -24,11 +24,12 @@
       "result_contract": "fix_v1"
     },
     "test": {
-      "implemented": false,
+      "implemented": true,
       "requires": [
         "fix"
       ],
-      "effect": "execution"
+      "effect": "execution",
+      "result_contract": "test_v1"
     },
     "review": {
       "implemented": false,
