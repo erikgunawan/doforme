@@ -1,6 +1,6 @@
 ---
 description: Investigate a bug with evidence and return a read-only analysis report
-argument-hint: <bug description or local issue file; optional issue URL as context>
+argument-hint: <bug description or local issue file; requirement exports/excerpts with provenance>
 disable-model-invocation: true
 context: fork
 agent: doforme:investigator
@@ -20,3 +20,7 @@ Resolve plugin resources from that absolute plugin root, not from the target rep
 Return the complete report in the conversation. Never write it to disk.
 If instructions or resources cannot be loaded, stop with an explicit limitation;
 do not improvise a more privileged execution path.
+
+Input may include requirement source exports/excerpts and their provenance.
+Apply the shared requirement source and acceptance-criteria gates in the method.
+A URL alone is a reference, not readable or independently verified content.

@@ -1,6 +1,6 @@
 {
   "name": "doforme",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Evidence-based, read-only bug investigation and repair planning for local repositories.",
   "author": {
     "name": "Erik Gunawan"

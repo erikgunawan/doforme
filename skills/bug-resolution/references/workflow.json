@@ -5,7 +5,7 @@
       "implemented": true,
       "requires": [],
       "effect": "read_only",
-      "result_contract": "analysis_v1"
+      "result_contract": "analysis_v2"
     },
     "plan": {
       "implemented": true,
@@ -13,7 +13,7 @@
         "analyze"
       ],
       "effect": "read_only",
-      "result_contract": "plan_v1"
+      "result_contract": "plan_v2"
     },
     "fix": {
       "implemented": false,

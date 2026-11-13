@@ -28,3 +28,9 @@ For a URL alone, explain that remote content is unavailable and request the issu
 title/body, expected/actual behavior, and relevant redacted logs in the conversation.
 Do not infer issue contents from its URL. Stop after reporting, without fixing,
 posting a comment, closing an issue, committing, pushing, or creating a PR.
+
+Apply the shared requirement evidence contract. Business documents, Jira, and
+Figma have no automatic precedence. Local excerpts are supplied content, not
+verified live sources. Never treat technical confidence as business acceptance;
+report unresolved source/authority/AC gaps or conflicts explicitly. These tools
+cannot perform visual Figma acceptance or live remote source verification.

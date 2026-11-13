@@ -51,7 +51,7 @@ def check_graph(graph):
         visit(name)
     if nodes.get("analyze", {}).get("requires") != [] or nodes.get("plan", {}).get("requires") != ["analyze"]:
         raise ValueError("The analyze-to-plan dependency must be preserved")
-    for stage, contract in (("analyze", "analysis_v1"), ("plan", "plan_v1")):
+    for stage, contract in (("analyze", "analysis_v2"), ("plan", "plan_v2")):
         if nodes[stage].get("result_contract") != contract:
             raise ValueError("Requirement-aware v2 result contracts are required")
 

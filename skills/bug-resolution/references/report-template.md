@@ -2,7 +2,7 @@
 
 ## Context
 
-- contract_version: 1
+- contract_version: 2
 - stage: analyze
 - analysis_status: complete | blocked
 - repository: <target name/root>
@@ -12,6 +12,30 @@
 - expected: <intended behavior and its basis, or unknown>
 - actual: <reported/observed behavior, or unknown>
 - environment: <known versions and trigger, or unknown>
+
+## Requirement sources
+
+| S ID | Kind | Origin | Locator actually read | Version | Access / read_status | Authority / confirmation reference | Freshness / limits |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| S1 | business_document / jira / figma / repository_spec / user_confirmation | original reference | file:lines or inline | known or unknown | access / status | explicit applicability or unconfirmed | observed limits |
+
+## Requirements and acceptance criteria
+
+- requirements_status: verified_for_scope | needs_information | conflict
+
+| R ID | Requirement and scope/exceptions | S ID / locator | Basis (explicit / interpretation / unknown) | AC coverage |
+| --- | --- | --- | --- | --- |
+| R1 | statement | reference | basis | AC IDs or gap |
+
+| AC ID | R/S links | Conditions / input | Observable expected outcome | Basis (explicit / proposed) | confirmation_ref | Verification method |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC1 | R1 / S1 | condition | expected result | basis | source reference or unconfirmed | proposed check |
+
+## Requirement conflicts and gaps
+
+- Conflicts: <competing S/R/AC statements, impact, resolution reference or unresolved>
+- Material gaps/interpretations: <affected criteria, questions and who must clarify>
+- Unavailable optional sources: <why they do not affect material scope, or none>
 
 ## Issue validity
 
@@ -49,8 +73,19 @@ If no hypothesis is grounded, state `none` and explain the evidence gap.
 
 ## Confidence
 
-- validity: low | medium | high — <reason>
-- root_cause: low | medium | high — <reason and unresolved alternatives>
+- technical_confidence:
+  - validity: low | medium | high — <reason>
+  - root_cause: low | medium | high — <reason and unresolved alternatives>
+- requirements_status: verified_for_scope | needs_information | conflict — <reason>
+- technical_validation: not_run
+- business_acceptance: not_evaluated
+- resolution_status: not_established
+
+## Acceptance traceability
+
+| AC / R / S IDs | Related E / H IDs | Contradiction or gap | Proposed observable verification |
+| --- | --- | --- | --- |
+| AC1 / R1 / S1 | E/H IDs or gap | finding | proposed check, not executed |
 
 ## Next steps
 

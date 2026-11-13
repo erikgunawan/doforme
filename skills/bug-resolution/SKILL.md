@@ -5,11 +5,17 @@ user-invocable: false
 disable-model-invocation: true
 ---
 
-# Bug investigation — contract v1
+# Bug investigation — report contract v2
 
 This is the reusable investigation method behind `/doforme:analyze`. It is not
 an authorization to fix code. When read in another executor, preserve the same
 read-only capabilities and report contract; do not assume Claude-specific tools.
+
+Before assessing intended behavior, read [requirements.md](references/requirements.md).
+Apply its source registry, authority/access checks, R/AC mapping, conflict rules,
+and requirement gates. Inputs may include local exports or inline source excerpts
+alongside the issue. URLs alone cannot be fetched. Preserve technical findings
+when business intent is unresolved, but block planning in that case.
 
 1. **Establish scope.** Identify the target repository from the current working
    directory and local README/manifests. Record revision as `unknown` unless
@@ -39,7 +45,8 @@ read-only capabilities and report contract; do not assume Claude-specific tools.
    behavior, supporting and contradicting E IDs, uncertainty, and a falsification
    check. Include a plausible alternative when evidence permits; do not invent
    alternatives or facts to fill a quota. If none is grounded, say so.
-7. **Calibrate confidence.** Give separate validity and root-cause confidence:
+7. **Calibrate confidence.** Give separate validity and root-cause confidence
+   under technical_confidence, separate from requirements_status:
    `low` (missing/directly conflicting evidence), `medium` (credible static chain
    with unverified assumptions), `high` (direct, corroborating evidence excluding
    material alternatives). Explain each rating; no arbitrary percentages.
@@ -53,4 +60,5 @@ read-only capabilities and report contract; do not assume Claude-specific tools.
 
 Read [workflow.md](references/workflow.md), [dependencies.md](references/dependencies.md),
 and [state.md](references/state.md) only when explaining future workflow handoff.
-The plan command consumes explicit analyze v1 reports. No state writer, scheduler, or automatic graph execution exists.
+In v0.3, `/doforme:plan` consumes an explicitly supplied v2 report and revalidates
+these gates. No state writer, scheduler, automatic handoff, or graph engine exists.

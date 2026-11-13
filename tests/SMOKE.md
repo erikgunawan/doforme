@@ -29,7 +29,7 @@ not a test runner for the fixture.
 
 ## Planning phase
 
-The synthetic `ANALYSIS.md` fixture provides an explicit analyze contract v1
+The synthetic `ANALYSIS.md` fixture provides an explicit analyze contract v2
 report, not implicit conversation memory. Use a fresh disposable copy per case.
 Load the same plugin and skills directory, and apply the same file-hash and tool
 trace checks. Never run fixture code.
@@ -46,3 +46,22 @@ trace checks. Never run fixture code.
 Only unknown revision may remain an unknown gate in a complete read-only proposal;
 unknown material evidence, identity, or cause cannot. Complete planning never
 marks fix/test/review/PR complete, grants write scope, or invokes another command.
+
+## Requirement evidence phase (v0.3)
+
+Use the synthetic REQUIREMENTS.md source and ANALYSIS.md v2 in a fresh copy.
+The fixture owner confirmation is synthetic, not real business acceptance.
+
+| Setup / command | Expected |
+| --- | --- |
+| `/doforme:plan ANALYSIS.md` with matching confirmed sources | complete; source and R/AC mapping; AC → P → V coverage; not_run, not_evaluated, not_established; no fix readiness |
+| Append a conflicting Jira excerpt to REQUIREMENTS.md but leave analysis claiming no conflict | blocked; re-read exposes conflict; no implementation steps; ask for owner resolution |
+| Analyze ISSUE.md with only authoritative Jira/Figma URLs and no supplied contents | blocked; inaccessible material sources; no invented source contents or visual verification; technical findings may remain |
+| Supply legacy analyze v1 to plan | blocked; request analyze v2; no silent migration |
+| Remove owner scope confirmation or change AC to proposed/unconfirmed | blocked; do not infer business authority from technical confidence |
+| Figma text shows happy path while requirement needs visual/error-state verification | material visual/coverage gap, no claimed visual acceptance |
+
+Check source origin/locator/version/access/authority/freshness, explicit versus
+interpreted intent, conflict questions, material AC coverage, and separate
+technical confidence/business acceptance. Only the documented executed cases in
+VALIDATION-0.3.md are runtime results; other rows remain manual acceptance cases.

@@ -5,7 +5,7 @@ user-invocable: false
 disable-model-invocation: true
 ---
 
-# Bug planning — contract v1
+# Bug planning — report contract v2
 
 This reusable method powers `/doforme:plan`. Preserve these checks in any future
 executor adapter. Read [the plan template](references/plan-template.md),
@@ -13,16 +13,25 @@ executor adapter. Read [the plan template](references/plan-template.md),
 [dependency rules](../bug-resolution/references/dependencies.md), and
 [state semantics](../bug-resolution/references/state.md) before planning.
 
-1. **Require explicit input.** Accept a complete inline analyze contract v1 report
+Read [requirement evidence rules](../bug-resolution/references/requirements.md).
+Require requirements_status verified_for_scope and source/authority/R/AC mapping.
+Re-read material requirement content, not just implementation evidence. Material
+conflicts, inaccessible sources, unconfirmed interpretations/ACs, and coverage
+gaps block the plan regardless of technical confidence. Preserve S/R/AC IDs in
+AC → P → V traceability. Ground expected test outcomes in confirmed requirements.
+
+1. **Require explicit input.** Accept a complete inline analyze contract v2 report
    or a named readable file in the current target repo containing that report.
    A previous conversation is not available in this isolated context. For empty
    input, raw issue text, URL-only input, or incomplete/unsupported report, return
    `plan_status: blocked` with specific missing inputs. Do not search for and
    silently select arbitrary prior reports.
-2. **Check prerequisite content.** Require contract_version 1, stage analyze,
+   Legacy v1 reports lack requirement provenance: block and request a new
+   analyze v2 report with requirement/AC evidence. Never silently upgrade v1.
+2. **Check prerequisite content.** Require contract_version 2, stage analyze,
    analysis_status complete, verdict valid_bug, evidence with concrete source
    locations, at least one grounded root-cause hypothesis with supporting E IDs,
-   medium/high overall root_cause confidence, issue identity/summary, repository,
+   medium/high technical_confidence.root_cause, issue identity/summary, repository,
    expected/actual behavior, and all report sections. Missing fields, unresolved
    material gaps, contradicted evidence, or an unsupported confidence claim block
    the plan. `Ready for future planning: yes` never overrides these gates. Do not

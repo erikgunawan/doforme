@@ -79,6 +79,12 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "analyze-to-plan"):
             CHECKER.check_graph(graph)
 
+    def test_legacy_result_contract_rejected(self):
+        graph = self.graph()
+        graph["nodes"]["analyze"]["result_contract"] = "analysis_v1"
+        with self.assertRaisesRegex(ValueError, "v2 result contracts"):
+            CHECKER.check_graph(graph)
+
 
 if __name__ == "__main__":
     unittest.main()

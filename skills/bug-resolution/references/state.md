@@ -15,7 +15,9 @@ Proposed statuses: `pending → running → complete | blocked | failed`.
 Validity and confidence remain separate fields of the analyze result. Resume
 must check prerequisites and freshness; it must not treat file existence alone
 as completion. A later implementation must choose storage, atomic updates, and
-concurrency rules before enabling retries/resume. None exists in v0.2.
+concurrency rules before enabling retries/resume. None exists in v0.3.
 Report status is computed from evidence on each invocation; no report implies
 an automatic transition. A blocked plan must identify its failed prerequisites
-and contain no implementation steps.
+and contain no implementation steps. State/graph contract versions remain 1. Analyze and plan result contracts
+are v2 to require business requirement evidence and acceptance traceability.
+Stage completion still never implies business acceptance or issue resolution.

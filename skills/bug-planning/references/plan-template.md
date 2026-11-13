@@ -2,7 +2,7 @@
 
 ## Context
 
-- contract_version: 1
+- contract_version: 2
 - stage: plan
 - plan_status: complete | blocked
 - repository: <current target>
@@ -16,6 +16,8 @@
 | Gate | Result (pass / blocked / unknown) | Evidence / reason |
 | --- | --- | --- |
 | analysis_contract | ... | supported complete analyze report |
+| requirements | ... | confirmed applicable sources and ACs, complete material coverage, no conflict |
+| requirement_freshness | ... | material source snapshots re-read; provenance and versions checked |
 | validity | ... | valid_bug and expected/actual contradiction |
 | cause_and_confidence | ... | grounded H/E IDs; medium/high cause confidence |
 | identity | ... | same target and issue; checkout-path differences explained |
@@ -32,6 +34,38 @@ Only revision_binding may remain unknown in a complete read-only proposal.
 | ... | path:line-line | observation based on content actually read | yes / no / unknown |
 
 No evidence available: state that instead of inventing rows.
+
+## Requirement sources
+
+| S ID | Kind | Origin | Locator actually read | Version | Access / read_status | Authority / confirmation reference | Freshness / limits |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| S1 | business_document / jira / figma / repository_spec / user_confirmation | original reference | file:lines or inline | known or unknown | access / status | explicit applicability or unconfirmed | observed limits |
+
+## Requirements and acceptance criteria
+
+- requirements_status: verified_for_scope | needs_information | conflict
+
+| R ID | Requirement and scope/exceptions | S ID / locator | Basis (explicit / interpretation / unknown) | AC coverage |
+| --- | --- | --- | --- | --- |
+| R1 | statement | reference | basis | AC IDs or gap |
+
+| AC ID | R/S links | Conditions / input | Observable expected outcome | Basis (explicit / proposed) | confirmation_ref | Verification method |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC1 | R1 / S1 | condition | expected result | basis | source reference or unconfirmed | proposed check |
+
+## Requirement conflicts and gaps
+
+- Conflicts: <competing S/R/AC statements, impact, resolution reference or unresolved>
+- Material gaps/interpretations: <affected criteria, questions and who must clarify>
+- Unavailable optional sources: <why they do not affect material scope, or none>
+
+## Acceptance traceability
+
+| AC / R / S IDs | Evidence / hypothesis | P step IDs | V check IDs / observable expected outcome | Coverage gap |
+| --- | --- | --- | --- | --- |
+| AC1 / R1 / S1 | E/H IDs | P1 | V1 / grounded outcome | none or explicit gap |
+
+Every material AC and proposed change needs coverage; a gap blocks the plan.
 
 ## Implementation steps
 
