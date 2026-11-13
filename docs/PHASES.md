@@ -29,3 +29,12 @@ Advance gates must require both completion and verdict pass, never status alone.
 Test reports now carry before/after Git blob IDs for every material input so
 review can detect dirty-tree changes after testing. Scope authority and snapshots
 remain supplied evidence, not authenticated live business acceptance.
+
+
+Version 0.7 adds PR preparation only (no remote publication). Twenty tests and
+strict components passed. Actual model runs prepared an evidence-backed draft
+from a passing review and blocked a changes_requested review. The first positive
+attempt appended an unauthorized echo helper; the command was denied. The method
+was tightened to stop on denial and prohibit helpers; a fresh positive rerun had
+no denials. All targets remained unchanged. Drafts retained pending business
+acceptance and publication_ready no, with no invented issue number or remote PR.

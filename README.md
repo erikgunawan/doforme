@@ -1,7 +1,7 @@
 # doforme
 
 Claude Code plugin untuk investigasi bug dan perencanaan perbaikan berbasis evidence
-pada repository lokal. Versi 0.6 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
+pada repository lokal. Versi 0.7 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
 implementasi dan test source, membandingkan hipotesis penyebab, lalu mengembalikan
 laporan terstruktur di percakapan. `/doforme:plan` mengubah laporan yang sudah
 diverifikasi menjadi rencana perbaikan. Kedua command tetap read-only, tanpa
@@ -187,7 +187,7 @@ tests/                                 regresi checker dan fixture smoke test
 Metode dan kontrak Markdown tidak bergantung pada provider; adapter command dan
 agent adalah bagian khusus Claude Code. Graph portabel di
 [workflow.json](skills/bug-resolution/references/workflow.json) mendeklarasikan
-`analyze → plan → fix → test → review → pr`; analyze, plan, fix, test, dan review tersedia.
+`analyze → plan → fix → test → review → pr`; keenam tahap tersedia; pr hanya menyiapkan draft.
 Checker mendeteksi cycle, prerequisite yang hilang, atau analyze yang dilewati.
 Dependency semantik diperiksa oleh planner dengan evidence, bukan sekadar status
 atau keberadaan file. State tetap berupa hasil percakapan, tanpa engine, database,
@@ -252,3 +252,14 @@ diff, test/assertion, dan requirement, lalu mengembalikan pass, changes_requeste
 atau blocked. Reviewer tidak mengedit atau menjalankan test. Pass adalah review
 AI dalam konteks terpisah, bukan penerimaan owner bisnis atau jaminan tanpa bug.
 Lihat [snapshot binding](skills/bug-testing/references/snapshot.md).
+
+
+## Draft PR tanpa publikasi (v0.7)
+
+`/doforme:pr` menerima plan/fix/test dan review verdict pass, lalu memeriksa ulang
+snapshot. Hasilnya title/body yang bisa ditinjau, disertai AC/test evidence,
+keterbatasan, dan status penerimaan bisnis. `publication_ready: no`: command tidak
+menjalankan GitHub/gh, push, branch/commit, komentar atau penutupan issue. Draft
+memakai referensi non-closing dan tidak menyatakan issue solved. Publikasi tetap
+memerlukan akses dan otorisasi terpisah. Lihat
+[metode PR](skills/pr-preparation/SKILL.md).

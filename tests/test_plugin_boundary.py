@@ -125,6 +125,18 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "test-to-review"):
             CHECKER.check_graph(graph)
 
+    def test_pr_cannot_skip_review(self):
+        graph = self.graph()
+        graph["nodes"]["pr"]["requires"] = ["test"]
+        with self.assertRaisesRegex(ValueError, "review-to-pr"):
+            CHECKER.check_graph(graph)
+
+    def test_pr_cannot_publish(self):
+        graph = self.graph()
+        graph["nodes"]["pr"]["effect"] = "publication"
+        with self.assertRaisesRegex(ValueError, "Unexpected effect"):
+            CHECKER.check_graph(graph)
+
 
 if __name__ == "__main__":
     unittest.main()

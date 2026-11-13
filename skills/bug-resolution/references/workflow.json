@@ -40,11 +40,12 @@
       "result_contract": "review_v1"
     },
     "pr": {
-      "implemented": false,
+      "implemented": true,
       "requires": [
         "review"
       ],
-      "effect": "publication"
+      "effect": "read_only",
+      "result_contract": "pr_v1"
     }
   },
   "persistence": "none",
