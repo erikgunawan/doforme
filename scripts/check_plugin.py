@@ -19,6 +19,43 @@ def frontmatter(path):
     return fields
 
 
+def check_graph(graph):
+    """Check a portable DAG without executing or persisting any workflow."""
+    if graph.get("contract_version") != 1 or graph.get("persistence") != "none" or graph.get("automatic_transitions") is not False:
+        raise ValueError("Unsupported graph version, persistence, or automatic transitions")
+    nodes = graph["nodes"]
+    visited, visiting = set(), set()
+
+    def visit(name):
+        if name not in nodes:
+            raise ValueError(f"Unknown prerequisite: {name}")
+        if name in visiting:
+            raise ValueError("Dependency cycle detected")
+        if name in visited:
+            return
+        node = nodes[name]
+        if not isinstance(node.get("implemented"), bool) or not isinstance(node.get("requires"), list):
+            raise ValueError(f"Invalid graph node: {name}")
+        expected_effects = {"analyze": "read_only", "plan": "read_only", "fix": "mutation"}
+        if node["implemented"] and node.get("effect") != expected_effects.get(name):
+            raise ValueError("Unexpected effect for implemented stage")
+        visiting.add(name)
+        for predecessor in node["requires"]:
+            visit(predecessor)
+            if node["implemented"] and not nodes[predecessor]["implemented"]:
+                raise ValueError("Implemented stage depends on an unavailable stage")
+        visiting.remove(name)
+        visited.add(name)
+
+    for name in nodes:
+        visit(name)
+    if nodes.get("analyze", {}).get("requires") != [] or nodes.get("plan", {}).get("requires") != ["analyze"]:
+        raise ValueError("The analyze-to-plan dependency must be preserved")
+    for stage, contract in (("analyze", "analysis_v1"), ("plan", "plan_v1")):
+        if nodes[stage].get("result_contract") != contract:
+            raise ValueError("Requirement-aware v2 result contracts are required")
+
+
 def check(root):
     root = Path(root).resolve()
     manifest = json.loads((root / ".claude-plugin/plugin.json").read_text())
@@ -26,23 +63,36 @@ def check(root):
         raise ValueError("Plugin namespace must be doforme")
     if set(manifest) - {"name", "version", "description", "author", "repository", "keywords"}:
         raise ValueError("Review new manifest capabilities before accepting them")
-    command = frontmatter(root / "commands/analyze.md")
-    required = {"context": "fork", "agent": "doforme:investigator",
-                "disable-model-invocation": "true", "background": "false"}
-    if any(command.get(key) != value for key, value in required.items()):
-        raise ValueError("Analyze must run explicitly in the restricted investigator")
-    if set(command) - {*required, "description", "argument-hint"}:
-        raise ValueError("Review new command capabilities")
-    agent = frontmatter(root / "agents/investigator.md")
-    if agent.get("name") != "investigator" or agent.get("tools") != "Read, Glob, Grep":
-        raise ValueError("Investigator must have only Read, Glob, Grep")
-    if set(agent) != {"name", "description", "tools"}:
-        raise ValueError("Review new agent capabilities")
-    skill = frontmatter(root / "skills/bug-resolution/SKILL.md")
-    if skill.get("user-invocable") != "false" or skill.get("disable-model-invocation") != "true":
-        raise ValueError("Helper skill must not bypass the analyze entry point")
-    if set(skill) != {"name", "description", "user-invocable", "disable-model-invocation"}:
-        raise ValueError("Review new helper skill capabilities")
+    components = (("analyze", "investigator", "bug-resolution"),
+                  ("plan", "planner", "bug-planning"))
+    for command_name, agent_name, skill_name in components:
+        command_path = root / f"commands/{command_name}.md"
+        command = frontmatter(command_path)
+        required = {"context": "fork", "agent": f"doforme:{agent_name}",
+                    "disable-model-invocation": "true", "background": "false"}
+        if any(command.get(key) != value for key, value in required.items()):
+            raise ValueError(f"{command_name} must run explicitly in the restricted {agent_name}")
+        if set(command) - {*required, "description", "argument-hint"}:
+            raise ValueError("Review new command capabilities")
+        agent = frontmatter(root / f"agents/{agent_name}.md")
+        expected_tools = "Read, Glob, Grep, Edit, Write, Bash" if agent_name == "fixer" else "Read, Glob, Grep"
+        if agent.get("name") != agent_name or agent.get("tools") != expected_tools:
+            raise ValueError(f"{agent_name} must have only {expected_tools}")
+        if set(agent) != {"name", "description", "tools"}:
+            raise ValueError("Review new agent capabilities")
+        skill = frontmatter(root / f"skills/{skill_name}/SKILL.md")
+        if skill.get("user-invocable") != "false" or skill.get("disable-model-invocation") != "true":
+            raise ValueError("Helper skill must not bypass its command entry point")
+        if set(skill) != {"name", "description", "user-invocable", "disable-model-invocation"}:
+            raise ValueError("Review new helper skill capabilities")
+        body = command_path.read_text()
+        resource = "${CLAUDE_PLUGIN_ROOT}/skills/" + skill_name + "/SKILL.md"
+        if "$ARGUMENTS" not in body or resource not in body:
+            raise ValueError(f"{command_name} must forward input and resolve its packaged skill")
+    graph = json.loads((root / "skills/bug-resolution/references/workflow.json").read_text())
+    check_graph(graph)
+    if {name for name, node in graph["nodes"].items() if node["implemented"]} != {c[0] for c in components}:
+        raise ValueError("Graph implemented nodes must match command entry points")
     for directory in ("commands", "agents", "skills"):
         for path in (root / directory).rglob("*.md"):
             text = path.read_text(encoding="utf-8")
@@ -57,9 +107,6 @@ def check(root):
             resolved = (path.parent / target.split("#", 1)[0]).resolve()
             if not resolved.is_relative_to(root) or not resolved.is_file():
                 raise ValueError(f"{path}: missing or escaping reference {target}")
-    body = (root / "commands/analyze.md").read_text()
-    if "$ARGUMENTS" not in body or "${CLAUDE_PLUGIN_ROOT}/skills/bug-resolution/SKILL.md" not in body:
-        raise ValueError("Analyze must forward input and resolve the packaged skill")
 
 
 if __name__ == "__main__":
@@ -68,4 +115,4 @@ if __name__ == "__main__":
     except (ValueError, KeyError, OSError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         sys.exit(1)
-    print("PASS: plugin structure, resource links, and read-only capability boundary")
+    print("PASS: plugin structure, resource links, stage capabilities, and dependency graph")

@@ -1,5 +1,6 @@
 """Ensure the checker rejects privilege broadening and broken packaged resources."""
 import importlib.util
+import json
 import shutil
 import tempfile
 import unittest
@@ -45,6 +46,38 @@ class BoundaryTests(unittest.TestCase):
             target.write("\n!`echo unexpected`\n")
         with self.assertRaisesRegex(ValueError, "dynamic shell"):
             CHECKER.check(self.root)
+
+    def test_planner_write_capability_rejected(self):
+        self.replace("agents/planner.md", "Read, Glob, Grep", "Read, Glob, Grep, Write")
+        with self.assertRaisesRegex(ValueError, "only Read"):
+            CHECKER.check(self.root)
+
+    def graph(self):
+        return json.loads((self.root / "skills/bug-resolution/references/workflow.json").read_text())
+
+    def test_graph_cycle_rejected(self):
+        graph = self.graph()
+        graph["nodes"]["analyze"]["requires"] = ["plan"]
+        with self.assertRaisesRegex(ValueError, "cycle"):
+            CHECKER.check_graph(graph)
+
+    def test_unknown_prerequisite_rejected(self):
+        graph = self.graph()
+        graph["nodes"]["plan"]["requires"] = ["missing"]
+        with self.assertRaisesRegex(ValueError, "Unknown prerequisite"):
+            CHECKER.check_graph(graph)
+
+    def test_automatic_transition_rejected(self):
+        graph = self.graph()
+        graph["automatic_transitions"] = True
+        with self.assertRaisesRegex(ValueError, "automatic transitions"):
+            CHECKER.check_graph(graph)
+
+    def test_plan_cannot_skip_analysis(self):
+        graph = self.graph()
+        graph["nodes"]["plan"]["requires"] = []
+        with self.assertRaisesRegex(ValueError, "analyze-to-plan"):
+            CHECKER.check_graph(graph)
 
 
 if __name__ == "__main__":

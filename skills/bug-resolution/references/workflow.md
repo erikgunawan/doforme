@@ -1,10 +1,21 @@
 # Workflow contract v1
 
-Implemented node: `analyze`. Input: bug description or readable local issue file
-in a target repository. Output: report contract v1 in the conversation. Effects:
+Implemented nodes: `analyze` and `plan`. Analyze input: bug description or readable local issue file
+in a target repository. Output: analysis report contract v1 in the conversation. Effects:
 read-only inspection; no persisted artifacts. No network or program execution.
 
-Potential future graph (design only):
+Plan input: an explicitly supplied analysis report, not implicit conversation
+memory. Plan re-reads material evidence, checks identity/freshness and dependency
+gates, then returns a plan contract v1 with a conversation-only state summary.
+Plan never invokes fix or writes source/state. Unknown revision remains an explicit
+limitation before any future mutation.
+
+The portable [workflow.json](workflow.json) declares the DAG, implemented nodes,
+effects, and report contracts. It is metadata consumed by the planning method and
+validated locally, not a scheduler. Semantic gates remain in
+[dependencies.md](dependencies.md); a graph edge alone never authorizes a stage.
+
+Graph (`fix` onward remains design only):
 
 `analyze → plan → fix → test → review → pr`
 

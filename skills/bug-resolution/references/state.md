@@ -1,8 +1,9 @@
-# State contract v1 — future design
+# State contract v1 — conversation-only stage results
 
-Milestone 1 writes no state, including no `.doforme` directory. Reports are
-conversation results. This document reserves a small provider-neutral vocabulary,
-not a database schema or a promise of resume support.
+Neither analyze nor plan writes state, including no `.doforme` directory.
+Reports are conversation results. Plan emits an explicit stage/status summary
+with `result_ref: conversation_only` and `persisted: false`. This is a small
+provider-neutral handoff vocabulary, not durable storage or resume support.
 
 A future state record should carry `contract_version`, `run_id`, `issue_ref`,
 `repository`, `revision`, `stage`, `status`, `result_ref`, and `blocked_reason`.
@@ -14,4 +15,7 @@ Proposed statuses: `pending → running → complete | blocked | failed`.
 Validity and confidence remain separate fields of the analyze result. Resume
 must check prerequisites and freshness; it must not treat file existence alone
 as completion. A later implementation must choose storage, atomic updates, and
-concurrency rules before enabling retries/resume. Do not build these in v0.1.
+concurrency rules before enabling retries/resume. None exists in v0.2.
+Report status is computed from evidence on each invocation; no report implies
+an automatic transition. A blocked plan must identify its failed prerequisites
+and contain no implementation steps.

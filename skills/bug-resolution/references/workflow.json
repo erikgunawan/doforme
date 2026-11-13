@@ -1,0 +1,49 @@
+{
+  "contract_version": 1,
+  "nodes": {
+    "analyze": {
+      "implemented": true,
+      "requires": [],
+      "effect": "read_only",
+      "result_contract": "analysis_v1"
+    },
+    "plan": {
+      "implemented": true,
+      "requires": [
+        "analyze"
+      ],
+      "effect": "read_only",
+      "result_contract": "plan_v1"
+    },
+    "fix": {
+      "implemented": false,
+      "requires": [
+        "plan"
+      ],
+      "effect": "mutation"
+    },
+    "test": {
+      "implemented": false,
+      "requires": [
+        "fix"
+      ],
+      "effect": "execution"
+    },
+    "review": {
+      "implemented": false,
+      "requires": [
+        "test"
+      ],
+      "effect": "read_only"
+    },
+    "pr": {
+      "implemented": false,
+      "requires": [
+        "review"
+      ],
+      "effect": "publication"
+    }
+  },
+  "persistence": "none",
+  "automatic_transitions": false
+}

@@ -53,4 +53,4 @@ read-only capabilities and report contract; do not assume Claude-specific tools.
 
 Read [workflow.md](references/workflow.md), [dependencies.md](references/dependencies.md),
 and [state.md](references/state.md) only when explaining future workflow handoff.
-No state writer, scheduler, graph engine, or downstream command exists in v0.1.
+The plan command consumes explicit analyze v1 reports. No state writer, scheduler, or automatic graph execution exists.

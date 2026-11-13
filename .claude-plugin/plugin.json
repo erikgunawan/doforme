@@ -1,8 +1,14 @@
 {
   "name": "doforme",
-  "version": "0.1.0",
-  "description": "Evidence-based, read-only bug investigation for local repositories.",
-  "author": { "name": "Erik Gunawan" },
+  "version": "0.2.0",
+  "description": "Evidence-based, read-only bug investigation and repair planning for local repositories.",
+  "author": {
+    "name": "Erik Gunawan"
+  },
   "repository": "https://github.com/erikgunawan/doforme",
-  "keywords": ["bugs", "investigation", "read-only"]
+  "keywords": [
+    "bugs",
+    "investigation",
+    "read-only"
+  ]
 }
