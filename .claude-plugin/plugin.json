@@ -1,0 +1,8 @@
+{
+  "name": "doforme",
+  "version": "0.1.0",
+  "description": "Evidence-based, read-only bug investigation for local repositories.",
+  "author": { "name": "Erik Gunawan" },
+  "repository": "https://github.com/erikgunawan/doforme",
+  "keywords": ["bugs", "investigation", "read-only"]
+}
