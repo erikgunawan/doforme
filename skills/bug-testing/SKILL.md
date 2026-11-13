@@ -8,7 +8,8 @@ disable-model-invocation: true
 # Bug testing — report contract v1
 
 Read [test template](references/test-template.md) and
-[requirements](../bug-resolution/references/requirements.md).
+[requirements](../bug-resolution/references/requirements.md) and
+[snapshot binding](references/snapshot.md).
 
 1. Require explicit complete plan v2 and fix v1 inputs (named local files or
    inline), same issue/repo, fix_status complete, matching known revision, fresh
@@ -40,7 +41,10 @@ Read [test template](references/test-template.md) and
    result cannot stand for UI/visual behavior. Missing material visual/business
    evidence blocks; optional not-run checks remain explicit limitations. Existing
    fixer red/green evidence can be cited with provenance, never as your own run.
-6. Compare full input/source/test contents and Git diff/status before/after. No
+6. Capture before/after material content bindings as described in snapshot.md,
+   using separate read-only git hash-object calls without -w. Include them in
+   the report for review; missing binding blocks downstream freshness.
+   Compare full input/source/test contents and Git diff/status before/after. No
    source/test/report mutation is allowed; only declared temporary artifacts may
    change. Unexpected changes or observed assertion failure mean failed. Never
    clean up/revert or rerun with broader permissions. Give bounded recovery steps.

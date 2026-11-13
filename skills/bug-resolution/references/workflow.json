@@ -32,11 +32,12 @@
       "result_contract": "test_v1"
     },
     "review": {
-      "implemented": false,
+      "implemented": true,
       "requires": [
         "test"
       ],
-      "effect": "read_only"
+      "effect": "read_only",
+      "result_contract": "review_v1"
     },
     "pr": {
       "implemented": false,

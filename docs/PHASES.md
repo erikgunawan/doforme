@@ -17,3 +17,15 @@ used in both cases; only the authorized case executed unittest. Test results do
 not establish independent code review or business acceptance. Fixture inputs are
 synthetic. No push or remote PR was made. Prior validation documents describe
 what was true at the time of their original runs (including then-uncommitted work).
+
+
+Version 0.6 adds independent review and content binding. Eighteen regression tests
+and strict components passed. Actual model checks: matching tested content passed
+review; a test file changed after validation was blocked despite the same HEAD.
+Both review targets stayed byte-for-byte unchanged with no permission denials or
+test execution. The stale report used inconsistent complete/blocked status wording;
+the method now explicitly requires blocked status whenever verdict is blocked.
+Advance gates must require both completion and verdict pass, never status alone.
+Test reports now carry before/after Git blob IDs for every material input so
+review can detect dirty-tree changes after testing. Scope authority and snapshots
+remain supplied evidence, not authenticated live business acceptance.

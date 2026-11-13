@@ -22,6 +22,15 @@
 | --- | --- | --- | --- | --- |
 | ... | ... | ... | output evidence or none | status |
 
+## Validated snapshot
+
+- algorithm: git_blob_sha1
+- revision: <verified HEAD>
+
+| Repo-relative material path | Before Git blob ID | After Git blob ID |
+| --- | --- | --- |
+| exact source/test/requirement/report path | observed ID | same ID or changed |
+
 ## Coverage and integrity
 
 - required_coverage: <material ACs and agreed checks; named gaps>

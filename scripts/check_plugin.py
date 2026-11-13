@@ -11,6 +11,7 @@ STAGES = {
     "plan": ("planner", "bug-planning", "Read, Glob, Grep", "read_only", "plan_v2", ["analyze"]),
     "fix": ("fixer", "bug-fixing", "Read, Glob, Grep, Edit, Write, Bash", "mutation", "fix_v1", ["plan"]),
     "test": ("tester", "bug-testing", "Read, Glob, Grep, Bash", "execution", "test_v1", ["fix"]),
+    "review": ("reviewer", "bug-review", "Read, Glob, Grep, Bash", "read_only", "review_v1", ["test"]),
 }
 
 
@@ -60,7 +61,7 @@ def check_graph(graph):
         visit(name)
     for stage, spec in STAGES.items():
         if nodes.get(stage, {}).get("requires") != spec[5]:
-            label = "analyze-to-plan" if stage in ("analyze", "plan") else "plan-to-fix" if stage == "fix" else "fix-to-test"
+            label = "analyze-to-plan" if stage in ("analyze", "plan") else "plan-to-fix" if stage == "fix" else "fix-to-test" if stage == "test" else "test-to-review"
             raise ValueError(f"The {label} dependency must be preserved")
         if nodes[stage].get("result_contract") != spec[4]:
             raise ValueError("Requirement-aware v2 result contracts and declared stage contracts are required")

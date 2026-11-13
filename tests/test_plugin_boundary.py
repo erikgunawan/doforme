@@ -114,6 +114,17 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fix-to-test"):
             CHECKER.check_graph(graph)
 
+    def test_reviewer_cannot_edit(self):
+        self.replace("agents/reviewer.md", "Read, Glob, Grep, Bash", "Read, Glob, Grep, Bash, Edit")
+        with self.assertRaisesRegex(ValueError, "reviewer must have only"):
+            CHECKER.check(self.root)
+
+    def test_review_cannot_skip_test(self):
+        graph = self.graph()
+        graph["nodes"]["review"]["requires"] = ["fix"]
+        with self.assertRaisesRegex(ValueError, "test-to-review"):
+            CHECKER.check_graph(graph)
+
 
 if __name__ == "__main__":
     unittest.main()

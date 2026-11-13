@@ -1,7 +1,7 @@
 # doforme
 
 Claude Code plugin untuk investigasi bug dan perencanaan perbaikan berbasis evidence
-pada repository lokal. Versi 0.5 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
+pada repository lokal. Versi 0.6 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
 implementasi dan test source, membandingkan hipotesis penyebab, lalu mengembalikan
 laporan terstruktur di percakapan. `/doforme:plan` mengubah laporan yang sudah
 diverifikasi menjadi rencana perbaikan. Kedua command tetap read-only, tanpa
@@ -139,7 +139,7 @@ migration, commit, push, PR, atau penutupan issue.
 Laporan fix v1 mencatat path yang berubah, otorisasi, revision, exact command,
 exit code, hasil setiap AC, diff boundaries, dan partial edits bila gagal/blocked.
 `complete` berarti scoped technical validation lulus; business_acceptance tetap
-not_evaluated, resolution_status not_established, review_status pending. Tahap `/test` tersedia untuk validasi terpisah; `/review` belum diimplementasikan.
+not_evaluated, resolution_status not_established, review_status pending. Tahap `/test` tersedia untuk validasi terpisah; `/review` tersedia dengan pemeriksaan snapshot yang diuji.
 
 Fixer mempunyai Read/Glob/Grep/Edit/Write/Bash; **bukan sandbox path/command yang
 dijamin OS**. Normal Claude permissions dan instruksi scope tetap diperlukan;
@@ -187,11 +187,11 @@ tests/                                 regresi checker dan fixture smoke test
 Metode dan kontrak Markdown tidak bergantung pada provider; adapter command dan
 agent adalah bagian khusus Claude Code. Graph portabel di
 [workflow.json](skills/bug-resolution/references/workflow.json) mendeklarasikan
-`analyze → plan → fix → test → review → pr`; analyze, plan, fix, dan test tersedia.
+`analyze → plan → fix → test → review → pr`; analyze, plan, fix, test, dan review tersedia.
 Checker mendeteksi cycle, prerequisite yang hilang, atau analyze yang dilewati.
 Dependency semantik diperiksa oleh planner dengan evidence, bukan sekadar status
 atau keberadaan file. State tetap berupa hasil percakapan, tanpa engine, database,
-scheduler, resume, atau automatic transitions. `/review`, `/endtoend`, GitHub Actions,
+scheduler, resume, atau automatic transitions. `/endtoend`, GitHub Actions,
 dan Telegram belum diimplementasikan.
 
 ## Pengujian
@@ -241,3 +241,14 @@ source cleanup, commit, remote publication, atau klaim business acceptance.
 Bash tetap dapat memiliki side effect: runner harus diperiksa dan permission
 host tetap berlaku. Input reports boleh inline agar tidak menambah file repo.
 Lihat [kontrak test](skills/bug-testing/SKILL.md).
+
+
+## Review terpisah (v0.6)
+
+`/doforme:review` menerima plan, fix, dan test report secara eksplisit. Test report
+harus menyertakan snapshot material `git_blob_sha1` dari sebelum/sesudah validasi;
+HEAD saja tidak mengikat perubahan yang belum di-commit. Reviewer membaca ulang
+diff, test/assertion, dan requirement, lalu mengembalikan pass, changes_requested,
+atau blocked. Reviewer tidak mengedit atau menjalankan test. Pass adalah review
+AI dalam konteks terpisah, bukan penerimaan owner bisnis atau jaminan tanpa bug.
+Lihat [snapshot binding](skills/bug-testing/references/snapshot.md).
