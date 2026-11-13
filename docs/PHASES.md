@@ -38,3 +38,14 @@ attempt appended an unauthorized echo helper; the command was denied. The method
 was tightened to stop on denial and prohibit helpers; a fresh positive rerun had
 no denials. All targets remained unchanged. Drafts retained pending business
 acceptance and publication_ready no, with no invented issue number or remote PR.
+
+
+Version 0.8 adds the sequential local CLI adapter and /endtoend entry point.
+Thirty-four deterministic tests passed, including scope/authorization, tool audit,
+actual test-result requirements, regression-before-fix evidence, and stop gates.
+The first real adapter runs exposed unavailable automatic structured output in
+restricted-agent mode and stopped without edits. Explicit raw JSON envelopes with
+local validation fixed the protocol: a real missing-requirement run now returned
+blocked at analyze with no downstream call. A positive real integration run was
+started separately; final results are recorded in the subsequent state phase.
+The adapter never publishes remotely, and complete means draft preparation only.

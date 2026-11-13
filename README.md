@@ -1,7 +1,7 @@
 # doforme
 
 Claude Code plugin untuk investigasi bug dan perencanaan perbaikan berbasis evidence
-pada repository lokal. Versi 0.7 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
+pada repository lokal. Versi 0.8 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
 implementasi dan test source, membandingkan hipotesis penyebab, lalu mengembalikan
 laporan terstruktur di percakapan. `/doforme:plan` mengubah laporan yang sudah
 diverifikasi menjadi rencana perbaikan. Kedua command tetap read-only, tanpa
@@ -263,3 +263,25 @@ menjalankan GitHub/gh, push, branch/commit, komentar atau penutupan issue. Draft
 memakai referensi non-closing dan tidak menyatakan issue solved. Publikasi tetap
 memerlukan akses dan otorisasi terpisah. Lihat
 [metode PR](skills/pr-preparation/SKILL.md).
+
+
+## Workflow lokal end-to-end (v0.8)
+
+Runner Python menjalankan enam tahap berurutan dalam konteks model terpisah.
+Lihat [contoh config](docs/workflow-input.example.json). Target harus Git root
+yang bersih; output wajib di luar target dan plugin. Untuk fixture disposable:
+
+```bash
+python3 /absolute/path/to/doforme/scripts/run_workflow.py --repo /absolute/target --input /absolute/config.json --output /absolute/new-output --allow-fix --allow-execution
+```
+
+Dua flag terakhir merupakan otorisasi scope exact pada config, bukan izin shell
+bebas. Tanpanya proses berhenti sebelum mutasi. `/doforme:endtoend` menyediakan
+entry point yang memerlukan otorisasi langsung untuk output dan scope yang sama.
+Runner memeriksa envelope terstruktur, revision, perubahan file dan tool trace;
+permission denial/command di luar scope menghentikan proses meskipun model
+mengklaim complete. Perubahan parsial tidak dihapus otomatis. Runner membatasi
+snapshot lokal menjadi 20.000 file/100 MB, menolak symlink dan target besar;
+ini adapter untuk checkout terisolasi kecil, bukan sandbox OS. Artifact output
+mengandung laporan/provenance dan harus disimpan privat. Tidak ada publikasi PR,
+notifikasi, Git mutation atau klaim business acceptance otomatis.

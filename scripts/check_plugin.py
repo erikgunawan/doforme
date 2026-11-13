@@ -16,6 +16,9 @@ STAGES = {
 }
 
 
+UTILITIES = {"endtoend": ("workflow-runner", "workflow-orchestration", "Read, Bash")}
+
+
 def frontmatter(path):
     """Read our deliberately flat frontmatter subset; reject ambiguous syntax."""
     text = path.read_text(encoding="utf-8")
@@ -75,7 +78,7 @@ def check(root):
         raise ValueError("Plugin namespace must be doforme")
     if set(manifest) - {"name", "version", "description", "author", "repository", "keywords"}:
         raise ValueError("Review new manifest capabilities before accepting them")
-    components = [(name, spec[0], spec[1]) for name, spec in STAGES.items()]
+    components = [(name, spec[0], spec[1]) for name, spec in {**STAGES, **UTILITIES}.items()]
     for command_name, agent_name, skill_name in components:
         command_path = root / f"commands/{command_name}.md"
         command = frontmatter(command_path)
@@ -86,7 +89,7 @@ def check(root):
         if set(command) - {*required, "description", "argument-hint"}:
             raise ValueError("Review new command capabilities")
         agent = frontmatter(root / f"agents/{agent_name}.md")
-        expected_tools = STAGES[command_name][2]
+        expected_tools = {**STAGES, **UTILITIES}[command_name][2]
         if agent.get("name") != agent_name or agent.get("tools") != expected_tools:
             raise ValueError(f"{agent_name} must have only {expected_tools}")
         if set(agent) != {"name", "description", "tools"}:
@@ -102,7 +105,7 @@ def check(root):
             raise ValueError(f"{command_name} must forward input and resolve its packaged skill")
     graph = json.loads((root / "skills/bug-resolution/references/workflow.json").read_text())
     check_graph(graph)
-    if {name for name, node in graph["nodes"].items() if node["implemented"]} != {c[0] for c in components}:
+    if {name for name, node in graph["nodes"].items() if node["implemented"]} != set(STAGES):
         raise ValueError("Graph implemented nodes must match command entry points")
     for directory in ("commands", "agents", "skills"):
         for path in (root / directory).rglob("*.md"):

@@ -1,0 +1,11 @@
+{
+  "issue_ref": "ISSUE.md",
+  "issue_text": "Investigate the final-page pagination issue in ISSUE.md. The applicable confirmed requirements and ACs are in REQUIREMENTS.md.",
+  "requirements": ["REQUIREMENTS.md"],
+  "edit_paths": ["pagination.py", "test_pagination.py"],
+  "test_commands": ["PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination"],
+  "artifact_paths": [],
+  "timeout_seconds": 180,
+  "max_turns": 45,
+  "max_budget_usd": 1.0
+}
