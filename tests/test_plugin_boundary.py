@@ -85,6 +85,24 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "v2 result contracts"):
             CHECKER.check_graph(graph)
 
+    def test_fix_cannot_skip_plan(self):
+        graph = self.graph()
+        graph["nodes"]["fix"]["requires"] = ["analyze"]
+        with self.assertRaisesRegex(ValueError, "plan-to-fix"):
+            CHECKER.check_graph(graph)
+
+    def test_analyze_cannot_be_mutating(self):
+        graph = self.graph()
+        graph["nodes"]["analyze"]["effect"] = "mutation"
+        with self.assertRaisesRegex(ValueError, "Unexpected effect"):
+            CHECKER.check_graph(graph)
+
+    def test_fixer_cannot_delegate(self):
+        self.replace("agents/fixer.md", "Read, Glob, Grep, Edit, Write, Bash",
+                     "Read, Glob, Grep, Edit, Write, Bash, Agent")
+        with self.assertRaisesRegex(ValueError, "fixer must have only"):
+            CHECKER.check(self.root)
+
 
 if __name__ == "__main__":
     unittest.main()

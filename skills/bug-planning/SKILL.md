@@ -77,7 +77,9 @@ AC → P → V traceability. Ground expected test outcomes in confirmed requirem
    actions such as supplying details or rerunning analyze. A complete plan means
    a reviewed-by-evidence proposal exists, not that the user approved it, a fix
    happened, or testing passed. `ready_for_fix` is always `no` in this release:
-   the fix node is not implemented and no write scope is authorized by plan.
+   plan itself does not authorize write scope. `/doforme:fix` independently
+   requires direct user path/command authorization, a known matching revision,
+   fresh requirement/evidence checks, and a clean target baseline.
    Return the state summary in the conversation only, with no durable state,
    auto transitions, retries, or downstream invocation. Use the user's language
    while retaining contract keys/enums.

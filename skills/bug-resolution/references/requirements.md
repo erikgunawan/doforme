@@ -91,4 +91,7 @@ requirements or new conflicts require re-analysis even if code is unchanged.
 Both commands report technical_validation not_run, business_acceptance
 not_evaluated, resolution_status not_established. Future passing tests establish
 only their covered criteria. Business acceptance later needs results against
-agreed criteria plus owner acceptance where required. Neither current command can mark an issue solved, execute validation, or close an issue.
+agreed criteria plus owner acceptance where required. Analyze/plan cannot execute validation. Fix may execute explicitly authorized
+scoped checks, recording observed technical results while business_acceptance
+remains not_evaluated and resolution_status not_established. No stage can mark
+an issue solved or close it automatically.

@@ -1,6 +1,6 @@
 # Workflow contract v1
 
-Implemented nodes: `analyze` and `plan`. Analyze input: bug description or readable local issue file
+Implemented nodes: `analyze`, `plan`, and `fix`. Analyze input: bug description or readable local issue file
 in a target repository. Output: analysis report contract v2 in the conversation. Effects:
 read-only inspection; no persisted artifacts. No network or program execution.
 
@@ -15,7 +15,7 @@ effects, and report contracts. It is metadata consumed by the planning method an
 validated locally, not a scheduler. Semantic gates remain in
 [dependencies.md](dependencies.md); a graph edge alone never authorizes a stage.
 
-Graph (`fix` onward remains design only):
+Graph (`test` onward remains design only):
 
 `analyze → plan → fix → test → review → pr`
 
@@ -28,3 +28,11 @@ none of those additional adapters or commands are shipped here.
 Analyze and plan report contracts are now v2: they require source/requirement/AC
 provenance, conflict handling, and coverage. Workflow/state contract versions
 remain 1; the DAG and conversation-only persistence semantics are unchanged.
+
+Fix consumes an explicit complete plan v2 plus direct invocation authorization
+for exact edit paths and validation commands. It binds a clean Git root/revision,
+revalidates intent/evidence, adds confirmed-AC tests, establishes a red regression,
+then applies the bounded correction and observes green scoped checks. Its fix_v1
+result records partial edits/failures and never claims business acceptance. The
+future test node will provide broader validation; current fix includes only its
+explicitly authorized AC checks. No automatic transitions or durable state exist.

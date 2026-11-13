@@ -51,7 +51,9 @@ def check_graph(graph):
         visit(name)
     if nodes.get("analyze", {}).get("requires") != [] or nodes.get("plan", {}).get("requires") != ["analyze"]:
         raise ValueError("The analyze-to-plan dependency must be preserved")
-    for stage, contract in (("analyze", "analysis_v2"), ("plan", "plan_v2")):
+    if nodes.get("fix", {}).get("requires") != ["plan"]:
+        raise ValueError("The plan-to-fix dependency must be preserved")
+    for stage, contract in (("analyze", "analysis_v2"), ("plan", "plan_v2"), ("fix", "fix_v1")):
         if nodes[stage].get("result_contract") != contract:
             raise ValueError("Requirement-aware v2 result contracts are required")
 
@@ -64,7 +66,8 @@ def check(root):
     if set(manifest) - {"name", "version", "description", "author", "repository", "keywords"}:
         raise ValueError("Review new manifest capabilities before accepting them")
     components = (("analyze", "investigator", "bug-resolution"),
-                  ("plan", "planner", "bug-planning"))
+                  ("plan", "planner", "bug-planning"),
+                  ("fix", "fixer", "bug-fixing"))
     for command_name, agent_name, skill_name in components:
         command_path = root / f"commands/{command_name}.md"
         command = frontmatter(command_path)

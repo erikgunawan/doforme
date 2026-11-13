@@ -16,11 +16,12 @@
       "result_contract": "plan_v2"
     },
     "fix": {
-      "implemented": false,
+      "implemented": true,
       "requires": [
         "plan"
       ],
-      "effect": "mutation"
+      "effect": "mutation",
+      "result_contract": "fix_v1"
     },
     "test": {
       "implemented": false,
