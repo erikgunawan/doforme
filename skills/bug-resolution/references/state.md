@@ -1,30 +1,23 @@
-# State contract v1 — conversation-only stage results
+# State contracts
 
-No stage writes durable workflow state, including no `.doforme` directory.
-Fix may edit explicitly authorized source/test files and run scoped checks.
-Reports are conversation results. Plan emits an explicit stage/status summary
-with `result_ref: conversation_only` and `persisted: false`. This is a small
-provider-neutral handoff vocabulary, not durable storage or resume support.
+Stage report state summaries retain state_contract_version 1. Agents return
+conversation results with persisted false. The explicitly invoked host runner
+may persist those results in an authorized external private directory; this is
+host_persisted true, not an agent permission to write state or modify the repo.
 
-A future state record should carry `contract_version`, `run_id`, `issue_ref`,
-`repository`, `revision`, `stage`, `status`, `result_ref`, and `blocked_reason`.
-Use an explicit revision and issue identity to prevent reuse across unrelated
-targets; unknown revision must be revalidated before a later mutation.
+The checkpoint file has state_version 1: repository/HEAD, config and plugin policy
+digests, exact workspace manifest, direct grants, results, artifact digests,
+attempt counts, status, and any partial edits/manual-recovery requirement.
+Updates are atomic; a single-owner lock prevents concurrent runners. Audit report
+history is preserved. Only contiguous prerequisite stages can be restored.
+Complete means the stage's evidence gate passed, never business issue resolution.
 
-Proposed statuses: `pending → running → complete | blocked | failed`.
-`complete` means the stage produced a valid result, not that a bug is fixed.
-Validity and confidence remain separate fields of the analyze result. Resume
-must check prerequisites and freshness; it must not treat file existence alone
-as completion. A later implementation must choose storage, atomic updates, and
-concurrency rules before enabling retries/resume. None exists in v0.4.
-Report status is computed from evidence on each invocation; no report implies
-an automatic transition. A blocked plan must identify its failed prerequisites
-and contain no implementation steps. State/graph contract versions remain 1. Analyze and plan result contracts
-are v2 to require business requirement evidence and acceptance traceability.
-Stage completion still never implies business acceptance or issue resolution.
-
-Fix adds a fix_v1 result with complete/blocked/failed status and exact partial
-changes. Complete requires scoped technical validation; review remains pending,
-business acceptance not_evaluated, and resolution not_established. A blocked fix
-may already contain test edits if the regression could not be demonstrated; no
-status may hide those edits. State remains a conversation-only summary.
+Status checks do not write. Resume verifies current bytes/revision/config/policy
+and saved report integrity. Blocked/failed/interrupted work needs an explicit
+retry (maximum two attempts). Partial source edits cannot be auto-retried. Stale
+inputs/policy, different grants, edited reports, or unexpected files require
+manual review and a new isolated run. No automatic reset, deletion or Git mutation.
+Checkpoints detect accidental inconsistency, not malicious forgery by a person
+with full control of both state and source. Supplied authority stays untrusted.
+Graph contract is now v2 with host_checkpoint persistence and explicit_host_run;
+there are no event-triggered transitions, remote publication or issue closure.

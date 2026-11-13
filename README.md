@@ -1,202 +1,146 @@
 # doforme
 
-Claude Code plugin untuk investigasi bug dan perencanaan perbaikan berbasis evidence
-pada repository lokal. Versi 0.8 menyediakan `/doforme:analyze`: memeriksa validitas issue, membaca
-implementasi dan test source, membandingkan hipotesis penyebab, lalu mengembalikan
-laporan terstruktur di percakapan. `/doforme:plan` mengubah laporan yang sudah
-diverifikasi menjadi rencana perbaikan. Kedua command tetap read-only, tanpa
-perbaikan source atau penyimpanan state ke disk. `/doforme:fix` menambahkan
-implementasi lokal dan pengujian terbatas setelah scope diotorisasi eksplisit.
+Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
+fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
+manual atau lewat runner lokal berurutan. Versi saat ini: **0.9.0**.
 
-## Instalasi lokal
+| Command | Hasil | Kemampuan |
+| --- | --- | --- |
+| `/doforme:analyze` | validitas issue, evidence, hipotesis, confidence | baca/pencarian |
+| `/doforme:plan` | dependency gates, langkah fix, AC → test | baca/pencarian |
+| `/doforme:fix` | implementasi scoped dan red/green regression | edit/write + command terotorisasi |
+| `/doforme:test` | hasil per AC: passed/failed/skipped/not_run | test terotorisasi; tanpa alat edit |
+| `/doforme:review` | pass/changes_requested/blocked, findings | baca + inspeksi Git lokal |
+| `/doforme:pr` | title/body draft beserta evidence | baca + inspeksi Git lokal; tanpa publikasi |
+| `/doforme:endtoend` | menjalankan adapter workflow lokal | satu invocation adapter yang diotorisasi |
+| `/doforme:status` | status checkpoint dan freshness | hanya membaca via helper |
 
-Prasyarat: Git, Claude Code dengan akses model aktif, dan akses baca ke repo ini
-(saat implementasi repo masih private). Versi CLI yang dipakai untuk validasi:
-2.1.323. Python 3.9+ diperlukan hanya untuk pemeriksaan lokal tambahan.
+**Complete tidak berarti issue resolved.** Green test berlaku pada AC yang diuji.
+Review AI tidak menggantikan penerimaan pemilik requirement. Business acceptance
+masih not_evaluated, resolution_status not_established, publication_ready false.
+Tidak ada push, PR remote, komentar/penutupan issue, atau notifikasi otomatis.
 
-```bash
-git clone https://github.com/erikgunawan/doforme.git
-cd doforme
-claude plugin validate . --strict
-```
+## Instalasi dan penggunaan
 
-Sesudah tersedia di GitHub, clone dengan perintah di atas. Untuk perubahan yang
-belum dipush, gunakan checkout lokal hasil implementasi. Muat plugin untuk satu
-sesi dari repository **target** yang ingin diperiksa:
+Prasyarat: Git, Python 3.9+, Claude Code dengan akses model aktif. CLI yang diuji:
+2.1.323. Gunakan checkout lokal ini sampai commit dipublikasikan oleh owner;
+repo remote masih memerlukan akses dan persetujuan push terpisah.
 
 ```bash
 cd /absolute/path/to/target-repository
 claude --plugin-dir /absolute/path/to/doforme --add-dir /absolute/path/to/doforme/skills
 ```
 
-`--add-dir` memberi akses ke metode dan template di luar cwd target. Tanpa akses
-ini, Claude dapat meminta izin baca; dalam mode non-interaktif analisis akan
-berhenti dengan keterbatasan resource. Plugin tidak perlu disalin ke source
-target atau diinstal ke konfigurasi global.
-Periksa `/help` untuk `/doforme:analyze`, `/doforme:plan`, dan `/doforme:fix`;
-`/agents` menampilkan investigator, planner, dan fixer. Jika tidak muncul, periksa path, versi Claude Code, dan
-kebijakan organisasi terkait plugin; mulai ulang sesi setelah perubahan plugin.
+Periksa `/help` dan `/agents`. `--add-dir` memberi akses baca metode/template di
+luar cwd; tanpa akses itu command dapat berhenti. Restart/reload setelah perubahan.
+Setiap command punya konteks terpisah: laporan sebelumnya harus diberikan lengkap
+sebagai inline input atau file yang disebut eksplisit, bukan diasumsikan tersedia.
 
 ```text
-/doforme:analyze Pagination melewatkan item terakhir saat jumlah item bukan kelipatan page size. Expected: seluruh item muncul. Actual: item terakhir hilang.
-/doforme:analyze docs/issues/pagination.md
+/doforme:analyze ISSUE.md; requirement dan konfirmasi scope di REQUIREMENTS.md
+/doforme:plan ANALYSIS.md
+/doforme:fix PLAN.md; authorize edits ONLY pagination.py and test_pagination.py; authorize ONLY PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination; artifacts none; PLAN.md read-only
+/doforme:test PLAN.md FIX.md; authorize ONLY PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination; artifacts none
+/doforme:review PLAN.md FIX.md TEST.md
+/doforme:pr PLAN.md FIX.md TEST.md REVIEW.md
 ```
 
-File issue harus berada dalam repo target. URL issue boleh disertakan sebagai
-identitas, tetapi tidak diambil lewat jaringan: sertakan title/body, expected,
-actual, versi, dan log yang sudah disamarkan. Input kosong atau URL saja akan
-menghasilkan `needs_information`, bukan tebakan tentang isi issue.
+Contoh path/command di atas khusus fixture; scope nyata harus sesuai proyek.
+Plan memerlukan analyze v2; fix memerlukan plan v2. Report fix/test/review/pr v1.
+Legacy analyze v1 diblokir dan perlu re-analysis, tidak dimigrasikan diam-diam.
+Plan tidak mengotorisasi source mutation: fix memeriksa scope dan revision sendiri.
 
-## Requirement bisnis dan acceptance criteria
+## Sumber kebenaran requirement
 
-Sertakan dokumen bisnis, Jira, atau Figma sebagai ekspor teks/Markdown lokal atau
-kutipan eksplisit. Tidak harus ada ketiganya; sumber yang diberikan harus mencakup
-scope material dan dikonfirmasi berlaku untuk issue. Contoh input:
+Berikan ekspor teks/Markdown atau kutipan dokumen bisnis, Jira, Figma, repository
+spec, atau konfirmasi owner. Catat origin, locator yang dibaca, versi/updated time
+bila diketahui, provenance/access, serta konfirmasi berlaku untuk scope issue.
+Lihat [contoh input](docs/requirement-input.example.md) dan
+[kontrak evidence](skills/bug-resolution/references/requirements.md).
 
-```text
-/doforme:analyze ISSUE.md; requirement dan konfirmasi scope ada di docs/requirements.md
+Tidak ada prioritas otomatis antara Jira, Figma, dan dokumen. Konflik perlu
+keputusan owner dengan referensi; interpretasi dan AC usulan tetap belum
+terkonfirmasi. Pemetaan S → R → AC → E/H → P → V menjaga jejak sumber hingga test.
+Celah sumber/authority/AC material memblokir handoff meskipun confidence teknis tinggi.
+Tidak harus ada ketiga jenis sumber jika scope tercakup sumber yang terkonfirmasi.
+
+Belum ada integrasi live Jira/Figma/Docs atau validasi visual Figma. URL saja bukan
+konten; teks anotasi bukan bukti pixel/layout. Snapshot yang diberikan tidak
+membuktikan autentisitas atau versi remote terkini. Unknown tetap dicatat unknown.
+
+## Scope fix, test, dan review
+
+Fix memerlukan Git root, HEAD yang sama dengan revision plan, clean tracked
+baseline, dan direct authorization exact edit paths/validation commands. Untracked
+input report yang disebut eksplisit boleh menjadi pengecualian read-only; arbitrary
+untracked source/test atau dirt lain memblokir. Jangan mengganti revision pada plan
+hanya untuk melewati gate: revalidasi plan terhadap source terkini.
+
+Fix membuat test AC terkonfirmasi, mengamati regression failure dari bug, lalu
+menerapkan perubahan minimal dan memeriksa green. Control dapat pass sebelum dan
+sesudah. Test terpisah membaca ulang assertions/requirement dan menjalankan hanya
+command yang diotorisasi. Skipped/missing dependency tidak dihitung pass. Tidak ada
+install, network, migration, test weakening, auto-reset, cleanup atau scope expansion.
+
+Test report untuk review mengikat konten material sebelum/sesudah dengan
+[Git blob snapshot](skills/bug-testing/references/snapshot.md). HEAD saja tidak
+mendeteksi perubahan working tree. Reviewer membaca diff dan test baru secara
+penuh, mengecek hash/freshness serta requirement; tidak menjalankan test atau fix.
+PR preparation hanya menyiapkan teks, memakai referensi non-closing dan mencatat
+pending human/business acceptance. Publikasi memerlukan langkah terotorisasi terpisah.
+
+## Runner end-to-end dan checkpoint
+
+Lihat [contoh config](docs/workflow-input.example.json). Config bukan izin sendiri;
+flag pemanggil berikut mengotorisasi exact scope yang tercantum di config:
+
+```bash
+python3 /absolute/doforme/scripts/run_workflow.py --repo /absolute/target --input /absolute/config.json --output /absolute/new-output --allow-fix --allow-execution
 ```
 
-Catat referensi asal (bagian dokumen, key tiket/komentar Jira, atau frame/node
-Figma), versi/updated time bila diketahui, lokasi konten yang diberikan, siapa
-yang mengonfirmasi scope, serta acceptance criteria dengan kondisi dan hasil
-teramati. Gunakan [contoh format](docs/requirement-input.example.md).
+Tanpa flag mutation/execution, runner dapat analyze/plan dan berhenti sebelum fix.
+`/doforme:endtoend` memerlukan direct authorization output dan scope yang sama.
+Target awal harus bersih, output di luar target/plugin. Saat ini runner menolak
+symlink dan checkout lebih dari 20.000 file/100 MB; gunakan repo disposable kecil.
+Gunakan direct local runner (contoh Python unittest); shell/install wrappers tidak
+didukung. Config membatasi timeout, turns dan max_budget_usd per tahap.
 
-Saat ini **tidak ada integrasi live Jira/Figma/Docs**. Agent hanya membaca file
-teks/kutipan; link saja tidak membuktikan isinya. Ekspor yang diberikan tidak
-membuktikan autentisitas atau versi remote terkini. Versi yang tidak diketahui
-harus tetap terlihat; konfirmasi pengguna atas scope snapshot diperlukan.
-Untuk Figma, teks anotasi tidak cukup untuk membuktikan layout/pixel: requirement
-visual yang belum bisa diperiksa dicatat sebagai gap, bukan dinyatakan lolos.
+Model diberi konteks baru dan explicit prior reports per tahap. Host memvalidasi
+JSON envelope, tool trace, revision, actual validation tool results, dan file
+boundaries. Scope/permission/format failure menghentikan proses walau model mengklaim
+complete. Protokol menerima satu objek JSON lengkap, boleh dengan pengantar singkat;
+field duplikat/objek ganda/hasil ambigu ditolak. Tidak ada coercion nilai verdict.
 
-Laporan mencatat source S, requirement R, dan acceptance criterion AC; setiap
-klaim dibedakan explicit, interpretation, atau unknown. AC buatan agent tetap
-proposed sampai ada konfirmasi. Jika sumber bertentangan, tidak ada prioritas
-otomatis antara Jira, Figma, dan dokumen: perlu keputusan owner dengan referensi.
-Sumber/authority/AC material yang belum jelas memblokir handoff walaupun confidence
-teknis tinggi. Statusnya verified_for_scope, needs_information, atau conflict.
+Output privat (directory mode 700, file mode 600) berisi checkpoint atomik dan
+history report dengan digest. Jangan masukkan credentials atau personal data pada
+input. `/doforme:status` atau helper berikut tidak menjalankan stage/menulis state:
 
-**verified_for_scope bukan bukti bug solved.** Analyze/plan selalu mencatat
-technical_validation not_run, business_acceptance not_evaluated, dan
-resolution_status not_established. Plan memetakan AC → perubahan → pemeriksaan
-usulan. Fix dapat mencatat hasil teknis scoped yang benar-benar dijalankan;
-penerimaan bisnis dan review independen tetap belum dilakukan.
-
-## Menyusun rencana perbaikan
-
-```text
-/doforme:plan docs/analysis/pagination.md
+```bash
+python3 /absolute/doforme/scripts/run_workflow.py --status --repo /absolute/target --output /absolute/output
 ```
 
-Berikan laporan analyze contract v2 lengkap sebagai file dalam repo target atau
-paste laporan lengkap setelah command. Setiap command berjalan dalam konteks
-terpisah; `/plan` tidak otomatis melihat percakapan `/analyze` sebelumnya. Jika
-memakai file, simpan laporan secara manual; plugin tidak menyimpannya sendiri.
-Input kosong, deskripsi issue saja, atau URL saja menghasilkan plan `blocked`.
+Resume memakai command awal dengan input/scope flags yang sama dan `--resume`.
+Blocked/failed/interrupted stage memerlukan `--retry` eksplisit; maksimal dua
+attempt, tidak otomatis. Changed HEAD/config/grant/source/report/plugin policy
+menolak resume. Partial edit perlu review/recovery manual. Lock membatasi satu
+runner; setelah kematian proses keras, pastikan pemilik telah berhenti sebelum
+pemulihan manual. Tidak ada reset/delete/Git mutation untuk memaksakan resume.
 
-Laporan analyze v1 belum memiliki provenance requirement dan ditolak dengan
-permintaan analyze ulang ke v2; tidak di-upgrade diam-diam.
+Graph v2: [workflow.json](skills/bug-resolution/references/workflow.json).
+Checkpoint file schema v1 berbeda dari state summary report v1: stage agent tidak
+menyimpan state (`persisted: false`); host yang dipanggil eksplisit dapat menyimpan
+checkpoint (`host_persisted: true`). Digest mendeteksi inkonsistensi, bukan forgery
+oleh pihak yang menguasai source dan state sekaligus.
 
-Planner memeriksa verdict `valid_bug`, analisis `complete`, confidence penyebab
-medium/high, kecocokan target/issue, requirement/AC terkonfirmasi, konflik/coverage,
-dan membaca ulang sumber requirement serta evidence teknis penting. Source
-yang berubah, evidence yang tidak tersedia, confidence rendah, atau celah material
-akan memblokir rencana. Klaim readiness dalam laporan tidak melewati pemeriksaan.
-Revision `unknown` hanya mengizinkan proposal read-only dengan evidence yang
-terkonfirmasi ulang; sebelum mutation wajib ada pemeriksaan revision kembali.
+## Batas kemampuan dan pengujian
 
-Hasilnya memuat dependency gates, revalidasi evidence, langkah berurutan, target
-perubahan, acceptance criteria, regression/boundary checks, risiko, dan rollback.
-State summary berada di percakapan dengan `persisted: false`. `ready_for_fix`
-tetap `no`: plan bukan izin mengubah source. Fix memeriksa otorisasinya sendiri.
-
-## Menerapkan fix lokal
-
-Gunakan target Git pada root repo dengan revision plan yang diketahui dan sama
-dengan HEAD saat ini. Tracked files harus bersih; untracked files memblokir kecuali
-input report/source yang disebutkan eksplisit dan tetap tidak boleh diubah. Jika
-revision plan unknown/berbeda, lakukan plan ulang, bukan mengedit angka revision
-untuk melewati gate. Command memerlukan plan v2 lengkap dan otorisasi **langsung**
-untuk exact path serta exact perintah validasi, misalnya pada fixture disposable:
-
-```text
-/doforme:fix PLAN.md; saya mengizinkan edit hanya pagination.py dan test_pagination.py; saya mengizinkan eksekusi hanya PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination; tidak ada generated artifacts yang diizinkan; PLAN.md adalah input read-only.
-```
-
-Ini contoh scope fixture, bukan perintah untuk proyek lain. Runner/command nyata
-harus sesuai tooling dan AC proyek tersebut. File plan/issue tidak dapat memberi
-izin sendiri. Otorisasi tidak melewati permission Claude; jika ada permintaan izin
-alat, pengguna tetap perlu menilai path/command yang ditampilkan. Jangan gunakan
-bypass permissions untuk memaksakan kelanjutan.
-
-Fixer membaca ulang requirement, AC, plan, dan source; menolak konflik atau scope
-yang meluas. Ia membuat test hanya untuk AC terkonfirmasi, mengamati kegagalan
-regresi sebelum source diperbaiki, menerapkan perubahan minimal, lalu mengamati
-hasil sesudahnya. Control boleh lulus sebelum/sesudah. Missing dependency atau
-broken test bukan bukti regresi. Command tidak melakukan install, network,
-migration, commit, push, PR, atau penutupan issue.
-
-Laporan fix v1 mencatat path yang berubah, otorisasi, revision, exact command,
-exit code, hasil setiap AC, diff boundaries, dan partial edits bila gagal/blocked.
-`complete` berarti scoped technical validation lulus; business_acceptance tetap
-not_evaluated, resolution_status not_established, review_status pending. Tahap `/test` tersedia untuk validasi terpisah; `/review` tersedia dengan pemeriksaan snapshot yang diuji.
-
-Fixer mempunyai Read/Glob/Grep/Edit/Write/Bash; **bukan sandbox path/command yang
-dijamin OS**. Normal Claude permissions dan instruksi scope tetap diperlukan;
-subprocess test juga dapat memiliki side effect, sehingga code/config test harus
-dibaca sebelum dijalankan. Scratch/cache yang dibutuhkan harus diotorisasi pada
-lokasi sementara yang jelas. Jika tidak aman/terverifikasi, fixer memblokir.
-
-## Batas read-only analyze/plan
-
-Analyze/plan berjalan dalam konteks terpisah melalui investigator atau planner dengan
-tool allowlist **Read, Glob, Grep**. Tidak ada Bash, Write, Edit, MCP, network,
-atau alat delegasi. Keduanya tidak menjalankan test/build/script/install,
-tidak mengakses secret, tidak membuat `.doforme`, dan tidak melakukan operasi Git.
-Reproduction dicatat `not_run` atau `user_reported`; membaca test source tidak
-berarti test berhasil dijalankan.
-
-`allowed-tools` pada skill bukan pembatas keamanan, sehingga plugin memakai
-allowlist pada agent. Batas ini berlaku untuk kedua agent; sesi utama Claude,
-plugin lain, hook milik pengguna, serta tindakan manual tetap di luar kontrol
-plugin. Untuk isolasi tambahan saat pengujian gunakan salinan disposable, tanpa
-hook atau MCP lain. Plugin tidak menjamin keseluruhan sesi/host immutable.
-
-## Hasil
-
-Laporan analyze contract v2 mencakup context/revision, verdict `valid_bug`, `not_a_bug`,
-`duplicate`, atau `needs_information`; evidence dengan lokasi dan provenance;
-status reproduction; hipotesis dengan evidence pendukung/kontradiksi dan
-falsification check; confidence validitas dan penyebab; next steps serta
-keterbatasan. Ketidakpastian tetap eksplisit. Report hanya tampil di percakapan.
-
-## Struktur dan arah berikutnya
-
-```text
-.claude-plugin/plugin.json             metadata plugin
-commands/{analyze,plan,fix,test}.md             entry point dan argument forwarding
-agents/{investigator,planner,fixer,tester}.md        batas tool baca/pencarian
-skills/bug-resolution/SKILL.md          metode investigasi reusable
-skills/bug-resolution/references/       report v2, requirement, graph/dependency/state
-skills/bug-planning/                    metode planning dan template rencana
-skills/bug-fixing/                      metode fix scoped dan template hasil
-scripts/check_plugin.py                pemeriksaan struktur dan batas capability
-tests/                                 regresi checker dan fixture smoke test
-```
-
-Metode dan kontrak Markdown tidak bergantung pada provider; adapter command dan
-agent adalah bagian khusus Claude Code. Graph portabel di
-[workflow.json](skills/bug-resolution/references/workflow.json) mendeklarasikan
-`analyze → plan → fix → test → review → pr`; keenam tahap tersedia; pr hanya menyiapkan draft.
-Checker mendeteksi cycle, prerequisite yang hilang, atau analyze yang dilewati.
-Dependency semantik diperiksa oleh planner dengan evidence, bukan sekadar status
-atau keberadaan file. State tetap berupa hasil percakapan, tanpa engine, database,
-scheduler, resume, atau automatic transitions. `/endtoend`, GitHub Actions,
-dan Telegram belum diimplementasikan.
-
-## Pengujian
-
-Jalankan dari root plugin:
+Analyze/plan hanya Read/Glob/Grep. Tester/reviewer/PR preparer memiliki Bash terbatas
+oleh metode dan permission host. Fixer memiliki Edit/Write/Bash. **Ini bukan sandbox
+OS**: subprocess test bisa punya side effect dan audit trace terjadi setelah call.
+Code/config runner perlu diperiksa; normal Claude permissions tetap berlaku. Runner
+menolak tool/command di luar scope dan unexpected diff; tidak menjamin kebenaran
+semantik requirement atau keamanan semua proses/plugin lain. Built-in plugins
+Claude tetap bisa hadir. Hasil uji fixture bukan bukti kesiapan produksi umum.
 
 ```bash
 python3 scripts/check_plugin.py
@@ -207,81 +151,13 @@ claude plugin validate agents --strict
 claude plugin validate skills --strict
 ```
 
-Manifest validator saja belum membuktikan isi command/agent maupun perilaku
-model; karena itu periksa masing-masing direktori juga. Pemeriksaan Python
-mendeteksi perubahan capability yang berisiko dan referensi lokal yang putus.
-Ini bukan parser YAML umum atau pembuktian bahwa model selalu mengikuti instruksi.
+[Riwayat fase dan hasil pemeriksaan](docs/PHASES.md),
+[smoke acceptance cases](tests/SMOKE.md), serta VALIDATION.md dan VALIDATION-0.2
+hingga VALIDATION-0.4 mencatat pengujian awal pada fixture sintetis. Tes deterministic
+adapter memakai fake executor; hasil model nyata dicatat terpisah. Lisensi distribusi,
+ikon dan packaging katalog belum ditetapkan; katalog belum siap dipublikasikan.
 
-Untuk smoke test, mulai Claude dengan plugin dari `tests/fixtures/pagination`
-sebagai cwd, lalu jalankan `/doforme:analyze ISSUE.md`. Jangan menjalankan
-fixture asli sebagai program. Smoke fix hanya boleh memakai disposable Git copy
-dengan scope/command yang diotorisasi; lihat prosedur di
-[tests/SMOKE.md](tests/SMOKE.md), termasuk input kosong, non-bug, URL saja,
-prompt injection, dan pemeriksaan file sebelum/sesudah. Smoke test memerlukan
-akses model dan harus dinilai dari hasil nyata, bukan hanya struktur file.
-Hasil milestone pertama dicatat di [VALIDATION.md](VALIDATION.md); fase planning
-di [VALIDATION-0.2.md](VALIDATION-0.2.md). Penguatan requirement v0.3
-dicatat di [VALIDATION-0.3.md](VALIDATION-0.3.md). Fase fix lokal
-dicatat di [VALIDATION-0.4.md](VALIDATION-0.4.md).
-
-Referensi resmi: [plugin manifest](https://code.claude.com/docs/en/plugins-reference),
-[skills dan fork context](https://code.claude.com/docs/en/skills),
-[agent tool restrictions](https://code.claude.com/docs/en/sub-agents),
+Referensi resmi: [manifest](https://code.claude.com/docs/en/plugins-reference),
+[skills](https://code.claude.com/docs/en/skills),
+[agent restrictions](https://code.claude.com/docs/en/sub-agents),
 [permissions](https://code.claude.com/docs/en/permissions).
-Belum disiapkan untuk publikasi katalog; lisensi distribusi belum ditetapkan.
-
-
-## Validasi terpisah setelah fix (v0.5)
-
-`/doforme:test PLAN.md FIX.md; authorize exact-command; artifacts none` membaca
-ulang requirement, assertion, dan working diff, lalu menjalankan command yang
-benar-benar diotorisasi. Tester tidak memiliki Edit/Write. Setiap AC dicatat
-passed/failed/skipped/not_run; skipped bukan pass. Tidak ada auto-fix, install,
-source cleanup, commit, remote publication, atau klaim business acceptance.
-Bash tetap dapat memiliki side effect: runner harus diperiksa dan permission
-host tetap berlaku. Input reports boleh inline agar tidak menambah file repo.
-Lihat [kontrak test](skills/bug-testing/SKILL.md).
-
-
-## Review terpisah (v0.6)
-
-`/doforme:review` menerima plan, fix, dan test report secara eksplisit. Test report
-harus menyertakan snapshot material `git_blob_sha1` dari sebelum/sesudah validasi;
-HEAD saja tidak mengikat perubahan yang belum di-commit. Reviewer membaca ulang
-diff, test/assertion, dan requirement, lalu mengembalikan pass, changes_requested,
-atau blocked. Reviewer tidak mengedit atau menjalankan test. Pass adalah review
-AI dalam konteks terpisah, bukan penerimaan owner bisnis atau jaminan tanpa bug.
-Lihat [snapshot binding](skills/bug-testing/references/snapshot.md).
-
-
-## Draft PR tanpa publikasi (v0.7)
-
-`/doforme:pr` menerima plan/fix/test dan review verdict pass, lalu memeriksa ulang
-snapshot. Hasilnya title/body yang bisa ditinjau, disertai AC/test evidence,
-keterbatasan, dan status penerimaan bisnis. `publication_ready: no`: command tidak
-menjalankan GitHub/gh, push, branch/commit, komentar atau penutupan issue. Draft
-memakai referensi non-closing dan tidak menyatakan issue solved. Publikasi tetap
-memerlukan akses dan otorisasi terpisah. Lihat
-[metode PR](skills/pr-preparation/SKILL.md).
-
-
-## Workflow lokal end-to-end (v0.8)
-
-Runner Python menjalankan enam tahap berurutan dalam konteks model terpisah.
-Lihat [contoh config](docs/workflow-input.example.json). Target harus Git root
-yang bersih; output wajib di luar target dan plugin. Untuk fixture disposable:
-
-```bash
-python3 /absolute/path/to/doforme/scripts/run_workflow.py --repo /absolute/target --input /absolute/config.json --output /absolute/new-output --allow-fix --allow-execution
-```
-
-Dua flag terakhir merupakan otorisasi scope exact pada config, bukan izin shell
-bebas. Tanpanya proses berhenti sebelum mutasi. `/doforme:endtoend` menyediakan
-entry point yang memerlukan otorisasi langsung untuk output dan scope yang sama.
-Runner memeriksa envelope terstruktur, revision, perubahan file dan tool trace;
-permission denial/command di luar scope menghentikan proses meskipun model
-mengklaim complete. Perubahan parsial tidak dihapus otomatis. Runner membatasi
-snapshot lokal menjadi 20.000 file/100 MB, menolak symlink dan target besar;
-ini adapter untuk checkout terisolasi kecil, bukan sandbox OS. Artifact output
-mengandung laporan/provenance dan harus disimpan privat. Tidak ada publikasi PR,
-notifikasi, Git mutation atau klaim business acceptance otomatis.

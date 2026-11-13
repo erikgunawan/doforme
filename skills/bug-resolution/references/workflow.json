@@ -1,5 +1,5 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "nodes": {
     "analyze": {
       "implemented": true,
@@ -48,6 +48,7 @@
       "result_contract": "pr_v1"
     }
   },
-  "persistence": "none",
-  "automatic_transitions": false
+  "persistence": "host_checkpoint",
+  "automatic_transitions": false,
+  "orchestration": "explicit_host_run"
 }

@@ -49,3 +49,18 @@ local validation fixed the protocol: a real missing-requirement run now returned
 blocked at analyze with no downstream call. A positive real integration run was
 started separately; final results are recorded in the subsequent state phase.
 The adapter never publishes remotely, and complete means draft preparation only.
+
+
+Version 0.9 adds graph v2, atomic private checkpoints, attempt history, single-run
+locks, /status, fingerprint-checked resume, bounded explicit retry and partial-
+edit recovery stops. Forty-six deterministic tests passed. A real blocked analyze
+run persisted a checkpoint; after plugin policy changed, status correctly marked
+it stale and resume refused without a model call or checkpoint mutation.
+The positive adapter integration reached analyze/plan/fix/test complete with real
+regression and independent validation. Review returned a valid pass envelope
+preceded by one progress sentence; the strict initial parser stopped. The new
+parser accepts exactly one complete JSON object after a short prefix while still
+rejecting duplicate keys or multiple objects; the saved actual review trace
+passed this parser, envelope validation and read-only audit offline. A fresh full
+checkpoint integration is run after freezing this version; its final outcome is
+recorded below when complete. No remote publication or business acceptance.

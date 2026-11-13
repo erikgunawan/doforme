@@ -3,8 +3,8 @@
 `analyze` has no predecessor. Missing issue details/access produce a blocked
 report with questions, never guessed inputs or an automatic repair.
 
-Analyze-to-plan and plan-to-fix are enforced by their stage methods. Later
-gates remain design only; there is no automatic graph execution.
+Every local gate is checked by its stage method and, when explicitly invoked,
+the host adapter. There are no implicit event-triggered transitions.
 
 | Node | Requires |
 | --- | --- |

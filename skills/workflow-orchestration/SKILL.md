@@ -32,3 +32,17 @@ Do not rerun with wider flags or erase partial edits. A complete run means PR
 draft prepared; business acceptance remains not_evaluated, resolution remains
 not_established, publication_ready false. Current graph/state contracts remain
 portable; no model may mark an issue resolved or publish by itself.
+
+
+## Host checkpoints (v0.9)
+
+The host now atomically persists checkpoint.json plus private report history in
+that explicitly authorized external output folder. Stage agents still do not
+write state. `/doforme:status` reads freshness only. Resume needs an explicit
+--resume request, the same input/policy/HEAD/workspace/direct flags, and no partial
+edits. A blocked/failed/interrupted stage additionally requires explicit --retry;
+there are at most two attempts per stage, never automatic loops. Reports are
+verified against saved digests. Locks reject concurrent runners; never remove a
+lock without the human first ensuring the owner process has stopped. Changed
+config/authorization/policy or target bytes require a new isolated run; partial
+edits require manual review/recovery. No reset/delete/commit is performed.

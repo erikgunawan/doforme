@@ -1,38 +1,28 @@
-# Workflow contract v1
+# Workflow graph contract v2
 
-Implemented nodes: `analyze`, `plan`, and `fix`. Analyze input: bug description or readable local issue file
-in a target repository. Output: analysis report contract v2 in the conversation. Effects:
-read-only inspection; no persisted artifacts. No network or program execution.
+Implemented local sequence: `analyze → plan → fix → test → review → pr`.
+Analyze/plan reports use v2; fix/test/review/pr reports use v1. Requirement and
+stage-summary vocabularies remain v1. PR means draft content, never publication.
 
-Plan input: an explicitly supplied analysis report, not implicit conversation
-memory. Plan re-reads material evidence, checks identity/freshness and dependency
-gates, then returns a plan contract v2 with a conversation-only state summary.
-Plan never invokes fix or writes source/state. Unknown revision remains an explicit
-limitation before any future mutation.
+The portable [workflow.json](workflow.json) declares prerequisites, effects,
+result contracts, host_checkpoint persistence and explicit_host_run orchestration.
+The host adapter verifies the supported sequence/effects before execution and
+checks [semantic gates](dependencies.md) via stage results plus trace/content
+checks. A graph edge or complete status alone never grants authority.
 
-The portable [workflow.json](workflow.json) declares the DAG, implemented nodes,
-effects, and report contracts. It is metadata consumed by the planning method and
-validated locally, not a scheduler. Semantic gates remain in
-[dependencies.md](dependencies.md); a graph edge alone never authorizes a stage.
+Analyze/plan cannot mutate or execute. Fix requires direct exact edit/command
+scope and a known matching revision. Test independently executes agreed checks
+without file-edit tools. Review inspects content bound to the tested snapshot;
+PR preparation requires review pass and current evidence. All source authority
+and business assumptions follow [requirements.md](requirements.md).
 
-Graph (`test` onward remains design only):
+`/endtoend` invokes the explicit host adapter in separate model contexts, passing
+prior reports inline. `/status` reads a named checkpoint. Stage agents do not
+write workflow state; the authorized host writes private atomic checkpoints,
+locks and immutable attempt artifacts outside the target. Resume checks source,
+revision, config, grants, report and policy digests, with bounded explicit retry.
+Partial edits require manual review. See [state.md](state.md).
 
-`analyze → plan → fix → test → review → pr`
-
-`endtoend` would orchestrate nodes rather than duplicate their instructions.
-Triage currently lives within analyze's validity assessment. Nodes communicate
-through explicit inputs/results, not executor-specific conversation memory.
-Future adapters may map these contracts to Claude, Codex, or other executors;
-none of those additional adapters or commands are shipped here.
-
-Analyze and plan report contracts are now v2: they require source/requirement/AC
-provenance, conflict handling, and coverage. Workflow/state contract versions
-remain 1; the DAG and conversation-only persistence semantics are unchanged.
-
-Fix consumes an explicit complete plan v2 plus direct invocation authorization
-for exact edit paths and validation commands. It binds a clean Git root/revision,
-revalidates intent/evidence, adds confirmed-AC tests, establishes a red regression,
-then applies the bounded correction and observes green scoped checks. Its fix_v1
-result records partial edits/failures and never claims business acceptance. The
-future test node will provide broader validation; current fix includes only its
-explicitly authorized AC checks. No automatic transitions or durable state exist.
+There are no implicit issue-triggered transitions, remote PRs, issue closure,
+notifications, or non-Claude executor adapters in this graph. Those need separate
+integration scope. Technical completion does not establish business acceptance.

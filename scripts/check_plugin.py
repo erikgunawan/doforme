@@ -16,7 +16,8 @@ STAGES = {
 }
 
 
-UTILITIES = {"endtoend": ("workflow-runner", "workflow-orchestration", "Read, Bash")}
+UTILITIES = {"endtoend": ("workflow-runner", "workflow-orchestration", "Read, Bash"),
+             "status": ("status-reader", "workflow-status", "Read, Bash")}
 
 
 def frontmatter(path):
@@ -35,7 +36,7 @@ def frontmatter(path):
 
 def check_graph(graph):
     """Check a portable DAG without executing or persisting any workflow."""
-    if graph.get("contract_version") != 1 or graph.get("persistence") != "none" or graph.get("automatic_transitions") is not False:
+    if graph.get("contract_version") != 2 or graph.get("persistence") != "host_checkpoint" or graph.get("automatic_transitions") is not False:
         raise ValueError("Unsupported graph version, persistence, or automatic transitions")
     nodes = graph["nodes"]
     visited, visiting = set(), set()

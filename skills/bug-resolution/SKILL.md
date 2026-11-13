@@ -60,5 +60,6 @@ when business intent is unresolved, but block planning in that case.
 
 Read [workflow.md](references/workflow.md), [dependencies.md](references/dependencies.md),
 and [state.md](references/state.md) only when explaining future workflow handoff.
-In v0.3, `/doforme:plan` consumes an explicitly supplied v2 report and revalidates
-these gates. No state writer, scheduler, automatic handoff, or graph engine exists.
+`/doforme:plan` consumes an explicitly supplied v2 report and revalidates
+these gates. Agents do not write state or invoke downstream stages themselves.
+An explicitly invoked host adapter may orchestrate and checkpoint the local workflow.

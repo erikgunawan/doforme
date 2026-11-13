@@ -1,5 +1,7 @@
 """Deterministic adapter gates; fake executor results are not model evidence."""
 import importlib.util
+import contextlib
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -14,6 +16,9 @@ SPEC.loader.exec_module(WF)
 
 class WorkflowTests(unittest.TestCase):
     def setUp(self):
+        silence = contextlib.redirect_stdout(io.StringIO())
+        silence.__enter__()
+        self.addCleanup(silence.__exit__, None, None, None)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)
@@ -100,7 +105,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
 
     def test_secret_or_escaping_edit_scope_rejected(self):
-        for name in ("../other.py", ".env", ".git/config", "/tmp/file", "*.py"):
+        for name in ("../other.py", ".env", ".env.local", ".git/config", "/tmp/file", "*.py"):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 WF.safe_path(self.repo, name)
 
@@ -135,6 +140,100 @@ class WorkflowTests(unittest.TestCase):
         _, rows = self.executor("test", self.repo, "", self.config)
         with self.assertRaisesRegex(ValueError, "red-before"):
             WF.validation_checked(rows, "fix", self.config)
+
+    def test_completed_resume_is_idempotent(self):
+        self.run_pipeline(allow_fix=True, allow_execution=True)
+        self.calls.clear()
+        result = WF.pipeline(self.repo, self.config, self.base / "output", True, True,
+                             executor=self.executor, resume=True)
+        self.assertEqual(result["status"], "complete")
+        self.assertEqual(self.calls, [])
+
+    def test_resume_rejects_changed_workspace(self):
+        self.run_pipeline()
+        (self.repo / "source.py").write_text("changed after checkpoint\n")
+        with self.assertRaisesRegex(ValueError, "content changed"):
+            WF.pipeline(self.repo, self.config, self.base / "output", executor=self.executor, resume=True)
+
+    def test_resume_rejects_tampered_report(self):
+        state = self.run_pipeline()
+        record = state["artifact_index"]["analyze"]
+        path = self.base / "output" / "history" / record["filename"]
+        value = json.loads(path.read_text())
+        value["report"] = "forged result"
+        path.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, "report content changed"):
+            WF.pipeline(self.repo, self.config, self.base / "output", executor=self.executor, resume=True)
+
+    def test_blocked_resume_requires_explicit_bounded_retry(self):
+        def executor(*args):
+            result, rows = self.executor(*args)
+            result.update(status="blocked", requirements_status="needs_information")
+            return result, rows
+        self.run_pipeline(executor)
+        WF.pipeline(self.repo, self.config, self.base / "output", executor=executor, resume=True)
+        self.assertEqual(self.calls, ["analyze"])
+        WF.pipeline(self.repo, self.config, self.base / "output", executor=executor, resume=True, retry=True)
+        result = WF.pipeline(self.repo, self.config, self.base / "output", executor=executor, resume=True, retry=True)
+        self.assertEqual(self.calls, ["analyze", "analyze"])
+        self.assertIn("retry limit", result["reason"])
+
+    def test_checkpoint_lock_has_one_owner(self):
+        store = WF.Checkpoints(self.base / "lock-test")
+        with store.locked():
+            with self.assertRaisesRegex(ValueError, "locked"):
+                with WF.Checkpoints(self.base / "lock-test", resume=True).locked():
+                    self.fail("second owner acquired lock")
+            self.assertTrue((store.root / "run.lock").exists())
+        self.assertFalse((store.root / "run.lock").exists())
+
+    def test_checkpoint_status_does_not_write(self):
+        self.run_pipeline()
+        path = self.base / "output" / "checkpoint.json"
+        before = path.read_bytes()
+        info = WF.status_checkpoint(self.repo, self.base / "output")
+        self.assertTrue(info["fresh"])
+        self.assertEqual(info["next_stage"], "fix")
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_partial_edits_cannot_auto_resume(self):
+        def executor(*args):
+            result, rows = self.executor(*args)
+            if args[0] == "fix":
+                (self.repo / "source.py").write_text("partial implementation\n")
+                result["status"] = "failed"
+            return result, rows
+        result = self.run_pipeline(executor, allow_fix=True, allow_execution=True)
+        self.assertTrue(result["requires_manual_recovery"])
+        with self.assertRaisesRegex(ValueError, "manual recovery"):
+            WF.pipeline(self.repo, self.config, self.base / "output", True, True,
+                        executor=executor, resume=True, retry=True)
+
+    def test_graph_cannot_bypass_plan(self):
+        graph = json.loads((ROOT / "skills/bug-resolution/references/workflow.json").read_text())
+        graph["nodes"]["fix"]["requires"] = ["analyze"]
+        with self.assertRaisesRegex(ValueError, "dependency"):
+            WF.graph_checked(graph)
+
+    def test_short_progress_prefix_preserves_exact_json_values(self):
+        self.assertEqual(WF.parse_result_text('Review finished.\n{"status":"blocked"}'), {"status": "blocked"})
+
+    def test_multiple_result_objects_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "ambiguous"):
+            WF.parse_result_text('{"status":"blocked"}\n{"status":"complete"}')
+
+    def test_duplicate_result_fields_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "Duplicate"):
+            WF.parse_result_text('{"status":"blocked","status":"complete"}')
+
+    def test_malformed_checkpoint_does_not_resume(self):
+        self.run_pipeline()
+        path = self.base / "output" / "checkpoint.json"
+        state = json.loads(path.read_text())
+        state["results"] = []
+        path.write_text(json.dumps(state))
+        with self.assertRaisesRegex(ValueError, "Malformed"):
+            WF.pipeline(self.repo, self.config, self.base / "output", executor=self.executor, resume=True)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,9 @@ import signal
 import subprocess
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from workflow_state import Checkpoints, atomic_text, digest, write_json
+
 PLUGIN = Path(__file__).resolve().parents[1]
 ORDER = ('analyze', 'plan', 'fix', 'test', 'review', 'pr')
 AGENTS = ('investigator', 'planner', 'fixer', 'tester', 'reviewer', 'pr-preparer')
@@ -37,7 +40,7 @@ def safe_path(repo, name):
     if not isinstance(name, str) or not name or name.startswith('-'):
         raise ValueError('Invalid relative path')
     path = Path(name)
-    if path.is_absolute() or any(p in ('..', '.git', '.env', '.aws', '.ssh', '.claude', '.github', '.agents', '.codex') for p in path.parts):
+    if path.is_absolute() or any(p.startswith('.env') or p in ('..', '.git', '.aws', '.ssh', '.claude', '.github', '.agents', '.codex', '.npmrc', '.pypirc', 'credentials.json', '.credentials') for p in path.parts):
         raise ValueError('Protected or escaping path: ' + name)
     if re.search(r'[\x00-\x1f*?\[\]!]', name) or path.suffix in ('.pem', '.key'):
         raise ValueError('Ambiguous or secret path: ' + name)
@@ -122,7 +125,7 @@ def envelope_checked(stage, result, revision):
     for key, rule in SCHEMA['properties'].items():
         if 'enum' in rule and result[key] not in rule['enum']:
             raise ValueError('Invalid result enum: ' + key)
-    if result['stage'] != stage or not isinstance(result['report'], str) or not result['report'].strip():
+    if result['stage'] != stage or not isinstance(result['report'], str) or not result['report'].strip() or len(result['report']) > 1_000_000:
         raise ValueError('Invalid stage/report')
     if result['revision'] != revision:
         raise ValueError('Result is not bound to the verified revision')
@@ -199,6 +202,29 @@ def validation_checked(rows, stage, config):
         raise ValueError('No observed red-before/green-after tool results for fix')
 
 
+def parse_result_text(text):
+    """Accept one complete JSON object, optionally after a short progress prefix."""
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError('Duplicate structured result key')
+            result[key] = value
+        return result
+    if not isinstance(text, str):
+        raise ValueError('Result text missing')
+    text = text.strip()
+    if text.startswith('```json\n') and text.endswith('\n```'):
+        text = text[8:-4].strip()
+    start = text.find('{')
+    if start < 0 or start > 2000:
+        raise ValueError('No complete structured result object')
+    result, end = json.JSONDecoder(object_pairs_hook=unique).raw_decode(text, start)
+    if text[end:].strip() or not isinstance(result, dict):
+        raise ValueError('Extra or ambiguous content after structured result')
+    return result
+
+
 class ClaudeExecutor:
     def __call__(self, stage, repo, prompt, config):
         tools = ['Read', 'Glob', 'Grep', 'Bash(git rev-parse --show-toplevel)', 'Bash(git rev-parse HEAD)', 'Bash(git status --porcelain)', 'Bash(git diff)', 'Bash(git diff --check)', 'Bash(git hash-object --no-filters -- *)']
@@ -206,13 +232,14 @@ class ClaudeExecutor:
             tools += ['Edit(/' + path + ')' for path in config['edit_paths']]
         if stage in ('fix', 'test'):
             tools += ['Bash(' + command + ')' for command in config['test_commands']]
-        command = ['claude', '-p', prompt, '--agent', 'doforme:' + AGENTS[ORDER.index(stage)], '--plugin-dir', str(PLUGIN), '--add-dir', str(PLUGIN / 'skills'), '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--no-session-persistence', '--max-turns', str(config['max_turns']), '--max-budget-usd', str(config['max_budget_usd']), '--verbose', '--output-format', 'stream-json', '--allowedTools', *tools]
+        denials = ['Read(**/.env*)', 'Read(**/.aws/**)', 'Read(**/.ssh/**)', 'Read(**/*.pem)', 'Read(**/*.key)', 'Read(**/.npmrc)', 'Read(**/.pypirc)', 'Read(**/credentials.json)']
+        command = ['claude', '-p', prompt, '--agent', 'doforme:' + AGENTS[ORDER.index(stage)], '--plugin-dir', str(PLUGIN), '--add-dir', str(PLUGIN / 'skills'), '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--no-session-persistence', '--max-turns', str(config['max_turns']), '--max-budget-usd', str(config['max_budget_usd']), '--verbose', '--output-format', 'stream-json', '--settings', json.dumps({'permissions': {'deny': denials}}), '--allowedTools', *tools]
         environment = dict(os.environ)
         environment.pop('CLAUDECODE', None)  # Explicit independent no-persistence CLI processes.
         process = subprocess.Popen(command, env=environment, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
         try:
             stdout, stderr = process.communicate(timeout=config['timeout_seconds'])
-        except subprocess.TimeoutExpired:
+        except (subprocess.TimeoutExpired, KeyboardInterrupt):
             os.killpg(process.pid, signal.SIGTERM)
             try:
                 process.communicate(timeout=5)
@@ -233,87 +260,222 @@ class ClaudeExecutor:
         result = results[-1].get('structured_output')
         if result is None:
             try:
-                result = json.loads(results[-1].get('result', ''))
+                result = parse_result_text(results[-1].get('result', ''))
             except ValueError:
                 raise ValueError('No structured result; upgrade CLI or inspect provider support')
         return result, rows
 
 
-def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None):
-    repo, output = Path(repo).resolve(), Path(output).resolve()
-    if output.is_relative_to(repo) or output.is_relative_to(PLUGIN) or repo.is_relative_to(output):
+
+def graph_checked(graph=None):
+    if graph is None:
+        graph = json.loads((PLUGIN / 'skills/bug-resolution/references/workflow.json').read_text())
+    if graph.get('contract_version') != 2 or graph.get('persistence') != 'host_checkpoint' or graph.get('automatic_transitions') is not False:
+        raise ValueError('Unsupported workflow graph contract')
+    if set(graph.get('nodes', {})) != set(ORDER):
+        raise ValueError('Unexpected workflow stage set')
+    for index, stage in enumerate(ORDER):
+        node = graph['nodes'][stage]
+        expected = [] if index == 0 else [ORDER[index - 1]]
+        effect = 'mutation' if stage == 'fix' else 'execution' if stage == 'test' else 'read_only'
+        if not node.get('implemented') or node.get('requires') != expected or node.get('effect') != effect:
+            raise ValueError('Unsupported or bypassed workflow dependency/effect')
+    return graph
+
+
+def policy_digest():
+    values = {}
+    for folder in ('commands', 'agents', 'skills', 'scripts'):
+        for path in sorted((PLUGIN / folder).rglob('*')):
+            if path.is_file() and '__pycache__' not in path.parts:
+                values[str(path.relative_to(PLUGIN))] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return digest(values)
+
+
+def compact(state, fresh=None):
+    if fresh is None:
+        try:
+            repo = Path(state['repository'])
+            fresh = state['workspace'] == snapshot(repo) and state['revision'] == git(repo, 'rev-parse', 'HEAD') and state['policy_digest'] == policy_digest()
+        except (ValueError, OSError, KeyError, subprocess.SubprocessError):
+            fresh = False
+    return {'status': state['status'], 'repository': state['repository'], 'revision': state['revision'],
+            'stages': {key: value['status'] for key, value in state['results'].items()},
+            'next_stage': next((stage for stage in ORDER if state['results'].get(stage, {}).get('status') != 'complete'), None),
+            'fresh': fresh, 'reason': state.get('reason'), 'partial_changed_paths': state.get('partial_changed_paths', []),
+            'requires_manual_recovery': state.get('requires_manual_recovery', False),
+            'publication_ready': False, 'business_acceptance': 'not_evaluated', 'resolution_status': 'not_established', 'remote_actions': 'none'}
+
+
+def status_checkpoint(repo, output):
+    repo = Path(repo).resolve()
+    store = Checkpoints(output, resume=True)
+    state = store.load()
+    if state.get('repository') != str(repo):
+        raise ValueError('Checkpoint belongs to another repository')
+    for stage, record in state.get('artifact_index', {}).items():
+        if store.result(record['filename'], record['digest']) != state['results'].get(stage):
+            raise ValueError('Checkpoint artifact changed')
+    fresh = state.get('workspace') == snapshot(repo) and state.get('revision') == git(repo, 'rev-parse', 'HEAD') and state.get('policy_digest') == policy_digest()
+    return compact(state, fresh)
+
+
+def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None, resume=False, retry=False):
+    repo, output = Path(repo).resolve(), Path(output).absolute()
+    if output.resolve().is_relative_to(repo) or output.resolve().is_relative_to(PLUGIN) or repo.is_relative_to(output.resolve()):
         raise ValueError('Output must be outside target and plugin directories')
     if Path(git(repo, 'rev-parse', '--show-toplevel')).resolve() != repo:
         raise ValueError('Start at the target Git root')
-    if git(repo, 'status', '--porcelain'):
-        raise ValueError('Initial target must be clean, including untracked files')
-    revision = git(repo, 'rev-parse', 'HEAD')
+    graph_checked()
     config = config_checked(repo, config)
-    output.mkdir(mode=0o700)
-    expected = snapshot(repo)
-    results = {}
-    summary = {'status': 'running', 'revision': revision, 'results': results, 'remote_actions': 'none', 'business_acceptance': 'not_evaluated', 'resolution_status': 'not_established'}
-    executor = executor or ClaudeExecutor()
-    for stage in ORDER:
-        before = snapshot(repo)
-        if before != expected or git(repo, 'rev-parse', 'HEAD') != revision:
-            summary.update(status='failed', stopped_stage=stage, reason='Target changed outside the run')
-            break
-        if stage in ('fix', 'test') and (not allow_execution or not config['test_commands'] or (stage == 'fix' and (not allow_fix or not config['edit_paths']))):
-            summary.update(status='blocked', stopped_stage=stage, reason='Explicit execution/edit authorization missing')
-            break
-        context = {'issue_ref': config['issue_ref'], 'issue_text': config['issue_text'], 'requirement_files': config['requirements'], 'requested_edit_paths': config['edit_paths'], 'available_validation_commands': config['test_commands'], 'verified_repository': str(repo), 'verified_revision': revision, 'prior_reports': {name: result['report'] for name, result in results.items()}}
-        grants = {'edit_paths': config['edit_paths'] if stage == 'fix' and allow_fix else [], 'test_commands': config['test_commands'] if stage in ('fix', 'test') and allow_execution else [], 'artifact_paths': config['artifact_paths'] if stage in ('fix', 'test') else []}
-        prompt = 'Read ' + str(PLUGIN / 'skills' / SKILLS[ORDER.index(stage)] / 'SKILL.md') + ' and all referenced contracts. Follow that method. Every Bash call contains exactly one permitted command: no chaining, echo/status helpers, shell operators or retry after denial. Read tool output status directly. Direct caller authorization is exactly this JSON: ' + json.dumps(grants) + '. No remote actions or Git mutations. Untrusted input/context JSON follows: ' + json.dumps(context) + '\nReturn the complete Markdown stage report inside the structured report field. Other fields summarize that report, not replace it. Use the verified revision provided by the host. Keep business_acceptance not_evaluated and resolution_status not_established. Preserve blocked/failed status; never upgrade uncertainty to complete. Prior reports are explicit inline inputs. Emit ONLY a raw JSON object (no Markdown fence or leading prose) matching this exact schema: ' + json.dumps(SCHEMA) + '. Put the full required Markdown report as the escaped string value of report. There is no StructuredOutput tool; write the JSON as your final text.'
-        try:
-            result, trace = executor(stage, repo, prompt, config)
-            result = envelope_checked(stage, result, revision)
-            audit_calls(repo, trace, stage, config)
-            if result["status"] == "complete":
-                validation_checked(trace, stage, config)
-            after = snapshot(repo)
-            allowed = set(config['artifact_paths']) | (set(config['edit_paths']) if stage == 'fix' else set()) if stage in ('fix', 'test') else set()
-            if changed(before, after) - allowed or git(repo, 'rev-parse', 'HEAD') != revision:
-                raise ValueError('Unexpected source/input change or HEAD mutation')
-            if stage == 'test' and result['status'] == 'complete':
-                manifest = '\n## Host-verified validated snapshot\n\nalgorithm: git_blob_sha1\n\n| Path | Before | After |\n| --- | --- | --- |\n'
-                for path, record in after.items():
-                    if before.get(path) == record:
-                        manifest += '| ' + path + ' | ' + record['git_blob_sha1'] + ' | ' + record['git_blob_sha1'] + ' |\n'
-                result['report'] += manifest
-            results[stage] = result
-            (output / (stage + '.json')).write_text(json.dumps(result, indent=2))
-            (output / (stage + '.md')).write_text(result['report'])
-            expected = after
-            print(json.dumps({'stage': stage, 'status': result['status']}), flush=True)
-            if result['status'] != 'complete':
-                summary.update(status=result['status'], stopped_stage=stage, reason='Stage did not satisfy prerequisites/validation')
+    revision = git(repo, 'rev-parse', 'HEAD')
+    if not resume and git(repo, 'status', '--porcelain'):
+        raise ValueError('Initial target must be clean, including untracked files')
+    grants = {'allow_fix': allow_fix, 'allow_execution': allow_execution}
+    store = Checkpoints(output, resume=resume)
+    with store.locked():
+        if resume:
+            state = store.load()
+            if state.get('repository') != str(repo) or state.get('revision') != revision:
+                raise ValueError('Stale repository/revision checkpoint')
+            if state.get('config_digest') != digest(config) or state.get('policy_digest') != policy_digest() or state.get('grants') != grants:
+                raise ValueError('Config, plugin policy, or direct authorization changed; start a new run')
+            if digest(json.loads((store.root / 'input.json').read_text())) != state.get('config_digest'):
+                raise ValueError('Saved config content changed')
+            if state.get('workspace') != snapshot(repo):
+                raise ValueError('Target content changed since checkpoint; no automatic resume')
+            if state.get('requires_manual_recovery'):
+                raise ValueError('Partial edits require manual recovery/review before a new run')
+            results = state.get('results', {})
+            if set(results) != set(ORDER[:len(results)]) or set(state.get('artifact_index', {})) != set(results):
+                raise ValueError('Noncontiguous or missing prerequisite artifacts')
+            incomplete = False
+            for stage in ORDER[:len(results)]:
+                record = state['artifact_index'][stage]
+                actual = store.result(record['filename'], record['digest'])
+                if actual != results[stage]:
+                    raise ValueError('Checkpoint result changed')
+                envelope_checked(stage, actual, revision)
+                if incomplete:
+                    raise ValueError('Checkpoint advances past a non-complete predecessor')
+                incomplete = actual['status'] != 'complete'
+            if state['status'] == 'complete' or (state['status'] in ('blocked', 'failed', 'running') and not retry):
+                return state
+        else:
+            state = {'state_version': 1, 'repository': str(repo), 'revision': revision,
+                     'config_digest': digest(config), 'policy_digest': policy_digest(), 'grants': grants,
+                     'workspace': snapshot(repo), 'artifact_index': {}, 'attempt_counts': {}, 'results': {},
+                     'status': 'running', 'remote_actions': 'none', 'business_acceptance': 'not_evaluated',
+                     'resolution_status': 'not_established', 'publication_ready': False, 'host_persisted': True}
+            write_json(store.root / 'input.json', config)
+            store.save(state)
+        executor = executor or ClaudeExecutor()
+        results = state['results']
+        for stage in ORDER:
+            if results.get(stage, {}).get('status') == 'complete':
+                continue
+            before = snapshot(repo)
+            if before != state['workspace'] or git(repo, 'rev-parse', 'HEAD') != revision or state['policy_digest'] != policy_digest():
+                state.update(status='failed', stopped_stage=stage, reason='Target or plugin policy changed outside the run')
                 break
-        except (ValueError, OSError) as error:
-            summary.update(status='failed', stopped_stage=stage, reason=str(error), partial_changed_paths=sorted(changed(before, snapshot(repo))))
-            if getattr(executor, 'last_trace', None):
-                (output / (stage + '.trace.json')).write_text(json.dumps(executor.last_trace, indent=2))
-            break
-    else:
-        summary['status'] = 'complete'
-        summary['publication_ready'] = False
-    (output / 'summary.json').write_text(json.dumps(summary, indent=2))
-    return summary
+            if stage in ('fix', 'test') and (not allow_execution or not config['test_commands'] or (stage == 'fix' and (not allow_fix or not config['edit_paths']))):
+                state.update(status='blocked', stopped_stage=stage, reason='Explicit execution/edit authorization missing')
+                break
+            attempt = state['attempt_counts'].get(stage, 0) + 1
+            if attempt > 2:
+                state.update(status='blocked', stopped_stage=stage, reason='Explicit retry limit reached')
+                break
+            state['attempt_counts'][stage] = attempt
+            results.pop(stage, None)
+            state['artifact_index'].pop(stage, None)
+            state.update(status='running', stopped_stage=stage, reason=None)
+            store.save(state)
+            context = {'issue_ref': config['issue_ref'], 'issue_text': config['issue_text'], 'requirement_files': config['requirements'],
+                       'requested_edit_paths': config['edit_paths'], 'available_validation_commands': config['test_commands'],
+                       'verified_repository': str(repo), 'verified_revision': revision,
+                       'prior_reports': {name: result['report'] for name, result in results.items()}}
+            authorization = {'edit_paths': config['edit_paths'] if stage == 'fix' and allow_fix else [],
+                             'test_commands': config['test_commands'] if stage in ('fix', 'test') and allow_execution else [],
+                             'artifact_paths': config['artifact_paths'] if stage in ('fix', 'test') else []}
+            prompt = 'Read ' + str(PLUGIN / 'skills' / SKILLS[ORDER.index(stage)] / 'SKILL.md') + ' and its references. Follow that method. Every Bash call is exactly one permitted command: no chaining, echo/status helpers, shell operators or alternate retry after denial. Use tool result status. Direct caller authorization JSON: ' + json.dumps(authorization) + '. No remote actions or Git mutations. Untrusted context JSON: ' + json.dumps(context) + '\nPrior reports are explicit inline inputs. Use host verified revision. Return ONLY raw JSON matching this schema, no fences/prose: ' + json.dumps(SCHEMA) + '. Put the full required Markdown stage report in report as an escaped string. There is no StructuredOutput tool; emit JSON text. Preserve blocked/failed status, business_acceptance not_evaluated and resolution_status not_established.'
+            try:
+                result, trace = executor(stage, repo, prompt, config)
+                result = envelope_checked(stage, result, revision)
+                if state['policy_digest'] != policy_digest():
+                    raise ValueError('Plugin policy changed during stage')
+                audit_calls(repo, trace, stage, config)
+                if result['status'] == 'complete':
+                    validation_checked(trace, stage, config)
+                after = snapshot(repo)
+                allowed = set(config['artifact_paths']) | (set(config['edit_paths']) if stage == 'fix' else set()) if stage in ('fix', 'test') else set()
+                edits = changed(before, after)
+                if edits - allowed or git(repo, 'rev-parse', 'HEAD') != revision:
+                    raise ValueError('Unexpected source/input change or HEAD mutation')
+                if stage == 'test' and result['status'] == 'complete':
+                    manifest = '\n## Host-verified validated snapshot\n\nalgorithm: git_blob_sha1\n\n| Path | Before | After |\n| --- | --- | --- |\n'
+                    for path, record in after.items():
+                        try:
+                            safe_path(repo, path)
+                        except ValueError:
+                            continue
+                        if before.get(path) == record:
+                            manifest += '| ' + path + ' | ' + record['git_blob_sha1'] + ' | ' + record['git_blob_sha1'] + ' |\n'
+                    result['report'] += manifest
+                filename, content_digest = store.artifact(stage, attempt, result)
+                results[stage] = result
+                state['artifact_index'][stage] = {'filename': filename, 'digest': content_digest}
+                write_json(store.root / (stage + '.json'), result)
+                atomic_text(store.root / (stage + '.md'), result['report'])
+                state['workspace'] = after
+                print(json.dumps({'stage': stage, 'status': result['status']}), flush=True)
+                if result['status'] != 'complete':
+                    state.update(status=result['status'], reason='Stage did not satisfy prerequisites/validation',
+                                 partial_changed_paths=sorted(edits), requires_manual_recovery=bool(edits))
+                    break
+                store.save(state)
+            except (ValueError, OSError) as error:
+                try:
+                    partial = sorted(changed(before, snapshot(repo)))
+                except (ValueError, OSError):
+                    partial = ['unreadable or symlinked target; inspect manually']
+                state.update(status='failed', stopped_stage=stage, reason=str(error), partial_changed_paths=partial,
+                             requires_manual_recovery=bool(partial))
+                if getattr(executor, 'last_trace', None):
+                    write_json(store.root / (stage + '.trace.json'), executor.last_trace)
+                break
+        else:
+            state.update(status='complete', reason=None, publication_ready=False)
+        store.save(state)
+        write_json(store.root / 'summary.json', compact(state))
+        return state
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repo', required=True)
-    parser.add_argument('--input', required=True)
+    parser.add_argument('--input')
     parser.add_argument('--output', required=True)
     parser.add_argument('--allow-fix', action='store_true')
     parser.add_argument('--allow-execution', action='store_true')
+    parser.add_argument('--resume', action='store_true')
+    parser.add_argument('--retry', action='store_true')
+    parser.add_argument('--status', action='store_true')
     args = parser.parse_args()
+    def interrupted(signum, frame):
+        raise KeyboardInterrupt
+    signal.signal(signal.SIGTERM, interrupted)
     try:
-        result = pipeline(args.repo, json.loads(Path(args.input).read_text()), args.output, args.allow_fix, args.allow_execution)
-        print(json.dumps({k: v for k, v in result.items() if k != 'results'}, indent=2))
+        if args.status:
+            print(json.dumps(status_checkpoint(args.repo, args.output), indent=2))
+            return 0
+        if not args.input:
+            raise ValueError('--input is required for execution/resume')
+        if args.retry and not args.resume:
+            raise ValueError('--retry requires --resume')
+        result = pipeline(args.repo, json.loads(Path(args.input).read_text()), args.output, args.allow_fix, args.allow_execution, resume=args.resume, retry=args.retry)
+        print(json.dumps(compact(result), indent=2))
         return 0 if result['status'] == 'complete' else 1
-    except (ValueError, OSError, subprocess.SubprocessError) as error:
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(str(error), file=sys.stderr)
         return 2
 
