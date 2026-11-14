@@ -2,7 +2,7 @@
 
 Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
 fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
-manual atau lewat runner lokal berurutan. Versi saat ini: **0.10.0**.
+manual atau lewat runner lokal berurutan. Versi saat ini: **0.11.0**.
 
 | Command | Hasil | Kemampuan |
 | --- | --- | --- |
@@ -176,3 +176,17 @@ Host menyimpan command, exit code dan tool output validasi dalam artifact privat
 untuk audit; field hasil model bukan pengganti observed test evidence. Credential
 GitHub/Telegram tidak diteruskan ke child model. Timeout/import/dependency error
 bukan bukti regression failure. Parser failure/permission denial tetap berhenti.
+
+
+## Kesiapan rilis lokal (v0.11)
+
+[Catatan hardening dan verifikasi](docs/RELEASE-0.11.md) menjelaskan reproduksi
+bug scope/status dan perbaikannya. Path dinormalisasi sebelum pemeriksaan overlap;
+artifact baru tidak boleh menunjuk source yang sudah ada. Status dan resume
+memeriksa history, report yang ditampilkan, serta evidence yang diwajibkan.
+Analisis bukan-bug dan review yang meminta perubahan menghentikan handoff tanpa
+mengubah hasil tahap menjadi kegagalan palsu. Retry tidak dapat melewati gate.
+Inspeksi Git menggunakan prefix `git -c core.fsmonitor=false --no-optional-locks`
+dan diff `--no-ext-diff --no-textconv`; inherited Git override/helper dinonaktifkan.
+Snapshot menolak named pipe/socket, bukan membukanya. Versi ini lulus 73 tes lokal;
+checkpoint dari policy lama perlu run baru, tidak dimigrasikan diam-diam.

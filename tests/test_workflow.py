@@ -3,6 +3,7 @@ import importlib.util
 import contextlib
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -268,6 +269,144 @@ class WorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "content changed"):
             WF.pipeline(self.repo, self.config, self.base / "output", True, True,
                         executor=self.executor, resume=True)
+
+    def test_requirement_alias_cannot_be_authorized_for_edit(self):
+        self.config["requirements"] = ["./requirements.md"]
+        self.config["edit_paths"] = ["requirements.md"]
+        with self.assertRaisesRegex(ValueError, "read-only"):
+            self.run_pipeline(allow_fix=True, allow_execution=True)
+        self.assertEqual(self.calls, [])
+
+    def test_existing_source_cannot_be_declared_as_scratch_artifact(self):
+        self.config["artifact_paths"] = ["source.py"]
+        with self.assertRaisesRegex(ValueError, "new temporary"):
+            self.run_pipeline()
+
+    def test_duplicate_canonical_scope_paths_are_rejected(self):
+        self.config["edit_paths"] = ["source.py", "./source.py"]
+        with self.assertRaisesRegex(ValueError, "Duplicate canonical"):
+            self.run_pipeline()
+
+    def test_completed_non_bug_stops_and_retry_cannot_bypass_triage(self):
+        def executor(*args):
+            result, rows = self.executor(*args)
+            result["verdict"] = "not_a_bug"
+            return result, rows
+        result = self.run_pipeline(executor)
+        self.assertEqual(result["status"], "blocked")
+        self.assertEqual(result["results"]["analyze"]["status"], "complete")
+        self.assertEqual(self.calls, ["analyze"])
+        result = WF.pipeline(self.repo, self.config, self.base / "output", executor=executor,
+                             resume=True, retry=True)
+        self.assertEqual(result["status"], "blocked")
+        self.assertEqual(self.calls, ["analyze"])
+        self.assertIsNone(WF.compact(result)["next_stage"])
+
+    def test_status_rejects_missing_prerequisite_artifact(self):
+        self.run_pipeline()
+        path = self.base / "output/checkpoint.json"
+        state = json.loads(path.read_text())
+        del state["artifact_index"]["analyze"]
+        path.write_text(json.dumps(state))
+        with self.assertRaisesRegex(ValueError, "missing prerequisite"):
+            WF.status_checkpoint(self.repo, self.base / "output")
+
+    def test_status_rejects_missing_observed_validation_artifact(self):
+        self.run_pipeline(allow_fix=True, allow_execution=True)
+        path = self.base / "output/checkpoint.json"
+        state = json.loads(path.read_text())
+        del state["validation_artifacts"]["fix"]
+        path.write_text(json.dumps(state))
+        with self.assertRaisesRegex(ValueError, "Validation evidence artifact missing"):
+            WF.status_checkpoint(self.repo, self.base / "output")
+
+    def test_status_rejects_modified_display_report(self):
+        self.run_pipeline()
+        (self.base / "output/analyze.md").write_text("forged displayed report")
+        with self.assertRaisesRegex(ValueError, "Displayed report"):
+            WF.status_checkpoint(self.repo, self.base / "output")
+
+    def test_snapshot_rejects_named_pipe_without_opening_it(self):
+        if not hasattr(os, "mkfifo"):
+            self.skipTest("requires Unix named pipes")
+        os.mkfifo(self.repo / "pipe")
+        # Guard the read so an unsafe implementation fails immediately instead of hanging.
+        from unittest.mock import patch
+        original = Path.read_bytes
+        def read(path):
+            if path.name == "pipe":
+                raise AssertionError("snapshot attempted to open a named pipe")
+            return original(path)
+        with patch.object(Path, "read_bytes", read), self.assertRaisesRegex(ValueError, "regular file"):
+            WF.snapshot(self.repo)
+
+    def test_model_environment_disables_git_helpers_and_redirection(self):
+        result = WF.model_environment({"GIT_DIR": "/outside", "GIT_EXTERNAL_DIFF": "untrusted",
+                                       "PATH": "/bin"})
+        self.assertNotIn("GIT_DIR", result)
+        self.assertNotIn("GIT_EXTERNAL_DIFF", result)
+        self.assertEqual(result["GIT_CONFIG_KEY_0"], "core.fsmonitor")
+        self.assertEqual(result["GIT_CONFIG_VALUE_0"], "false")
+
+    def test_host_git_diff_does_not_execute_repository_diff_helper(self):
+        marker = self.base / "external-diff-ran"
+        helper = self.base / "diff-helper"
+        helper.write_text("#!/bin/sh\ntouch " + str(marker) + "\n")
+        helper.chmod(0o700)
+        subprocess.run(["git", "config", "diff.external", str(helper)], cwd=self.repo, check=True)
+        (self.repo / "source.py").write_text("changed\n")
+        diff = WF.git(self.repo, "diff")
+        self.assertIn("+changed", diff)
+        self.assertFalse(marker.exists())
+
+    def test_host_git_status_does_not_execute_fsmonitor_hook(self):
+        marker = self.base / "fsmonitor-ran"
+        helper = self.base / "fsmonitor"
+        helper.write_text("#!/bin/sh\ntouch " + str(marker) + "\n")
+        helper.chmod(0o700)
+        subprocess.run(["git", "config", "core.fsmonitor", str(helper)], cwd=self.repo, check=True)
+        WF.git(self.repo, "status", "--porcelain")
+        self.assertFalse(marker.exists())
+
+    def test_new_artifact_can_survive_an_idempotent_resume(self):
+        self.config["artifact_paths"] = ["scratch.log"]
+        def executor(*args):
+            result, rows = self.executor(*args)
+            if args[0] == "fix":
+                (self.repo / "scratch.log").write_text("temporary test output\n")
+            return result, rows
+        self.run_pipeline(executor, allow_fix=True, allow_execution=True)
+        self.calls.clear()
+        result = WF.pipeline(self.repo, self.config, self.base / "output", True, True,
+                             executor=executor, resume=True)
+        self.assertEqual(result["status"], "complete")
+        self.assertEqual(self.calls, [])
+
+    def test_forged_complete_flag_does_not_establish_workflow_completion(self):
+        self.run_pipeline()
+        path = self.base / "output/checkpoint.json"
+        state = json.loads(path.read_text())
+        state["status"] = "complete"
+        path.write_text(json.dumps(state))
+        with self.assertRaisesRegex(ValueError, "missing successful prerequisite"):
+            WF.status_checkpoint(self.repo, self.base / "output")
+
+    def test_review_changes_requested_is_a_blocked_gate(self):
+        def executor(*args):
+            result, rows = self.executor(*args)
+            if args[0] == "review":
+                result["verdict"] = "changes_requested"
+            return result, rows
+        result = self.run_pipeline(executor, allow_fix=True, allow_execution=True)
+        self.assertEqual(result["status"], "blocked")
+        self.assertEqual(result["results"]["review"]["status"], "complete")
+        self.assertNotIn("pr", self.calls)
+
+    def test_model_cannot_use_git_without_helper_suppression(self):
+        row = {"message": {"content": [{"type": "tool_use", "name": "Bash",
+               "input": {"command": "git diff --no-ext-diff --no-textconv"}}]}}
+        with self.assertRaisesRegex(ValueError, "disable repository helpers"):
+            WF.audit_calls(self.repo, [row], "review", self.config)
 
 
 if __name__ == "__main__":

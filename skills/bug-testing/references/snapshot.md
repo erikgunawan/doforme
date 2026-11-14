@@ -4,7 +4,7 @@ HEAD alone does not identify an uncommitted fix. A complete test report intended
 for review must bind every material source/test/requirement and local input report
 path to its exact tested contents. Inline reports remain explicit inputs.
 
-Use only the read-only command `git hash-object --no-filters -- <exact paths>`
+Use only the read-only command `git -c core.fsmonitor=false --no-optional-locks hash-object --no-filters -- <exact paths>`
 before and after validation, with separate tool calls and no -w, stdin, filters,
 shell expansion/operators or option-like paths. Read the files first. Record
 one repo-relative path and its corresponding Git blob SHA-1 in output order,

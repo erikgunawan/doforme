@@ -82,6 +82,14 @@ class Checkpoints:
                 raise ValueError('Malformed checkpoint artifact')
         return state
 
+    def read_text(self, filename, maximum=5_000_000):
+        if not isinstance(filename, str) or Path(filename).name != filename:
+            raise ValueError('Invalid checkpoint filename')
+        path = self.root / filename
+        if path.is_symlink() or not path.is_file() or path.stat().st_size > maximum:
+            raise ValueError('Missing, non-regular, symlinked or oversized checkpoint file')
+        return path.read_text()
+
     def save(self, state):
         write_json(self.root / 'checkpoint.json', state)
 
@@ -104,7 +112,7 @@ class Checkpoints:
         if (self.root / 'history').is_symlink():
             raise ValueError('Symlinked history directory')
         path = self.root / 'history' / filename
-        if path.is_symlink() or path.stat().st_size > 5_000_000:
+        if path.is_symlink() or not path.is_file() or path.stat().st_size > 5_000_000:
             raise ValueError('Invalid checkpoint artifact')
         result = json.loads(path.read_text())
         if digest(result) != expected:

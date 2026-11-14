@@ -46,7 +46,7 @@ Static predictions are not observed results. Controls can pass before the fix.
 - changed_paths: <actual paths, including partial edits or generated artifacts>
 - unexpected_changes: <none or named paths; no automatic deletion/revert>
 - diff_check: passed | failed | not_run
-- patch_review: <actual git diff inspected plus full new-test contents, or not_run>
+- patch_review: <actual git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv inspected plus full new-test contents, or not_run>
 - input_integrity: verified_full_content | changed | unknown
 - revision_unchanged: yes | no | unknown
 - technical_validation: passed_scoped | failed | not_run

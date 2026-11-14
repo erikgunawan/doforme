@@ -40,8 +40,8 @@ command or tool in the same invocation.
    Do not suggest changing or merely confirming a revision field to bypass a
    mismatch: require fresh analysis/plan revalidation against the current source.
 3. **Bind target and baseline.** After authorization and plan checks, use only
-   read-only local Git inspection (`git rev-parse --show-toplevel`,
-   `git rev-parse HEAD`, `git status --porcelain`, `git diff`, `git diff --check`)
+   read-only local Git inspection (`git -c core.fsmonitor=false --no-optional-locks rev-parse --show-toplevel`,
+   `git -c core.fsmonitor=false --no-optional-locks rev-parse HEAD`, `git -c core.fsmonitor=false --no-optional-locks status --porcelain`, `git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv`, `git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv --check`)
    as needed. No other Git command is allowed. Require cwd to be the actual Git
    root, current HEAD equal to the plan revision, and a clean tracked baseline.
    Untracked files block except explicitly named read-only input reports/source
@@ -73,10 +73,10 @@ command or tool in the same invocation.
 7. **Verify outcomes and boundaries.** Each material AC must have an actual
    observed pass, with before/after evidence, exact command and exit code. Do not
    mark skipped/unrun checks passed. Keep informational unconfirmed ideas outside
-   blocking assertions. Run `git diff` as its own command and inspect the actual
-   patch (not merely status or --check). Run `git status --porcelain`,
-   `git diff --check`, and `git rev-parse HEAD` as separate commands. Read any
-   new/untracked test file in full, because git diff does not show its contents.
+   blocking assertions. Run `git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv` as its own command and inspect the actual
+   patch (not merely status or --check). Run `git -c core.fsmonitor=false --no-optional-locks status --porcelain`,
+   `git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv --check`, and `git -c core.fsmonitor=false --no-optional-locks rev-parse HEAD` as separate commands. Read any
+   new/untracked test file in full, because git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv does not show its contents.
    Re-read each exempt untracked read-only input report/snapshot IN FULL and
    compare to its captured pre-edit content; a header check or absence of a
    Write call is not proof it remained unchanged. If full comparison is not

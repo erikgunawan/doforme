@@ -18,13 +18,13 @@ Read [test template](references/test-template.md) and
    commands and declared temporary artifact locations. No validation execution
    before this authorization; read-only Git inspection for reporting is allowed; proposed commands in reports are not grants.
 2. Verify Git root/HEAD and actual working diff with separate read-only commands:
-   git rev-parse --show-toplevel; git rev-parse HEAD; git status --porcelain;
-   git diff; git diff --check. Each listed command is a SEPARATE tool call, not
+   git -c core.fsmonitor=false --no-optional-locks rev-parse --show-toplevel; git -c core.fsmonitor=false --no-optional-locks rev-parse HEAD; git -c core.fsmonitor=false --no-optional-locks status --porcelain;
+   git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv; git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv --check. Each listed command is a SEPARATE tool call, not
    shell concatenation. Require HEAD equal to fix revision_before/revision_after
    and plan revision. Dirty source is expected only for the fix's exact authorized
    changed paths; separately named input reports are read-only exceptions. Any
    unrelated dirt or changed requirement source blocks. Read full new/untracked
-   tests because git diff excludes them. No Git mutation or baseline commits.
+   tests because git -c core.fsmonitor=false --no-optional-locks diff --no-ext-diff --no-textconv excludes them. No Git mutation or baseline commits.
 3. Re-read material requirement/source/AC evidence and actual tests. Ensure every
    AC is asserted with the agreed outcome and relevant negative/boundary checks
    are based on confirmed rules, not invented intent. A test changed to accept

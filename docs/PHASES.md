@@ -87,3 +87,13 @@ run occurred. Upstream action pins and Telegram API shape were checked against
 official sources. Workflow YAML syntax and safety-critical configuration were
 checked locally; actionlint was unavailable. Live activation requires owner review,
 account/secrets, CLI/runner compatibility and separate publication approval.
+
+
+Version 0.11 (2026-11-14) is the local release-hardening phase. Ten regression
+reproductions failed on 0.10 before fixes; 73 tests passed afterward. Fixes cover
+canonical requirement/scope aliases, existing-source artifact declarations,
+non-bug/review handoff gates, full status/report/evidence integrity, special-file
+snapshot blocking and Git helper/redirection suppression. See RELEASE-0.11.md.
+No new real-model six-stage run is claimed; local deterministic checks and an
+extracted release-candidate validation are the scope of this phase. No publication
+or notification activation is included.

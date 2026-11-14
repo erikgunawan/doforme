@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import shlex
 import signal
+import stat
 import subprocess
 import sys
 
@@ -30,10 +31,24 @@ SCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {
     'report': {'type': 'string', 'minLength': 1},
 }}
 SCHEMA['required'] = list(SCHEMA['properties'])
+SAFE_GIT_PREFIX = ('git', '-c', 'core.fsmonitor=false', '--no-optional-locks')
 
 
 def git(repo, *args):
-    return subprocess.check_output(['git', *args], cwd=repo, text=True).strip()
+    if args and args[0] == 'diff':
+        args = ('diff', '--no-ext-diff', '--no-textconv', *args[1:])
+    return subprocess.check_output([*SAFE_GIT_PREFIX, *args], cwd=repo, env=git_environment(), text=True).strip()
+
+
+def git_environment(source=None):
+    environment = dict(os.environ if source is None else source)
+    for key in list(environment):
+        if key.startswith('GIT_'):
+            environment.pop(key, None)
+    environment.update(GIT_CONFIG_COUNT='1', GIT_CONFIG_KEY_0='core.fsmonitor',
+                       GIT_CONFIG_VALUE_0='false', GIT_OPTIONAL_LOCKS='0',
+                       GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull)
+    return environment
 
 
 def safe_path(repo, name):
@@ -55,7 +70,7 @@ def safe_path(repo, name):
     return resolved
 
 
-def config_checked(repo, config):
+def config_checked(repo, config, *, allow_existing_artifacts=False):
     expected = {'issue_ref', 'issue_text', 'requirements', 'edit_paths', 'test_commands', 'artifact_paths', 'timeout_seconds', 'max_turns', 'max_budget_usd'}
     if set(config) - expected or not isinstance(config.get('issue_text'), str) or not config['issue_text'].strip():
         raise ValueError('Config requires issue_text and only documented keys')
@@ -67,14 +82,23 @@ def config_checked(repo, config):
         if not isinstance(config[key], list) or any(not isinstance(x, str) for x in config[key]) or len(set(config[key])) != len(config[key]):
             raise ValueError('Invalid config list: ' + key)
     for key in ('requirements', 'edit_paths', 'artifact_paths'):
+        canonical = []
         for name in config[key]:
             path = safe_path(repo, name)
+            canonical.append(path.relative_to(repo).as_posix())
             if key == 'requirements' and not path.is_file():
                 raise ValueError('Requirement source unavailable: ' + name)
             if key != 'requirements' and path.exists() and not path.is_file():
                 raise ValueError('Scope must contain exact file paths, not directories')
+            if key == 'artifact_paths' and path.exists() and not allow_existing_artifacts:
+                raise ValueError('Artifact scope must name new temporary files, not existing source/input')
+        if len(set(canonical)) != len(canonical):
+            raise ValueError('Duplicate canonical scope paths: ' + key)
+        config[key] = canonical
     if set(config['requirements']) & set(config['edit_paths'] + config['artifact_paths']):
         raise ValueError('Requirement sources must remain read-only')
+    if set(config['edit_paths']) & set(config['artifact_paths']):
+        raise ValueError('Edit scope and temporary artifacts must be distinct')
     for command in config['test_commands']:
         if not command.strip() or re.search(r'[;&|`$<>\n\r\x00]', command):
             raise ValueError('Unsafe compound test command')
@@ -106,7 +130,10 @@ def snapshot(repo):
             relative = str(path.relative_to(repo))
             if relative == '.git':
                 continue
-            size = path.stat().st_size
+            metadata = path.lstat()
+            if not stat.S_ISREG(metadata.st_mode):
+                raise ValueError('Snapshot requires a regular file: ' + relative)
+            size = metadata.st_size
             total += size
             if len(result) >= 20000 or total > 100_000_000:
                 raise ValueError('Target exceeds bounded snapshot size; use a smaller isolated checkout')
@@ -132,17 +159,23 @@ def envelope_checked(stage, result, revision):
     if result['status'] == 'complete':
         if result['requirements_status'] != 'verified_for_scope':
             raise ValueError('Material requirements not verified')
-        if stage == 'analyze' and result['verdict'] != 'valid_bug':
-            raise ValueError('Analyze cannot advance a non-bug')
-        if stage == 'review' and result['verdict'] != 'pass':
-            raise ValueError('Review cannot advance without verdict pass')
         if stage in ('fix', 'test') and result['technical_validation'] != 'passed_scoped':
             raise ValueError('Scoped technical checks have not passed')
     return result
 
 
+def advance_reason(stage, result):
+    if result['status'] != 'complete':
+        return 'Stage did not satisfy prerequisites/validation'
+    if stage == 'analyze' and result['verdict'] != 'valid_bug':
+        return 'Analysis concluded ' + result['verdict'] + '; planning is not authorized'
+    if stage == 'review' and result['verdict'] != 'pass':
+        return 'Review verdict ' + result['verdict'] + ' blocks PR preparation'
+    return None
+
+
 def audit_calls(repo, rows, stage, config):
-    readonly = [('git', 'rev-parse', '--show-toplevel'), ('git', 'rev-parse', 'HEAD'), ('git', 'status', '--porcelain'), ('git', 'diff'), ('git', 'diff', '--check')]
+    readonly = [('git', 'rev-parse', '--show-toplevel'), ('git', 'rev-parse', 'HEAD'), ('git', 'status', '--porcelain'), ('git', 'diff', '--no-ext-diff', '--no-textconv'), ('git', 'diff', '--no-ext-diff', '--no-textconv', '--check')]
     for row in rows:
         for item in row.get('message', {}).get('content', []):
             if item.get('type') != 'tool_use':
@@ -160,6 +193,10 @@ def audit_calls(repo, rows, stage, config):
                 if re.search(r'[;&|`$<>\n\r]', command):
                     raise ValueError('Compound shell call rejected by audit')
                 parts = tuple(shlex.split(command))
+                if parts and parts[0] == 'git':
+                    if parts[:len(SAFE_GIT_PREFIX)] != SAFE_GIT_PREFIX:
+                        raise ValueError('Git inspection must disable repository helpers and optional locks')
+                    parts = ('git', *parts[len(SAFE_GIT_PREFIX):])
                 hashes = parts[:4] == ('git', 'hash-object', '--no-filters', '--') and len(parts) > 4
                 if hashes:
                     for path in parts[4:]:
@@ -247,12 +284,15 @@ def model_environment(source=None):
     for key in list(environment):
         if key == 'CLAUDECODE' or key.startswith(('GITHUB_', 'GH_', 'TELEGRAM_', 'ACTIONS_')):
             environment.pop(key, None)
-    return environment
+    return git_environment(environment)
 
 
 class ClaudeExecutor:
     def __call__(self, stage, repo, prompt, config):
-        tools = ['Read', 'Glob', 'Grep', 'Bash(git rev-parse --show-toplevel)', 'Bash(git rev-parse HEAD)', 'Bash(git status --porcelain)', 'Bash(git diff)', 'Bash(git diff --check)', 'Bash(git hash-object --no-filters -- *)']
+        git_commands = ('rev-parse --show-toplevel', 'rev-parse HEAD', 'status --porcelain',
+                        'diff --no-ext-diff --no-textconv', 'diff --no-ext-diff --no-textconv --check',
+                        'hash-object --no-filters -- *')
+        tools = ['Read', 'Glob', 'Grep'] + ['Bash(' + ' '.join(SAFE_GIT_PREFIX) + ' ' + item + ')' for item in git_commands]
         if stage == 'fix':
             tools += ['Edit(/' + path + ')' for path in config['edit_paths']]
         if stage in ('fix', 'test'):
@@ -323,12 +363,42 @@ def compact(state, fresh=None):
             fresh = state['workspace'] == snapshot(repo) and state['revision'] == git(repo, 'rev-parse', 'HEAD') and state['policy_digest'] == policy_digest()
         except (ValueError, OSError, KeyError, subprocess.SubprocessError):
             fresh = False
+    completed_gate_block = any(result['status'] == 'complete' and advance_reason(stage, result)
+                               for stage, result in state['results'].items())
     return {'status': state['status'], 'repository': state['repository'], 'revision': state['revision'],
             'stages': {key: value['status'] for key, value in state['results'].items()},
-            'next_stage': next((stage for stage in ORDER if state['results'].get(stage, {}).get('status') != 'complete'), None),
+            'next_stage': None if completed_gate_block else next((stage for stage in ORDER if state['results'].get(stage, {}).get('status') != 'complete'), None),
             'fresh': fresh, 'reason': state.get('reason'), 'partial_changed_paths': state.get('partial_changed_paths', []),
             'requires_manual_recovery': state.get('requires_manual_recovery', False),
             'publication_ready': False, 'business_acceptance': 'not_evaluated', 'resolution_status': 'not_established', 'remote_actions': 'none'}
+
+
+def checkpoint_results_checked(store, state, revision):
+    if digest(json.loads(store.read_text('input.json'))) != state['config_digest']:
+        raise ValueError('Saved config content changed')
+    results = state['results']
+    if set(results) != set(ORDER[:len(results)]) or set(state['artifact_index']) != set(results):
+        raise ValueError('Noncontiguous or missing prerequisite artifacts')
+    if state['status'] == 'complete' and (set(results) != set(ORDER) or
+            any(advance_reason(stage, result) for stage, result in results.items())):
+        raise ValueError('Completed checkpoint is missing successful prerequisite stages')
+    blocked_predecessor = False
+    for stage in ORDER[:len(results)]:
+        if blocked_predecessor:
+            raise ValueError('Checkpoint advances past a blocked predecessor')
+        record = state['artifact_index'][stage]
+        actual = store.result(record['filename'], record['digest'])
+        if actual != results[stage]:
+            raise ValueError('Checkpoint result changed')
+        envelope_checked(stage, actual, revision)
+        if json.loads(store.read_text(stage + '.json')) != actual or store.read_text(stage + '.md') != actual['report']:
+            raise ValueError('Displayed report differs from verified checkpoint artifact')
+        if stage in ('fix', 'test') and actual['status'] == 'complete':
+            evidence_record = state.get('validation_artifacts', {}).get(stage)
+            if not evidence_record:
+                raise ValueError('Validation evidence artifact missing')
+            store.result(evidence_record['filename'], evidence_record['digest'])
+        blocked_predecessor = bool(advance_reason(stage, actual))
 
 
 def status_checkpoint(repo, output):
@@ -337,11 +407,7 @@ def status_checkpoint(repo, output):
     state = store.load()
     if state.get('repository') != str(repo):
         raise ValueError('Checkpoint belongs to another repository')
-    for stage, record in state.get('artifact_index', {}).items():
-        if store.result(record['filename'], record['digest']) != state['results'].get(stage):
-            raise ValueError('Checkpoint artifact changed')
-    for record in state.get('validation_artifacts', {}).values():
-        store.result(record['filename'], record['digest'])
+    checkpoint_results_checked(store, state, state['revision'])
     fresh = state.get('workspace') == snapshot(repo) and state.get('revision') == git(repo, 'rev-parse', 'HEAD') and state.get('policy_digest') == policy_digest()
     return compact(state, fresh)
 
@@ -353,7 +419,7 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
     if Path(git(repo, 'rev-parse', '--show-toplevel')).resolve() != repo:
         raise ValueError('Start at the target Git root')
     graph_checked()
-    config = config_checked(repo, config)
+    config = config_checked(repo, config, allow_existing_artifacts=resume)
     revision = git(repo, 'rev-parse', 'HEAD')
     if not resume and git(repo, 'status', '--porcelain'):
         raise ValueError('Initial target must be clean, including untracked files')
@@ -366,30 +432,11 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                 raise ValueError('Stale repository/revision checkpoint')
             if state.get('config_digest') != digest(config) or state.get('policy_digest') != policy_digest() or state.get('grants') != grants:
                 raise ValueError('Config, plugin policy, or direct authorization changed; start a new run')
-            if digest(json.loads((store.root / 'input.json').read_text())) != state.get('config_digest'):
-                raise ValueError('Saved config content changed')
             if state.get('workspace') != snapshot(repo):
                 raise ValueError('Target content changed since checkpoint; no automatic resume')
             if state.get('requires_manual_recovery'):
                 raise ValueError('Partial edits require manual recovery/review before a new run')
-            results = state.get('results', {})
-            if set(results) != set(ORDER[:len(results)]) or set(state.get('artifact_index', {})) != set(results):
-                raise ValueError('Noncontiguous or missing prerequisite artifacts')
-            incomplete = False
-            for stage in ORDER[:len(results)]:
-                record = state['artifact_index'][stage]
-                actual = store.result(record['filename'], record['digest'])
-                if actual != results[stage]:
-                    raise ValueError('Checkpoint result changed')
-                envelope_checked(stage, actual, revision)
-                if incomplete:
-                    raise ValueError('Checkpoint advances past a non-complete predecessor')
-                if stage in ('fix', 'test') and actual['status'] == 'complete':
-                    evidence_record = state.get('validation_artifacts', {}).get(stage)
-                    if not evidence_record:
-                        raise ValueError('Validation evidence artifact missing')
-                    store.result(evidence_record['filename'], evidence_record['digest'])
-                incomplete = actual['status'] != 'complete'
+            checkpoint_results_checked(store, state, revision)
             if state['status'] == 'complete' or (state['status'] in ('blocked', 'failed', 'running') and not retry):
                 return state
         else:
@@ -404,6 +451,10 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
         results = state['results']
         for stage in ORDER:
             if results.get(stage, {}).get('status') == 'complete':
+                blocker = advance_reason(stage, results[stage])
+                if blocker:
+                    state.update(status='blocked', stopped_stage=stage, reason=blocker)
+                    break
                 continue
             before = snapshot(repo)
             if before != state['workspace'] or git(repo, 'rev-parse', 'HEAD') != revision or state['policy_digest'] != policy_digest():
@@ -463,8 +514,9 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                 atomic_text(store.root / (stage + '.md'), result['report'])
                 state['workspace'] = after
                 print(json.dumps({'stage': stage, 'status': result['status']}), flush=True)
-                if result['status'] != 'complete':
-                    state.update(status=result['status'], reason='Stage did not satisfy prerequisites/validation',
+                blocker = advance_reason(stage, result)
+                if blocker:
+                    state.update(status='blocked' if result['status'] == 'complete' else result['status'], reason=blocker,
                                  partial_changed_paths=sorted(edits), requires_manual_recovery=bool(edits))
                     break
                 store.save(state)
