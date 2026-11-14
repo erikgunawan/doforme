@@ -182,24 +182,41 @@ def audit_calls(repo, rows, stage, config):
                 raise ValueError('Unexpected tool call: ' + str(name))
 
 
-def validation_checked(rows, stage, config):
-    if stage not in ('fix', 'test'):
-        return
+def validation_evidence(rows, config):
     calls = {}
+    evidence = []
     for row in rows:
         for part in row.get('message', {}).get('content', []):
             if part.get('type') == 'tool_use' and part.get('name') == 'Bash':
                 calls[part['id']] = part.get('input', {}).get('command')
-    outcomes = {command: [] for command in config['test_commands']}
-    for row in rows:
-        for part in row.get('message', {}).get('content', []):
             command = calls.get(part.get('tool_use_id'))
-            if part.get('type') == 'tool_result' and command in outcomes:
-                outcomes[command].append(not part.get('is_error', False))
-    if not outcomes or any(not passes or not passes[-1] for passes in outcomes.values()):
+            if part.get('type') == 'tool_result' and command in config['test_commands']:
+                error = part.get('is_error')
+                output = part.get('content', '')
+                if not isinstance(error, bool) or not isinstance(output, str):
+                    raise ValueError('Validation tool result has no observed status/output')
+                code = re.search(r'^Exit code ([0-9]+)', output)
+                exit_code = int(code.group(1)) if code else 0 if not error else None
+                environment_error = bool(re.search(r'ModuleNotFoundError|ImportError|command not found|No such file|timed out', output, re.I))
+                assertion_failure = error and exit_code is not None and exit_code > 0 and not environment_error and bool(re.search(r'AssertionError|FAILED|\bFAIL\b|not ok|assertion', output, re.I))
+                evidence.append({'command': command, 'exit_code': exit_code, 'success': not error,
+                                 'assertion_failure': assertion_failure, 'output': output[:100000],
+                                 'output_truncated': len(output) > 100000})
+    return evidence
+
+
+def validation_checked(rows, stage, config):
+    if stage not in ('fix', 'test'):
+        return []
+    evidence = validation_evidence(rows, config)
+    outcomes = {command: [] for command in config['test_commands']}
+    for item in evidence:
+        outcomes[item['command']].append(item)
+    if not outcomes or any(not items or not items[-1]['success'] or items[-1]['exit_code'] != 0 for items in outcomes.values()):
         raise ValueError('No actual final successful tool result for every authorized validation command')
-    if stage == 'fix' and not any(False in passes[:-1] for passes in outcomes.values()):
-        raise ValueError('No observed red-before/green-after tool results for fix')
+    if stage == 'fix' and not any(item['assertion_failure'] for items in outcomes.values() for item in items[:-1]):
+        raise ValueError('No observed assertion red-before/green-after tool results for fix')
+    return evidence
 
 
 def parse_result_text(text):
@@ -225,6 +242,14 @@ def parse_result_text(text):
     return result
 
 
+def model_environment(source=None):
+    environment = dict(os.environ if source is None else source)
+    for key in list(environment):
+        if key == 'CLAUDECODE' or key.startswith(('GITHUB_', 'GH_', 'TELEGRAM_', 'ACTIONS_')):
+            environment.pop(key, None)
+    return environment
+
+
 class ClaudeExecutor:
     def __call__(self, stage, repo, prompt, config):
         tools = ['Read', 'Glob', 'Grep', 'Bash(git rev-parse --show-toplevel)', 'Bash(git rev-parse HEAD)', 'Bash(git status --porcelain)', 'Bash(git diff)', 'Bash(git diff --check)', 'Bash(git hash-object --no-filters -- *)']
@@ -234,8 +259,7 @@ class ClaudeExecutor:
             tools += ['Bash(' + command + ')' for command in config['test_commands']]
         denials = ['Read(**/.env*)', 'Read(**/.aws/**)', 'Read(**/.ssh/**)', 'Read(**/*.pem)', 'Read(**/*.key)', 'Read(**/.npmrc)', 'Read(**/.pypirc)', 'Read(**/credentials.json)']
         command = ['claude', '-p', prompt, '--agent', 'doforme:' + AGENTS[ORDER.index(stage)], '--plugin-dir', str(PLUGIN), '--add-dir', str(PLUGIN / 'skills'), '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--no-session-persistence', '--max-turns', str(config['max_turns']), '--max-budget-usd', str(config['max_budget_usd']), '--verbose', '--output-format', 'stream-json', '--settings', json.dumps({'permissions': {'deny': denials}}), '--allowedTools', *tools]
-        environment = dict(os.environ)
-        environment.pop('CLAUDECODE', None)  # Explicit independent no-persistence CLI processes.
+        environment = model_environment()
         process = subprocess.Popen(command, env=environment, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
         try:
             stdout, stderr = process.communicate(timeout=config['timeout_seconds'])
@@ -316,6 +340,8 @@ def status_checkpoint(repo, output):
     for stage, record in state.get('artifact_index', {}).items():
         if store.result(record['filename'], record['digest']) != state['results'].get(stage):
             raise ValueError('Checkpoint artifact changed')
+    for record in state.get('validation_artifacts', {}).values():
+        store.result(record['filename'], record['digest'])
     fresh = state.get('workspace') == snapshot(repo) and state.get('revision') == git(repo, 'rev-parse', 'HEAD') and state.get('policy_digest') == policy_digest()
     return compact(state, fresh)
 
@@ -358,13 +384,18 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                 envelope_checked(stage, actual, revision)
                 if incomplete:
                     raise ValueError('Checkpoint advances past a non-complete predecessor')
+                if stage in ('fix', 'test') and actual['status'] == 'complete':
+                    evidence_record = state.get('validation_artifacts', {}).get(stage)
+                    if not evidence_record:
+                        raise ValueError('Validation evidence artifact missing')
+                    store.result(evidence_record['filename'], evidence_record['digest'])
                 incomplete = actual['status'] != 'complete'
             if state['status'] == 'complete' or (state['status'] in ('blocked', 'failed', 'running') and not retry):
                 return state
         else:
             state = {'state_version': 1, 'repository': str(repo), 'revision': revision,
                      'config_digest': digest(config), 'policy_digest': policy_digest(), 'grants': grants,
-                     'workspace': snapshot(repo), 'artifact_index': {}, 'attempt_counts': {}, 'results': {},
+                     'workspace': snapshot(repo), 'artifact_index': {}, 'validation_artifacts': {}, 'attempt_counts': {}, 'results': {},
                      'status': 'running', 'remote_actions': 'none', 'business_acceptance': 'not_evaluated',
                      'resolution_status': 'not_established', 'publication_ready': False, 'host_persisted': True}
             write_json(store.root / 'input.json', config)
@@ -386,6 +417,7 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                 state.update(status='blocked', stopped_stage=stage, reason='Explicit retry limit reached')
                 break
             state['attempt_counts'][stage] = attempt
+            state.setdefault('validation_artifacts', {}).pop(stage, None)
             results.pop(stage, None)
             state['artifact_index'].pop(stage, None)
             state.update(status='running', stopped_stage=stage, reason=None)
@@ -404,8 +436,7 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                 if state['policy_digest'] != policy_digest():
                     raise ValueError('Plugin policy changed during stage')
                 audit_calls(repo, trace, stage, config)
-                if result['status'] == 'complete':
-                    validation_checked(trace, stage, config)
+                evidence = validation_checked(trace, stage, config) if result['status'] == 'complete' else []
                 after = snapshot(repo)
                 allowed = set(config['artifact_paths']) | (set(config['edit_paths']) if stage == 'fix' else set()) if stage in ('fix', 'test') else set()
                 edits = changed(before, after)
@@ -422,6 +453,10 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                             manifest += '| ' + path + ' | ' + record['git_blob_sha1'] + ' | ' + record['git_blob_sha1'] + ' |\n'
                     result['report'] += manifest
                 filename, content_digest = store.artifact(stage, attempt, result)
+                if evidence:
+                    evidence_name = stage + '-' + str(attempt) + '.validation.json'
+                    write_json(store.root / 'history' / evidence_name, evidence)
+                    state.setdefault('validation_artifacts', {})[stage] = {'filename': evidence_name, 'digest': digest(evidence)}
                 results[stage] = result
                 state['artifact_index'][stage] = {'filename': filename, 'digest': content_digest}
                 write_json(store.root / (stage + '.json'), result)

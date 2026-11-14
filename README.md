@@ -2,7 +2,7 @@
 
 Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
 fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
-manual atau lewat runner lokal berurutan. Versi saat ini: **0.9.0**.
+manual atau lewat runner lokal berurutan. Versi saat ini: **0.10.0**.
 
 | Command | Hasil | Kemampuan |
 | --- | --- | --- |
@@ -18,7 +18,8 @@ manual atau lewat runner lokal berurutan. Versi saat ini: **0.9.0**.
 **Complete tidak berarti issue resolved.** Green test berlaku pada AC yang diuji.
 Review AI tidak menggantikan penerimaan pemilik requirement. Business acceptance
 masih not_evaluated, resolution_status not_established, publication_ready false.
-Tidak ada push, PR remote, komentar/penutupan issue, atau notifikasi otomatis.
+Tidak ada push, PR remote atau komentar/penutupan issue. Integrasi notifikasi
+tersedia sebagai template opt-in yang tidak aktif, bukan aksi otomatis default.
 
 ## Instalasi dan penggunaan
 
@@ -161,3 +162,17 @@ Referensi resmi: [manifest](https://code.claude.com/docs/en/plugins-reference),
 [skills](https://code.claude.com/docs/en/skills),
 [agent restrictions](https://code.claude.com/docs/en/sub-agents),
 [permissions](https://code.claude.com/docs/en/permissions).
+
+
+## Integrasi opsional (v0.10)
+
+[Template GitHub issue + Telegram](integrations/github-issues.yml.example) berada
+di luar folder workflow aktif. Default hanya dry-run packet lokal. Analisis
+read-only, instalasi CLI yang dipin operator, dan notifikasi Telegram memerlukan
+opt-in/secret terpisah; auto-fix, publikasi, dan notifikasi resolved tidak diaktifkan.
+Lihat [instruksi integrasi dan batasnya](docs/INTEGRATIONS.md). Tidak ada secret yang
+dipasang, workflow GitHub dijalankan, atau pesan nyata dikirim pada implementasi.
+Host menyimpan command, exit code dan tool output validasi dalam artifact privat
+untuk audit; field hasil model bukan pengganti observed test evidence. Credential
+GitHub/Telegram tidak diteruskan ke child model. Timeout/import/dependency error
+bukan bukti regression failure. Parser failure/permission denial tetap berhenti.

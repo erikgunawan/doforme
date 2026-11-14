@@ -1,6 +1,6 @@
 {
   "name": "doforme",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Evidence-based bug analysis, requirement-grounded planning, and explicitly scoped local fixes.",
   "author": {
     "name": "Erik Gunawan"
@@ -8,7 +8,8 @@
   "repository": "https://github.com/erikgunawan/doforme",
   "keywords": [
     "bugs",
-    "investigation",
-    "read-only"
+    "requirements",
+    "validation",
+    "workflow"
   ]
 }

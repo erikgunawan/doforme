@@ -64,3 +64,26 @@ rejecting duplicate keys or multiple objects; the saved actual review trace
 passed this parser, envelope validation and read-only audit offline. A fresh full
 checkpoint integration is run after freezing this version; its final outcome is
 recorded below when complete. No remote publication or business acceptance.
+
+
+On 2026-11-14, the frozen 0.9 full real-model integration completed analyze,
+plan, fix, test, review and PR draft in sequence. The runner's observed summary
+reported every stage complete, fresh true, publication_ready false,
+business_acceptance not_evaluated, resolution_status not_established and
+remote_actions none. This exercised real scoped edits and test tool results,
+independent review with content binding, and draft generation. No external PR.
+Temporary run artifacts became unavailable after the execution environment reset;
+the observed tool output remains the record. A second real resume/status check
+could not be performed on those lost temp files. Idempotent resume is covered
+by deterministic tests, not claimed as a second observed live run.
+
+Version 0.10 adds inactive GitHub issue/Telegram integration, default dry-run,
+explicit live opt-ins, no issue-body shell interpolation, trusted source paths,
+fixed-host notification with uncertain-delivery receipts and no automatic retry.
+It also persists actual validation tool outputs/exit evidence privately and filters
+GitHub/Telegram credentials from model subprocesses. Fifty-eight deterministic
+tests cover these changes with mock senders; no Telegram message or GitHub Actions
+run occurred. Upstream action pins and Telegram API shape were checked against
+official sources. Workflow YAML syntax and safety-critical configuration were
+checked locally; actionlint was unavailable. Live activation requires owner review,
+account/secrets, CLI/runner compatibility and separate publication approval.

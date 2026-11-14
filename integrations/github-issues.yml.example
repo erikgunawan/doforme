@@ -1,0 +1,55 @@
+# Copy into .github/workflows only after owner review. Defaults: packet dry-run.
+name: doforme issue intake
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: doforme-${{ github.repository }}-${{ github.event.issue.number || github.run_id }}
+  cancel-in-progress: false
+jobs:
+  intake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Normalize issue into a local untrusted packet
+        env:
+          DOFORME_TRUSTED_REQUIREMENTS: ${{ vars.DOFORME_TRUSTED_REQUIREMENTS }}
+        run: python3 scripts/issue_intake.py --event "$GITHUB_EVENT_PATH" --output "$RUNNER_TEMP/doforme-intake"
+      - name: Install an operator-pinned Claude CLI for optional analysis
+        if: vars.DOFORME_ENABLE_ANALYZE == 'true' && github.event_name == 'issues'
+        env:
+          DOFORME_CLAUDE_VERSION: ${{ vars.DOFORME_CLAUDE_VERSION }}
+        run: |
+          python3 - <<'PY'
+          import os, re, subprocess
+          version = os.environ.get('DOFORME_CLAUDE_VERSION', '')
+          if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', version):
+              raise SystemExit('Operator must supply an exact reviewed CLI version')
+          subprocess.run(['npm', 'install', '--global', '@anthropic-ai/claude-code@' + version], check=True)
+          PY
+      - name: Optional read-only analysis and planning; never auto-fix
+        if: vars.DOFORME_ENABLE_ANALYZE == 'true' && github.event_name == 'issues'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 scripts/issue_intake.py --repo "$GITHUB_WORKSPACE" --packet "$RUNNER_TEMP/doforme-intake" --analyze-readonly
+      - name: Optional explicitly enabled new-issue notification
+        if: vars.DOFORME_NOTIFY_TELEGRAM == 'true' && github.event_name == 'issues'
+        env:
+          DOFORME_NOTIFY_TELEGRAM: 'true'
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 scripts/issue_intake.py --packet "$RUNNER_TEMP/doforme-intake" --send-telegram
+      - name: Preserve private intake reports for operator review
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: doforme-intake-${{ github.run_id }}
+          path: ${{ runner.temp }}/doforme-intake
+          retention-days: 3
+          if-no-files-found: ignore

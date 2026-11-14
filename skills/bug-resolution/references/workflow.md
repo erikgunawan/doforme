@@ -23,6 +23,7 @@ locks and immutable attempt artifacts outside the target. Resume checks source,
 revision, config, grants, report and policy digests, with bounded explicit retry.
 Partial edits require manual review. See [state.md](state.md).
 
-There are no implicit issue-triggered transitions, remote PRs, issue closure,
-notifications, or non-Claude executor adapters in this graph. Those need separate
-integration scope. Technical completion does not establish business acceptance.
+There are no implicit full-fix transitions, remote PRs, issue closure, or
+non-Claude executor adapters in this graph. A separate inactive GitHub template
+provides operator-opt-in intake/read-only analysis and new-issue Telegram
+notification; it cannot authorize fix/publication or declare resolution. Technical completion does not establish business acceptance.

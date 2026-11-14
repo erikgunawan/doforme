@@ -41,7 +41,7 @@ class WorkflowTests(unittest.TestCase):
             command = config["test_commands"][0]
             for index, error in enumerate([True, False] if stage == "fix" else [False]):
                 ident = "call" + str(index)
-                trace += [{"message": {"content": [{"type": "tool_use", "name": "Bash", "id": ident, "input": {"command": command}}]}}, {"message": {"content": [{"type": "tool_result", "tool_use_id": ident, "is_error": error, "content": "synthetic result"}]}}]
+                trace += [{"message": {"content": [{"type": "tool_use", "name": "Bash", "id": ident, "input": {"command": command}}]}}, {"message": {"content": [{"type": "tool_result", "tool_use_id": ident, "is_error": error, "content": "Exit code 1\nAssertionError: synthetic mismatch" if error else "3 synthetic checks OK"}]}}]
         return {"stage": stage, "status": "complete",
                 "verdict": "valid_bug" if stage == "analyze" else "pass" if stage == "review" else "not_applicable",
                 "requirements_status": "verified_for_scope",
@@ -234,6 +234,40 @@ class WorkflowTests(unittest.TestCase):
         path.write_text(json.dumps(state))
         with self.assertRaisesRegex(ValueError, "Malformed"):
             WF.pipeline(self.repo, self.config, self.base / "output", executor=self.executor, resume=True)
+
+    def test_unrelated_ci_credentials_not_inherited_by_models(self):
+        result = WF.model_environment({"GITHUB_TOKEN": "fake", "TELEGRAM_BOT_TOKEN": "fake", "ACTIONS_RUNTIME_TOKEN": "fake",
+                                       "ANTHROPIC_API_KEY": "model-auth", "PATH": "/bin"})
+        self.assertNotIn("GITHUB_TOKEN", result)
+        self.assertNotIn("TELEGRAM_BOT_TOKEN", result)
+        self.assertNotIn("ACTIONS_RUNTIME_TOKEN", result)
+        self.assertEqual(result["ANTHROPIC_API_KEY"], "model-auth")
+
+    def test_environment_error_is_not_regression_evidence(self):
+        _, rows = self.executor("fix", self.repo, "", self.config)
+        rows[1]["message"]["content"][0]["content"] = "Exit code 1\nModuleNotFoundError: missing dependency"
+        with self.assertRaisesRegex(ValueError, "assertion red-before"):
+            WF.validation_checked(rows, "fix", self.config)
+
+    def test_validation_tool_output_is_preserved_privately(self):
+        state = self.run_pipeline(allow_fix=True, allow_execution=True)
+        record = state["validation_artifacts"]["fix"]
+        path = self.base / "output/history" / record["filename"]
+        evidence = json.loads(path.read_text())
+        self.assertTrue(evidence[0]["assertion_failure"])
+        self.assertEqual(evidence[0]["exit_code"], 1)
+        self.assertEqual(evidence[-1]["exit_code"], 0)
+        self.assertEqual(evidence[-1]["command"], self.config["test_commands"][0])
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+
+    def test_tampered_validation_evidence_blocks_resume(self):
+        state = self.run_pipeline(allow_fix=True, allow_execution=True)
+        record = state["validation_artifacts"]["test"]
+        path = self.base / "output/history" / record["filename"]
+        path.write_text('[]')
+        with self.assertRaisesRegex(ValueError, "content changed"):
+            WF.pipeline(self.repo, self.config, self.base / "output", True, True,
+                        executor=self.executor, resume=True)
 
 
 if __name__ == "__main__":
