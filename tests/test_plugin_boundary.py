@@ -142,6 +142,11 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'repo-onboarder must have only'):
             CHECKER.check(self.root)
 
+    def test_preflight_reader_cannot_edit_source(self):
+        self.replace('agents/preflight-reader.md', 'Read, Bash', 'Read, Bash, Edit')
+        with self.assertRaisesRegex(ValueError, 'preflight-reader must have only'):
+            CHECKER.check(self.root)
+
 
 if __name__ == "__main__":
     unittest.main()

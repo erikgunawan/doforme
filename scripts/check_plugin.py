@@ -18,7 +18,8 @@ STAGES = {
 
 UTILITIES = {"endtoend": ("workflow-runner", "workflow-orchestration", "Read, Bash"),
              "status": ("status-reader", "workflow-status", "Read, Bash"),
-             "init": ("repo-onboarder", "repo-onboarding", "Read, Bash")}
+             "init": ("repo-onboarder", "repo-onboarding", "Read, Bash"),
+             "doctor": ("preflight-reader", "workflow-preflight", "Read, Bash")}
 
 
 def frontmatter(path):

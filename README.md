@@ -2,11 +2,12 @@
 
 Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
 fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
-manual atau lewat runner lokal berurutan. Versi saat ini: **0.12.0**.
+manual atau lewat runner lokal berurutan. Versi saat ini: **0.13.0**.
 
 | Command | Hasil | Kemampuan |
 | --- | --- | --- |
 | `/doforme:init` | inspeksi repo dan draft profil dengan --write eksplisit | helper terbatas; tidak menjalankan source/test |
+| `/doforme:doctor` | diagnosis prasyarat workflow baru dan daftar blocker | hanya inspeksi lokal; tidak menjalankan source/test/model |
 | `/doforme:analyze` | validitas issue, evidence, hipotesis, confidence | baca/pencarian |
 | `/doforme:plan` | dependency gates, langkah fix, AC → test | baca/pencarian |
 | `/doforme:fix` | implementasi scoped dan red/green regression | edit/write + command terotorisasi |
@@ -65,6 +66,20 @@ Tambahkan `--inspect-config` untuk melihat hasil gabungan tanpa model call,
 checkpoint, atau eksekusi. Requirement repo tetap tercakup, cap hanya bisa diturunkan
 oleh issue, dan profil tidak dapat memberi izin fix/test. Config lama tetap
 berfungsi tanpa --profile. Review/commit setup sebelum workflow clean-tree.
+
+## Periksa kesiapan sebelum workflow (v0.13)
+
+Gunakan `/doforme:doctor` dengan lokasi input issue dan profil yang dipilih
+eksplisit, misalnya `/doforme:doctor --input /absolute/issue.json --profile .doforme/repository.json`.
+Helper memeriksa Git root/HEAD, checkout bersih dan terbatas, konfigurasi gabungan,
+sumber requirement yang dapat dibaca, scope edit, perintah test, keberadaan CLI,
+serta lokasi output baru bila diberikan. Tidak memperbaiki repo, menjalankan
+test/model, mengecek login, atau membuat checkpoint.
+
+`local_preflight: passed` hanya berarti pemeriksaan lokal lulus. Isi requirement,
+otoritas sumber, konflik dan cakupan AC tetap `not_evaluated`; izin fix/test serta
+penerimaan bisnis tetap terpisah. Template requirement bawaan yang belum diisi
+memblokir preflight. Lihat [panduan doctor](docs/PREFLIGHT.md).
 
 ## Sumber kebenaran requirement
 

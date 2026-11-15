@@ -118,3 +118,25 @@ The plugin directory submission still needs an owner-selected license; the
 validator also notes a missing catalog icon. These catalog checks do not change
 the passing local-plugin verdict. No other real repo was initialized, and no
 business acceptance, integration activation, push or PR is part of this phase.
+
+Version 0.13 (2026-11-16) adds /doforme:doctor for read-only fresh-workflow
+preflight. It checks local plugin structure, the selected Git root and revision,
+clean baseline, bounded regular-file checkout, explicit profile/input composition,
+source readability, full-workflow scope/commands, CLI presence and an optional
+new external output path. No source/test/model execution, repair, installation,
+authentication probe, checkpoint creation or remote action is performed.
+Unchanged generated requirement drafts and empty sources block the local check.
+Other readable source content remains semantically unevaluated; a passing local
+preflight cannot grant execution or establish verified business requirements.
+The workflow graph and existing runner gates remain unchanged.
+
+All 113 deterministic tests passed (19 new), including standalone CLI positive
+and blocked exit/report cases in disposable Git fixtures. Configured test code
+and a sentinel Claude executable were never invoked; target content and HEAD
+were preserved in the positive case, and no output directory was created.
+Tests also covered dirty/untracked baselines, malformed config, explicit profile
+loading/caps, empty/binary/oversized sources, missing CLI, symlinks/FIFOs and
+output location boundaries. Structure/resource checks, strict manifest and
+command/agent/skill local validations passed. The existing catalog license/icon
+limitations remain. No new real-model slash-command run, live integration,
+business acceptance, push or PR is claimed for this phase.

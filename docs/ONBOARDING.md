@@ -91,6 +91,10 @@ and the appropriate direct --allow-fix/--allow-execution flags. A profile itself
 grants neither. Missing commands or requirement evidence still block advancement.
 Resume validates the same effective config and source/policy fingerprints.
 
+Before starting a fresh full workflow, use [doctor](PREFLIGHT.md) with the same
+explicit input/profile to diagnose local blockers without model/test execution.
+Passing that check does not confirm business requirements or authorize changes.
+
 ## Verification scope
 
 Local tests cover dry-run/no execution, exact new-file scope, idempotence, owner
