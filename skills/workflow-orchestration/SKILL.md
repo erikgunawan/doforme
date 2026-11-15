@@ -19,6 +19,18 @@ Append --allow-fix/--allow-execution only when directly authorized. Use proper
 shell quoting; never interpolate issue text, raw config content or shell syntax.
 Do not create or modify the config, source, reports or output yourself.
 
+## Explicit repository profile
+
+When the caller names a repo profile, append --profile <repo-relative-path> and
+keep --input for the separate issue JSON. Never silently discover a profile.
+You may first invoke this same helper once with --inspect-config, --repo, --input
+and the explicitly named --profile, without --output or mutation/execution flags.
+This computes the effective defaults/read-only sources/caps without model calls
+or writes. Report that exact scope before the separately authorized workflow run.
+Profile requirements cannot be omitted; issue input can lower caps and choose
+exact test commands, but no profile or file grants execution. If inspection is
+denied or invalid, stop rather than attempting alternate commands or coercion.
+
 The adapter runs analyze → plan → fix → test → review → pr in separate model
 contexts and passes explicit prior reports. It audits requested tools/commands,
 checks working-tree contents/HEAD and structured stage gates, and stops at blocked,

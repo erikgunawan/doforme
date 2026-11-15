@@ -137,6 +137,11 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unexpected effect"):
             CHECKER.check_graph(graph)
 
+    def test_onboarder_cannot_edit_source_directly(self):
+        self.replace('agents/repo-onboarder.md', 'Read, Bash', 'Read, Bash, Edit, Write')
+        with self.assertRaisesRegex(ValueError, 'repo-onboarder must have only'):
+            CHECKER.check(self.root)
+
 
 if __name__ == "__main__":
     unittest.main()

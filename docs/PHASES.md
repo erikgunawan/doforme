@@ -97,3 +97,24 @@ snapshot blocking and Git helper/redirection suppression. See RELEASE-0.11.md.
 No new real-model six-stage run is claimed; local deterministic checks and an
 extracted release-candidate validation are the scope of this phase. No publication
 or notification activation is included.
+
+Version 0.12 (2026-11-15) adds repository onboarding through /doforme:init.
+Default inspection is read-only; explicit --write creates only a reusable repo
+profile and an unconfirmed requirement/AC template. Existing owner files are
+preserved. Profiles hold reusable defaults and caps; explicit per-issue inputs
+hold issue text and exact edit scope. Composition retains profile requirement
+sources, rejects raised caps and protects active inputs. --inspect-config shows
+the effective config without model calls, execution or checkpoint creation.
+Legacy full configs remain supported without --profile. Shared local policy was
+extracted without changing the workflow graph or adding external dependencies.
+
+All 94 deterministic tests passed, as did the local structure/resource checks,
+strict command/agent/skill validation and local plugin manifest validation.
+A standalone CLI smoke in a disposable Git fixture verified inspection, exactly
+two draft files, repeated setup preserving bytes, and effective-config preview.
+A declared package script that would create a marker never ran; source and Git
+HEAD remained unchanged. No new real-model command or six-stage run is claimed.
+The plugin directory submission still needs an owner-selected license; the
+validator also notes a missing catalog icon. These catalog checks do not change
+the passing local-plugin verdict. No other real repo was initialized, and no
+business acceptance, integration activation, push or PR is part of this phase.

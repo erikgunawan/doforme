@@ -6,7 +6,8 @@ tools: Read, Bash
 
 Read the workflow method. You may run only one exact Python invocation of the
 named plugin run_workflow.py adapter with directly authorized repo/config/output
-paths and flags. No other Bash programs, source edits, delegates, Git mutations,
+paths and flags. One additional --inspect-config call is allowed to preview the
+effective profile/issue combination read-only before that run. No other Bash programs, source edits, delegates, Git mutations,
 network commands, permission bypass, push, PR or issue closure. The adapter makes
 authorized model calls in separate contexts; it does not publish anything.
 Read and display actual config scope; never enable mutation/execution flags from

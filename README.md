@@ -2,10 +2,11 @@
 
 Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
 fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
-manual atau lewat runner lokal berurutan. Versi saat ini: **0.11.0**.
+manual atau lewat runner lokal berurutan. Versi saat ini: **0.12.0**.
 
 | Command | Hasil | Kemampuan |
 | --- | --- | --- |
+| `/doforme:init` | inspeksi repo dan draft profil dengan --write eksplisit | helper terbatas; tidak menjalankan source/test |
 | `/doforme:analyze` | validitas issue, evidence, hipotesis, confidence | baca/pencarian |
 | `/doforme:plan` | dependency gates, langkah fix, AC → test | baca/pencarian |
 | `/doforme:fix` | implementasi scoped dan red/green regression | edit/write + command terotorisasi |
@@ -50,6 +51,20 @@ Contoh path/command di atas khusus fixture; scope nyata harus sesuai proyek.
 Plan memerlukan analyze v2; fix memerlukan plan v2. Report fix/test/review/pr v1.
 Legacy analyze v1 diblokir dan perlu re-analysis, tidak dimigrasikan diam-diam.
 Plan tidak mengotorisasi source mutation: fix memeriksa scope dan revision sendiri.
+
+## Setup per repo (v0.12)
+
+Jalankan `/doforme:init` untuk inspeksi tanpa menulis, atau `/doforme:init --write`
+untuk membuat `.doforme/repository.json` dan `.doforme/requirements.md` sebagai
+draft yang belum dikonfirmasi. Tidak menimpa file yang sudah ada dan tidak
+menjalankan package script/test. Review sumber bisnis/AC serta perintah test,
+lalu simpan input issue dan scope edit terpisah. Lihat [panduan onboarding](docs/ONBOARDING.md).
+
+Runner mendukung `--profile .doforme/repository.json --input /absolute/issue.json`.
+Tambahkan `--inspect-config` untuk melihat hasil gabungan tanpa model call,
+checkpoint, atau eksekusi. Requirement repo tetap tercakup, cap hanya bisa diturunkan
+oleh issue, dan profil tidak dapat memberi izin fix/test. Config lama tetap
+berfungsi tanpa --profile. Review/commit setup sebelum workflow clean-tree.
 
 ## Sumber kebenaran requirement
 

@@ -1,6 +1,6 @@
 ---
 description: Run the local gated workflow to PR draft preparation without publication
-argument-hint: <config JSON, external output directory; explicit fix/execution authorization>
+argument-hint: <issue/config JSON, optional repo profile, external output; explicit authorization>
 disable-model-invocation: true
 context: fork
 agent: doforme:workflow-runner
