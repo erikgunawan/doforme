@@ -13,6 +13,8 @@ If input is missing, ask for its location without running the helper or searchin
 
 Run exactly one properly quoted invocation:
 `python3 <plugin>/scripts/doctor.py --repo <current-root> --input <issue-file>`.
+Use the exact absolute helper path rendered in the command invocation. Never
+derive it from this skill's location or add Python flags such as -I/-B/-m.
 Append --profile <profile-file> and/or --output <new-external-output> only when
 supplied directly. Output is a prospective destination, never a report file to
 write. No --write, mutation/execution, resume or retry mode exists for this helper.

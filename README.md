@@ -2,7 +2,7 @@
 
 Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
 fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
-manual atau lewat runner lokal berurutan. Versi saat ini: **0.13.0**.
+manual atau lewat runner lokal berurutan. Versi saat ini: **0.14.0**.
 
 | Command | Hasil | Kemampuan |
 | --- | --- | --- |
@@ -187,6 +187,19 @@ claude plugin validate skills --strict
 hingga VALIDATION-0.4 mencatat pengujian awal pada fixture sintetis. Tes deterministic
 adapter memakai fake executor; hasil model nyata dicatat terpisah. Lisensi distribusi,
 ikon dan packaging katalog belum ditetapkan; katalog belum siap dipublikasikan.
+
+Uji penerimaan command init/doctor melalui Claude nyata tersedia secara opt-in:
+
+```bash
+python3 -B tests/runtime_utilities.py --output /absolute/new-acceptance-output
+python3 -B tests/runtime_utilities.py --output /absolute/new-acceptance-output --live
+```
+
+Tanpa --live hanya menampilkan rencana, tanpa file atau model call. Mode --live
+membuat repo sintetis di output eksternal baru, dengan maksimal empat panggilan
+Claude, batas $1 dan timeout 180 detik per kasus. Izin tetap terbatas pada Read dan
+helper yang tepat; denial menghentikan suite tanpa retry. Trace dan snapshot
+tersimpan privat. Lihat [hasil dan cara uji runtime](docs/RUNTIME-0.14.md).
 
 Referensi resmi: [manifest](https://code.claude.com/docs/en/plugins-reference),
 [skills](https://code.claude.com/docs/en/skills),

@@ -82,6 +82,8 @@ def check(root):
     if set(manifest) - {"name", "version", "description", "author", "repository", "keywords"}:
         raise ValueError("Review new manifest capabilities before accepting them")
     components = [(name, spec[0], spec[1]) for name, spec in {**STAGES, **UTILITIES}.items()]
+    helpers = {'init': 'init_repo.py', 'doctor': 'doctor.py',
+               'status': 'run_workflow.py', 'endtoend': 'run_workflow.py'}
     for command_name, agent_name, skill_name in components:
         command_path = root / f"commands/{command_name}.md"
         command = frontmatter(command_path)
@@ -103,6 +105,10 @@ def check(root):
         if set(skill) != {"name", "description", "user-invocable", "disable-model-invocation"}:
             raise ValueError("Review new helper skill capabilities")
         body = command_path.read_text()
+        if command_name in helpers:
+            helper = '${CLAUDE_PLUGIN_ROOT}/scripts/' + helpers[command_name]
+            if helper not in body:
+                raise ValueError(f'{command_name} must supply its exact packaged helper path')
         resource = "${CLAUDE_PLUGIN_ROOT}/skills/" + skill_name + "/SKILL.md"
         if "$ARGUMENTS" not in body or resource not in body:
             raise ValueError(f"{command_name} must forward input and resolve its packaged skill")

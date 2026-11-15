@@ -140,3 +140,22 @@ output location boundaries. Structure/resource checks, strict manifest and
 command/agent/skill local validations passed. The existing catalog license/icon
 limitations remain. No new real-model slash-command run, live integration,
 business acceptance, push or PR is claimed for this phase.
+
+Version 0.14 (2026-11-16) adds repeatable opt-in real-Claude acceptance tests for
+the init and doctor utility commands. The initial real init invocation exposed a
+path/command mismatch: the model guessed skills/../scripts and added Python -I.
+Normal exact-command permissions denied it; no write occurred. Utility commands
+now supply their resolved absolute helper path and prohibit extra Python options
+or path reconstruction. The permission boundary was not broadened. Local checks
+enforce helper-path declarations for init/doctor/status/endtoend.
+
+A new four-case real-model suite then passed inspection-only init, explicitly
+authorized two-file init, passing doctor, and unconfirmed-template blocked doctor.
+Each case had one observed helper call, zero denials, unchanged HEAD, no package/
+test sentinel execution, and only its exact permitted target changes. Doctor
+created no checkpoint/output and retained not_evaluated business requirements.
+Private raw evidence and a policy-digest summary were retained outside this repo;
+see RUNTIME-0.14.md for the recorded scope and repeat command. All 123 deterministic
+tests plus strict local manifest/command/agent/skill validations passed.
+No new full six-stage run or real-model status/endtoend test is claimed. No live
+integration, real business acceptance, push or PR occurred in this phase.

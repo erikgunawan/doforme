@@ -147,6 +147,16 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'preflight-reader must have only'):
             CHECKER.check(self.root)
 
+    def test_utilities_must_supply_canonical_helper_path(self):
+        for command, helper in (('init', 'init_repo.py'), ('doctor', 'doctor.py'),
+                                ('status', 'run_workflow.py'), ('endtoend', 'run_workflow.py')):
+            path = self.root / f'commands/{command}.md'
+            original = path.read_text()
+            path.write_text(original.replace('${CLAUDE_PLUGIN_ROOT}/scripts/' + helper, '<guessed-helper>'))
+            with self.subTest(command=command), self.assertRaisesRegex(ValueError, 'exact packaged helper'):
+                CHECKER.check(self.root)
+            path.write_text(original)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -9,6 +9,8 @@ disable-model-invocation: true
 
 Run one properly quoted helper command from the current selected Git root:
 `python3 <plugin>/scripts/init_repo.py --repo <current-root>`.
+Use the exact absolute helper path rendered in the command invocation. Never
+derive it from this skill's location or add Python flags such as -I/-B/-m.
 No arguments to `/doforme:init` means this inspection only, with no file creation.
 Append --write only for a direct explicit caller request to create configuration.
 The entire write scope is `.doforme/repository.json` and `.doforme/requirements.md`.
