@@ -159,3 +159,23 @@ see RUNTIME-0.14.md for the recorded scope and repeat command. All 123 determini
 tests plus strict local manifest/command/agent/skill validations passed.
 No new full six-stage run or real-model status/endtoend test is claimed. No live
 integration, real business acceptance, push or PR occurred in this phase.
+
+Version 0.15 (2026-11-16) adds dedicated Indonesian installation and usage
+guides, an imported Git-backed change ledger and generated CHANGELOG/command
+reference. A repository-local pre-commit hook updates/stages only the three
+managed outputs from intended staged changes; content identities bind history
+to Git blobs/modes. Existing hooks and unstaged owner edits are preserved.
+AGENTS.md and CONTRIBUTING.md require future changes to keep narrative docs
+current; automatic metadata is not claimed to infer semantic user guidance.
+
+All 138 offline tests passed, including real synthetic Git commits with the hook,
+idempotent updates, staged/unstaged separation, stale/rewritten/missing history,
+content changes under the same path, rename/delete and multi-commit squash
+coverage. The local hook was enabled for this doforme checkout. The new GitHub
+documentation workflow uses pinned checkout and contents:read, checks generated
+docs/history coverage and runs offline tests only. YAML syntax/configuration
+was checked locally; actionlint was unavailable and no hosted Actions run is
+claimed. The workflow becomes available only after publication and repository
+Actions policy permits it; required status rules remain owner configuration.
+No new model calls, live issue intake, business acceptance or external
+notifications were performed in this documentation phase.

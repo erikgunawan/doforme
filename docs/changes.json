@@ -1,0 +1,985 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "e6b41716aaac81ebe7e55415ec132dcfadf137819ae2e6b56f3665cb1549f3cf",
+      "base_commit": null,
+      "date": "2026-11-13",
+      "version": "0.1.0",
+      "summary": "feat: add read-only doforme analysis plugin",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "1de66757a96062f52eda40989567ef8493e113e0"
+        },
+        ".gitignore": {
+          "mode": "100644",
+          "blob": "43ae0e2a6c6d8fca34872506ca0f2e64194fec7c"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "b73bb21e5c512356faf63ee72df65c8342ecffb1"
+        },
+        "VALIDATION.md": {
+          "mode": "100644",
+          "blob": "7ca9a01dab0c48dfa823dabb163489eaa350147d"
+        },
+        "agents/investigator.md": {
+          "mode": "100644",
+          "blob": "37c56395a106f7af7ef564fc2b211163c2fb5552"
+        },
+        "commands/analyze.md": {
+          "mode": "100644",
+          "blob": "244ff4daf9b3a2993ad4950fd4a503905dc382d2"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "b5293976a1560c48080b5d7382d8825d0406f721"
+        },
+        "skills/bug-resolution/SKILL.md": {
+          "mode": "100644",
+          "blob": "04cc04572a4c1419874a4fb466f3f1df259e3601"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "1480d57c9f994605da5d8b7cec29781db107430d"
+        },
+        "skills/bug-resolution/references/report-template.md": {
+          "mode": "100644",
+          "blob": "fd911aba2e60fcd877a8f24a8601cc72249be209"
+        },
+        "skills/bug-resolution/references/state.md": {
+          "mode": "100644",
+          "blob": "705c96bd9bf5e4533a6dda2a6861be57d172b13f"
+        },
+        "skills/bug-resolution/references/workflow.md": {
+          "mode": "100644",
+          "blob": "ba18411e4ade55c2565d72fe8f80d48b4879611a"
+        },
+        "tests/SMOKE.md": {
+          "mode": "100644",
+          "blob": "bffb6da4ac8b93c83ddf7a7e1f6b3cf44fd97705"
+        },
+        "tests/fixtures/pagination/ISSUE.md": {
+          "mode": "100644",
+          "blob": "905781a8c9ed337a17c32fa6a600b67536bd1e96"
+        },
+        "tests/fixtures/pagination/README.md": {
+          "mode": "100644",
+          "blob": "a61c8a8abdbbeb80d29956d5f3faf6fd8fe377aa"
+        },
+        "tests/fixtures/pagination/pagination.py": {
+          "mode": "100644",
+          "blob": "040ee2f08311b374845e1acae94ebe94dfe5174c"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "dc62f7074e3f36038b954ea98d62ce168636ed77"
+        }
+      }
+    },
+    {
+      "id": "8007b26a825c0ca90d9ea92be9d38a6d4a29da00e68242a1246c44a49d5f5735",
+      "base_commit": "f4b787b9db0240f2d227f2a53d37e89da00a27bf",
+      "date": "2026-11-13",
+      "version": "0.2.0",
+      "summary": "feat: add read-only planning and portable dependency graph",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "6935b14d932c087f2f7de73c14903431ccd52160"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "bb474fe0d37837fbc145a461943202e5d2d12f11"
+        },
+        "VALIDATION-0.2.md": {
+          "mode": "100644",
+          "blob": "1d20a2dc064705be517c4487b931d1ff0348f3f5"
+        },
+        "agents/planner.md": {
+          "mode": "100644",
+          "blob": "4cb91a9503df70a53be58b14183994ffb37f73b5"
+        },
+        "commands/plan.md": {
+          "mode": "100644",
+          "blob": "830178ac16c8804ef586e92a8775bbbd0316236d"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "5ef8ff19cfd9ab730656aa18b807fb1aeed416cb"
+        },
+        "skills/bug-planning/SKILL.md": {
+          "mode": "100644",
+          "blob": "e34e3198161fc803e58646e0791abe61a1f66358"
+        },
+        "skills/bug-planning/references/plan-template.md": {
+          "mode": "100644",
+          "blob": "4f44d338db44b4c0f8825128d4fb511c28929844"
+        },
+        "skills/bug-resolution/SKILL.md": {
+          "mode": "100644",
+          "blob": "218b5c86346e10829eebc8b63959e8109a303e18"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "081ca1894778ceb5a01cfaeb0436628f6acb7269"
+        },
+        "skills/bug-resolution/references/state.md": {
+          "mode": "100644",
+          "blob": "6212d8ec0cba341c3906388b8dc8810a8fa66d0d"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "343d99f759b8eeea21a15aae3f733ab13b778443"
+        },
+        "skills/bug-resolution/references/workflow.md": {
+          "mode": "100644",
+          "blob": "04aced746209c30e85d6cefa43d4e4ba9716459b"
+        },
+        "tests/SMOKE.md": {
+          "mode": "100644",
+          "blob": "aa88d4114913270d4865d447a60a812166073eaa"
+        },
+        "tests/fixtures/pagination/ANALYSIS.md": {
+          "mode": "100644",
+          "blob": "aac4fd91202513d447aa5b8904968294f27760da"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "da8262758b047cc179fec9b07ee5b0ec33489ee1"
+        }
+      }
+    },
+    {
+      "id": "d40a98eaa4be74d5c51f9b043ed0b119742ec4fd17f44d6e72170927e5a81b63",
+      "base_commit": "3a666df2ab592ee1e947bbbfe93ef2682d32e601",
+      "date": "2026-11-13",
+      "version": "0.3.0",
+      "summary": "feat: ground analysis and plans in business requirement evidence",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "aafc7ee6f98b6bfa0b11619a07b4f368342ba4a5"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "1b5ca90cc4edd2b2f15bf40504cec6fa92d14b25"
+        },
+        "VALIDATION-0.3.md": {
+          "mode": "100644",
+          "blob": "e1e87d75920835127056944c12c8141b850a88e8"
+        },
+        "agents/investigator.md": {
+          "mode": "100644",
+          "blob": "eecaee4a1d685407fc01e37c43ade51b887fcc8b"
+        },
+        "commands/analyze.md": {
+          "mode": "100644",
+          "blob": "d98154b16665bbb4964601ffd1954cd45e41895c"
+        },
+        "docs/requirement-input.example.md": {
+          "mode": "100644",
+          "blob": "4ac9a7c53ad6830da84ff8f67c4b2b56671e5621"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "0b0e0ec2cabdd86e500aea8f3e8d59fdd15469b1"
+        },
+        "skills/bug-planning/SKILL.md": {
+          "mode": "100644",
+          "blob": "f518b881d3c553c23d6e49df30b4bb1e54ce1cda"
+        },
+        "skills/bug-planning/references/plan-template.md": {
+          "mode": "100644",
+          "blob": "faec283c4a36418b207f13f6e9e3a4c6b2265917"
+        },
+        "skills/bug-resolution/SKILL.md": {
+          "mode": "100644",
+          "blob": "2de84a2a4be96f613010feeb02a42a9ca2bbf81e"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "0a5b7131b7ee704b70633518d8144b7742bf5e57"
+        },
+        "skills/bug-resolution/references/report-template.md": {
+          "mode": "100644",
+          "blob": "28f93b8670a9e73b48cae39f6da02eeb688efab4"
+        },
+        "skills/bug-resolution/references/requirements.md": {
+          "mode": "100644",
+          "blob": "245d5d7463bc791613e1c0cbf110e85468216783"
+        },
+        "skills/bug-resolution/references/state.md": {
+          "mode": "100644",
+          "blob": "6a7ae99d3e6b73b4e185f4b35982abff8fd8f64a"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "5b1a94c383c514110afc60de70a2005742dc7610"
+        },
+        "skills/bug-resolution/references/workflow.md": {
+          "mode": "100644",
+          "blob": "d11061c9f3d9d661ab6e1400e3a020896a3b9727"
+        },
+        "tests/SMOKE.md": {
+          "mode": "100644",
+          "blob": "a5f1fd6e6fdebc72fe374f8b3571c222352808a6"
+        },
+        "tests/fixtures/pagination/ANALYSIS.md": {
+          "mode": "100644",
+          "blob": "141b8391f82006a5a2f65cf8d18a08ae7482990c"
+        },
+        "tests/fixtures/pagination/REQUIREMENTS.md": {
+          "mode": "100644",
+          "blob": "c62ee4fd6395d8cd6a586dbd86560031ab4e9deb"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "00f9ed116ea9df65fec0433d13fa297640b097f9"
+        }
+      }
+    },
+    {
+      "id": "53f726e1c3728765d824597d50547bd719822634fd6a949ab4eb4f682d8da403",
+      "base_commit": "1ddc98ba9cc78b3b7e4fa237239627aa435a7f7f",
+      "date": "2026-11-13",
+      "version": "0.4.0",
+      "summary": "feat: add explicitly scoped local fixes and regression validation",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "ddbf0e79d766d519f1ef105fa570fe90b4a801b2"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "b5a4174ef824253e13780e700863417567c5e628"
+        },
+        "VALIDATION-0.4.md": {
+          "mode": "100644",
+          "blob": "46c1efd8935ce74f6d919833b688e3ef4878741f"
+        },
+        "agents/fixer.md": {
+          "mode": "100644",
+          "blob": "5fa4df5aa8c28f8c90b0d0382bcecd89c1e584b1"
+        },
+        "commands/fix.md": {
+          "mode": "100644",
+          "blob": "e7d4711d3d649b220e2e094807921f99c7206ea8"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "759034c7a9846b0302ea9849876d47d734981684"
+        },
+        "skills/bug-fixing/SKILL.md": {
+          "mode": "100644",
+          "blob": "11f8a1900367b96c6611829016cec6e44e2458a0"
+        },
+        "skills/bug-fixing/references/fix-template.md": {
+          "mode": "100644",
+          "blob": "66bf1433f65c4e4f79986c09c0d827ef59ab8f20"
+        },
+        "skills/bug-planning/SKILL.md": {
+          "mode": "100644",
+          "blob": "42315402e156a2fc27dd081ca6956a575a4e57b0"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "64264e60f08e71f965ae44b76cf694c41ec181e7"
+        },
+        "skills/bug-resolution/references/requirements.md": {
+          "mode": "100644",
+          "blob": "4e6f08f8dba874be5b8b4344d107ffd9f49bf801"
+        },
+        "skills/bug-resolution/references/state.md": {
+          "mode": "100644",
+          "blob": "5725f69fe83d56d98c9df5837441ccedef31aac7"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "b646882a9eb3044065b1677f25665c230f2b30f6"
+        },
+        "skills/bug-resolution/references/workflow.md": {
+          "mode": "100644",
+          "blob": "1592a873e8aba6950d9f2c6e5a14cd6b2411bcfd"
+        },
+        "tests/SMOKE.md": {
+          "mode": "100644",
+          "blob": "7f7fca3ac7fdd5646ee4bcb9313e89741df40df5"
+        },
+        "tests/fixtures/pagination/PLAN.md": {
+          "mode": "100644",
+          "blob": "ff81b3569a0546cf3bf0af9714e2095a4effd6de"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "b3b76b75ea080e89e530b3e1118f287063c3745c"
+        }
+      }
+    },
+    {
+      "id": "041edcae6e20fa29e328053ee6de59c84d61d7f381d9916b98f1ccc424ec0865",
+      "base_commit": "f9b4f80519bd89db621b4f1e0dd30647bdeedd1e",
+      "date": "2026-11-13",
+      "version": "0.5.0",
+      "summary": "feat: independently validate scoped fixes against acceptance criteria",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "e0f13113c1ae9117e02863f1775d84927d7f4cd2"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "137bb19a179a7999a42ec76aac946a41ce62258c"
+        },
+        "agents/tester.md": {
+          "mode": "100644",
+          "blob": "1bcd4cee5d374916118c41fc4d6b80be14adb758"
+        },
+        "commands/test.md": {
+          "mode": "100644",
+          "blob": "d18f4bd8cff24269bb54e19b0cd725f4256a275e"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "bf66ed7bab73921ed79e2f2c8f02e68f35f5f4bb"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "24bdfe61eb91afdf803b17bae9fc8b66f36c22ae"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "ea6a1c9e49fa9b2b711ac27ded297637a7cc1244"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "2ee00ea6d39c83578c7490bb6a6b06121a3bb9b3"
+        },
+        "skills/bug-testing/SKILL.md": {
+          "mode": "100644",
+          "blob": "d1f36a85c69fdb7254335987a26d78217fe6dbfb"
+        },
+        "skills/bug-testing/references/test-template.md": {
+          "mode": "100644",
+          "blob": "03469f3a1eb1d5a0dd2283a4f752f4094760d226"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "a06b4ee3de3b59102ea8bdd9a70d9e824bf14c48"
+        }
+      }
+    },
+    {
+      "id": "e6af04491864c98f2125eba2bafe5713f03f612d7b2cfa689d26a35561d0e40a",
+      "base_commit": "60dc4ff1f18a922d07dc64373e86b0976cc26e33",
+      "date": "2026-11-13",
+      "version": "0.6.0",
+      "summary": "feat: review tested changes against fresh source and requirement snapshots",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "f6f385ec7b8fbb18eb131defe62621e5abd2491c"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "6f5d88700361e7d51e2b7fab091461382c45c273"
+        },
+        "agents/reviewer.md": {
+          "mode": "100644",
+          "blob": "33042317384cb62b64c0d37ac64a34b6cc341d3f"
+        },
+        "commands/review.md": {
+          "mode": "100644",
+          "blob": "30d9221da32a051fbb950d61488a195ee6a2a6d4"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "6795e5e0864341252dc0675928bffb16b1204afd"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "36bfa3a8cf2967b05cfa5d7e942ede820a48049e"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "e900217f15567d55a53e7bbb6b47866a3a206bda"
+        },
+        "skills/bug-review/SKILL.md": {
+          "mode": "100644",
+          "blob": "97dbab409f4b44c833dcd7316cf0d99a4735b974"
+        },
+        "skills/bug-review/references/review-template.md": {
+          "mode": "100644",
+          "blob": "5df0532fd8802ab7a3ee66bc85cac522a65db14b"
+        },
+        "skills/bug-testing/SKILL.md": {
+          "mode": "100644",
+          "blob": "3472f45a42664610b5862e898189e166dcadbb42"
+        },
+        "skills/bug-testing/references/snapshot.md": {
+          "mode": "100644",
+          "blob": "5b1b347056c838c957c8ecccb44584163e539049"
+        },
+        "skills/bug-testing/references/test-template.md": {
+          "mode": "100644",
+          "blob": "27f3e73f4fb9788210f7d49979b9cd1c19e1fda0"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "1585bb8afca05f00dcddb574f7e12966c8d90974"
+        }
+      }
+    },
+    {
+      "id": "62a2ee26081ea328fb1970ed3c2fe5ab63f5adb8ca0c4976f4855c70c765a680",
+      "base_commit": "8e3c767679d3c4824db77da85767bfc23fb44fc7",
+      "date": "2026-11-13",
+      "version": "0.7.0",
+      "summary": "feat: prepare evidence-backed PR drafts without remote publication",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "07f74b2421750d72ac4fdf395015423712221c74"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "06f2c64081b7beb3975ff64cc4f32bdc03a95646"
+        },
+        "agents/pr-preparer.md": {
+          "mode": "100644",
+          "blob": "661ec7be303e87c67c4fd598c8c33fea53e7368e"
+        },
+        "commands/pr.md": {
+          "mode": "100644",
+          "blob": "abc4dc3705ae72cc5e9c66ed6d8b87359a8e2185"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "f2f4486d533c2b884c1a6e80a22db224befd749a"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "4b0bfe68d9c6c5a4e532b6060aa8fe58a9c061a5"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "fa7e4d27f505f0c017f34f27061cc7d10f4bd975"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "64d0a366ae6ffb09830e937b71a5cc8dcb0b9f3c"
+        },
+        "skills/pr-preparation/SKILL.md": {
+          "mode": "100644",
+          "blob": "04656e164a4fc0c9c312054fa2de42453918e8c6"
+        },
+        "skills/pr-preparation/references/pr-template.md": {
+          "mode": "100644",
+          "blob": "20f786ce077fba4ef147695ceacab191f0654248"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "e564cea8656814dc1de352bb1830daffd7797cba"
+        }
+      }
+    },
+    {
+      "id": "97179b96fa0b7de9854da568cd6d1d53076f61d10293e239dbee7e46f4845960",
+      "base_commit": "d03ef20266e16e8107ad7e3d7c2546801e9f577a",
+      "date": "2026-11-13",
+      "version": "0.8.0",
+      "summary": "feat: orchestrate the local workflow with audited stage and scope gates",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "c4ec5742ccd7f1f670d74c09b8d688dabb6ce2bb"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "4d8bf82f061b44be3de0f39f2e2aa117b9c9b5a9"
+        },
+        "agents/workflow-runner.md": {
+          "mode": "100644",
+          "blob": "94961d7c943aa3fb1d0fccb864ec57c83e7ab964"
+        },
+        "commands/endtoend.md": {
+          "mode": "100644",
+          "blob": "cb69033a43017453bcee8af922d43ccc3a9199b9"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "48edcfb28aa2fadd9a813a0f6a7077c5d3183d68"
+        },
+        "docs/workflow-input.example.json": {
+          "mode": "100644",
+          "blob": "1b6a18f91e3ec3d7e2d3de6ff82340c3b5cc7413"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "3f8bdac75cd4ee3e7e28988b9c16c3d071a2d213"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "b0cd9660c5f8fe516b7d0baa3ce32aa740c2a14f"
+        },
+        "skills/workflow-orchestration/SKILL.md": {
+          "mode": "100644",
+          "blob": "578cfd49e1ab41317464fad212186a8c57436702"
+        },
+        "tests/test_workflow.py": {
+          "mode": "100644",
+          "blob": "4604d3b60c7444884fee1b442053e03bda1a36ae"
+        }
+      }
+    },
+    {
+      "id": "ca368059f9f5b858f9d8af839067bc398173efa994e424c567151aab79cf62a2",
+      "base_commit": "789a5cd6b3197bb654514db29d2ea17089f643b8",
+      "date": "2026-11-13",
+      "version": "0.9.0",
+      "summary": "feat: persist private checkpoints and validate safe local resume",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "6f3f34e81cac3d6d1918d5693dbde9f966855f9a"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "730d14fd90a6726b8fdd6f89ed5c6cfa7aac2c81"
+        },
+        "agents/status-reader.md": {
+          "mode": "100644",
+          "blob": "d0f7b714e7da2ecdc28b13dc556a9f6a976a106d"
+        },
+        "commands/status.md": {
+          "mode": "100644",
+          "blob": "2f82303e35eb073d9c369fef163b7b8d018a95fd"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "f2699f91e495c7335c19b573621e8857c0b3ddc0"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "af53a5ddaeaf4804f965fa5f7d7ce0ce0c02d94b"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "c8f8129ea56da8fd61f3e270b75bca163bc578fe"
+        },
+        "scripts/workflow_state.py": {
+          "mode": "100644",
+          "blob": "b85b51a80c447a3191df9f0f353bc4a9c858cefb"
+        },
+        "skills/bug-resolution/SKILL.md": {
+          "mode": "100644",
+          "blob": "505081d058808c489ac59fcb7cb78c5df338bcb4"
+        },
+        "skills/bug-resolution/references/dependencies.md": {
+          "mode": "100644",
+          "blob": "0b6ef868ed8d8ea54ff00a3e5d5bf4e5d19c5ff7"
+        },
+        "skills/bug-resolution/references/state.md": {
+          "mode": "100644",
+          "blob": "738e94c8f212b64e3b28360328df8793495fdaf4"
+        },
+        "skills/bug-resolution/references/workflow.json": {
+          "mode": "100644",
+          "blob": "7465a0da7243262bed0bdbd0765a3e776dfd21aa"
+        },
+        "skills/bug-resolution/references/workflow.md": {
+          "mode": "100644",
+          "blob": "ee68ae7387357383da48e67f9aa820bd7208709e"
+        },
+        "skills/workflow-orchestration/SKILL.md": {
+          "mode": "100644",
+          "blob": "1acb6dcca4ca8e13048ed437a864afd714dcdc9e"
+        },
+        "skills/workflow-status/SKILL.md": {
+          "mode": "100644",
+          "blob": "6650bfb17c46b4e7e1d0f1dc380aedbd1a9db1a7"
+        },
+        "tests/test_workflow.py": {
+          "mode": "100644",
+          "blob": "d331a942f05701911cec150a94d6cfc5a2ee7b71"
+        }
+      }
+    },
+    {
+      "id": "5d3f93335c666e4ba20e02791112a8651b01afc50f815e573d62c401a3d4ac6b",
+      "base_commit": "f4cc9597617180859e973e2c36d3db67db6f3d0c",
+      "date": "2026-11-14",
+      "version": "0.10.0",
+      "summary": "feat: add opt-in issue intake and notification adapters with private validation evidence",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "0a2b36e2f20ad78b5e17dd6219d17b5d7acd190d"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "cfbc9e4e1c6d2b5b8e3c0cbbf2d1753c1da05078"
+        },
+        "docs/INTEGRATIONS.md": {
+          "mode": "100644",
+          "blob": "d240acb9512c11eaef4df342b735fd89ad0871c8"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "f73a8a49d9bbb3a73f85630fae22bef447e4b895"
+        },
+        "integrations/github-issues.yml.example": {
+          "mode": "100644",
+          "blob": "3a90bb1db0ed5d9c649d209161eac3b6bdb14cdc"
+        },
+        "scripts/issue_intake.py": {
+          "mode": "100644",
+          "blob": "e2e7ea7f990d17f5fae2eac061ec67723565be6a"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "71c397b13bd567dd33887e5f5a53a9a9e61db6fc"
+        },
+        "skills/bug-resolution/references/workflow.md": {
+          "mode": "100644",
+          "blob": "c5ea54a740e090334f3f277ca2fd6779e48c5f41"
+        },
+        "tests/test_issue_intake.py": {
+          "mode": "100644",
+          "blob": "ca9a92affec4d9e94d01be65a915fe08c90ad4c9"
+        },
+        "tests/test_workflow.py": {
+          "mode": "100644",
+          "blob": "984983e03788d82eba4272f46bd55e1a64b3350c"
+        }
+      }
+    },
+    {
+      "id": "47d28507af459f602e81ef32c7475456e965d3eb50673f41f42ca294e098fdff",
+      "base_commit": "c8d48c4d6e0c7b99ab1d1fe368f754fdfe6481b1",
+      "date": "2026-11-14",
+      "version": "0.11.0",
+      "summary": "fix: harden workflow scope, checkpoint integrity and safe Git inspection",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "595528967bbbe61167e7f157aed2af360b67bedd"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "a67e7d6b2dabdbc2e825e454f286ce677b39c7ad"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "2c480a9df2e9c9a7e8022362b7275453363c783b"
+        },
+        "docs/RELEASE-0.11.md": {
+          "mode": "100644",
+          "blob": "2d288ecffb80cfc9f552754b402a9a70d6e27a39"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "ed7bf0394925e4f60afd6c37e6df3dd652f34b16"
+        },
+        "scripts/workflow_state.py": {
+          "mode": "100644",
+          "blob": "f4907c69e66388c590501f942e0a5fbedd422bc2"
+        },
+        "skills/bug-fixing/SKILL.md": {
+          "mode": "100644",
+          "blob": "91ffc25e106950291029fcbf8e9566afffc4e67f"
+        },
+        "skills/bug-fixing/references/fix-template.md": {
+          "mode": "100644",
+          "blob": "2b1ea5ab3872490f39e627ee0e2ccda35e4b29bc"
+        },
+        "skills/bug-review/SKILL.md": {
+          "mode": "100644",
+          "blob": "ac69da609a6df7bbbd849fb29d5d4c45f6526bab"
+        },
+        "skills/bug-testing/SKILL.md": {
+          "mode": "100644",
+          "blob": "a42b76c61ab360d9083a1c4f8cc0602cae206741"
+        },
+        "skills/bug-testing/references/snapshot.md": {
+          "mode": "100644",
+          "blob": "7be8111fc08314ace558acc9550ab17894b9b738"
+        },
+        "tests/test_workflow.py": {
+          "mode": "100644",
+          "blob": "06c6469cda655047d5858903b171b5326c67021d"
+        }
+      }
+    },
+    {
+      "id": "1a525df47132b5437c1493a02c2f7176f2efbc8635069ddbf7cf4b2f443281b5",
+      "base_commit": "96ade80b71ec9178c6c413ae95556e561986b406",
+      "date": "2026-11-15",
+      "version": "0.12.0",
+      "summary": "feat: add repository onboarding and explicit per-issue profiles",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "2bd5346ff8a7ba4a47ea4ac736e59ff551d17387"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "e5637df39828b5c2c0f7c4fdae422ad396689e09"
+        },
+        "agents/repo-onboarder.md": {
+          "mode": "100644",
+          "blob": "e2508e908afe2ba83eb5cea559bcd79dd6b4b435"
+        },
+        "agents/workflow-runner.md": {
+          "mode": "100644",
+          "blob": "d7812834a3525702f5ed3870c11232cbe0d09d97"
+        },
+        "commands/endtoend.md": {
+          "mode": "100644",
+          "blob": "d5b8b77913f3669b031e3109a4d8a1ec8477fc5f"
+        },
+        "commands/init.md": {
+          "mode": "100644",
+          "blob": "9f3ee4cfdce539103fc2fe2c5e4a16cee1ccea07"
+        },
+        "docs/ONBOARDING.md": {
+          "mode": "100644",
+          "blob": "19bb62b199f5ce1b7ddb3cc7f75dd896cf78a8a5"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "30e1894a1f6971e0f7a1296da8a57214be1cb248"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "806d4ff542e11d56569838ba2d2b604ba989b4d3"
+        },
+        "scripts/init_repo.py": {
+          "mode": "100644",
+          "blob": "c8f63269f829c83c7a38e08aeb1d9043a150a7e4"
+        },
+        "scripts/repo_policy.py": {
+          "mode": "100644",
+          "blob": "4d116866dc13e87ac5ab74e01da462dd281ec2f0"
+        },
+        "scripts/repo_profile.py": {
+          "mode": "100644",
+          "blob": "106bb010d254155794b36b2714e1dbed46fa4fd6"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "03a77671f3d410a86ba17010c5bba2bca5d13e51"
+        },
+        "skills/repo-onboarding/SKILL.md": {
+          "mode": "100644",
+          "blob": "7753dc3c609e06a6118848b971be296ca59d5a91"
+        },
+        "skills/workflow-orchestration/SKILL.md": {
+          "mode": "100644",
+          "blob": "d50676fd670a8461215b57fb7d493b1efec1ca66"
+        },
+        "tests/test_onboarding.py": {
+          "mode": "100644",
+          "blob": "d7f244db6d831c05288581fb383a126cfcf21f9c"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "c0af23ea231298e59503458f01e7d070a69ed1e1"
+        }
+      }
+    },
+    {
+      "id": "2fb48f86cb27ecae8b556af545e6714744372a7ec8b596f5270d958da06fc515",
+      "base_commit": "66a19e2aced543aec118f64bd9a3065232c7d0a7",
+      "date": "2026-11-16",
+      "version": "0.13.0",
+      "summary": "feat: add read-only workflow preflight doctor",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "b2de2f264e65182c262fc1c9af91c09dbd133ae5"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "aa6f9230846e5a70d647550d79ca30f1094c6b97"
+        },
+        "agents/preflight-reader.md": {
+          "mode": "100644",
+          "blob": "87d4d869a899b1c530382e9357cd6fd1e50d977d"
+        },
+        "commands/doctor.md": {
+          "mode": "100644",
+          "blob": "c7e96a018940103d00c32f3cb0221180b18c0db3"
+        },
+        "docs/ONBOARDING.md": {
+          "mode": "100644",
+          "blob": "ba9b1b6bf0c70698334fd535eed07ef51f967150"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "ab08f545751726b99b7ba96fb0f4db0b6a8fe91c"
+        },
+        "docs/PREFLIGHT.md": {
+          "mode": "100644",
+          "blob": "c839caabe7b96856225a9d943a04e5aeddf3a6db"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "ecd5e565d8412bfda236258657af0e934c1ac13a"
+        },
+        "scripts/doctor.py": {
+          "mode": "100644",
+          "blob": "bb90114e7722c2f5dbf684a362608841e0f8c1f8"
+        },
+        "skills/workflow-preflight/SKILL.md": {
+          "mode": "100644",
+          "blob": "c42a197d2763f372921e455a8e5609a3ef89c90b"
+        },
+        "tests/test_doctor.py": {
+          "mode": "100644",
+          "blob": "a28b10303057d59fbf2d9b7c611eeda2e3d6fad2"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "a90c8aaadf01f4a977dc461bc0644bb94e347f8a"
+        }
+      }
+    },
+    {
+      "id": "94f41daf32266376492bb5f0078b756c975292476e74b1787a21c89ed88edd28",
+      "base_commit": "0202576e6a6b5e497a0a8a206ddca5aa76bc1c31",
+      "date": "2026-11-16",
+      "version": "0.14.0",
+      "summary": "test: verify utility commands with real Claude acceptance runs",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "c85b6077b85efcd57c3b450d7d607dff60dcb768"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "95ab165b26b85b2f0817180f614fb101fe42afe7"
+        },
+        "commands/doctor.md": {
+          "mode": "100644",
+          "blob": "0f6fbb300a7bec57e9bea00a3c1b4deeaa564165"
+        },
+        "commands/endtoend.md": {
+          "mode": "100644",
+          "blob": "196bd8cbeb8b638f7bf03928b47d60c0706ed358"
+        },
+        "commands/init.md": {
+          "mode": "100644",
+          "blob": "20c2e3310469031de4d9ac017807bb861d0cfdc2"
+        },
+        "commands/status.md": {
+          "mode": "100644",
+          "blob": "82ca2be46b3e88a1e4994e8b38fff002525ea894"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "68ed19f83c64bcd6055cb93662a492467fdd4e28"
+        },
+        "docs/RUNTIME-0.14.md": {
+          "mode": "100644",
+          "blob": "5538f96c94767c8e13b674fe5b28a50c69cf3fe3"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "8e451c1c980a76bd1e65d37de9de9d55e67259ba"
+        },
+        "skills/repo-onboarding/SKILL.md": {
+          "mode": "100644",
+          "blob": "8a0866ba043bd8cbe8d27e11685d11afd9984c54"
+        },
+        "skills/workflow-preflight/SKILL.md": {
+          "mode": "100644",
+          "blob": "6ae2eb4a5b551c50fcfa1bbcb266e92ea14b1e74"
+        },
+        "tests/runtime_utilities.py": {
+          "mode": "100644",
+          "blob": "2d22e1ceb6abb51589c1765d6ce9cb0053a81dcb"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "20637bf1606747870a20f683ee6f626f5972a449"
+        },
+        "tests/test_runtime_utilities.py": {
+          "mode": "100644",
+          "blob": "68f3489509fd5e03a9c64973a971021df158cf9a"
+        }
+      }
+    },
+    {
+      "id": "190d78ab69a1e607e0ac8471c62e61b26dfe79110a46911001f332477aef06c5",
+      "base_commit": "23da9c7a388a6d633e15d61c16d0313b25f586f3",
+      "date": "2026-11-16",
+      "version": "0.14.0",
+      "summary": "docs: explain testing from a GitHub checkout",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "ffdad7ffb6e5bf6a2669c4ea758b1cb85de22369"
+        }
+      }
+    },
+    {
+      "id": "ec1457e0146dc0d723fb550dcb283e0f1dde1b6fc4d05f43325754e29eaf6e6a",
+      "base_commit": "f3324ea6b14c180816e7f9b6b8471a30944ff4d5",
+      "date": "2026-11-16",
+      "version": "0.15.0",
+      "summary": "Document installation and usage; automate content-bound change history and command reference updates",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "ec767bd6a3374fde3ce0c168b44567a5f3125bb2"
+        },
+        ".githooks/pre-commit": {
+          "mode": "100755",
+          "blob": "3f559c1d1210bce8ec7c328edee191e63277e2a8"
+        },
+        ".github/workflows/documentation.yml": {
+          "mode": "100644",
+          "blob": "89c75d54961936c817c2c3c4817f84e1af605acf"
+        },
+        "AGENTS.md": {
+          "mode": "100644",
+          "blob": "fe5055a25026f75681012a6b44065da6eaadc9c5"
+        },
+        "CONTRIBUTING.md": {
+          "mode": "100644",
+          "blob": "829cd8bea132a6cc76c9f83d166084bf99f16fc6"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "93e286ffde5f95ab4caa6a2828c2c41831371383"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "fc60d9d1fc4f95c79c72c7817440329c5cd39ff3"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "402eb732ce79f1894c04bddf680c1ab6f7f28b2c"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "2ea63b0f7022f04172141bf24e9029676f42c004"
+        },
+        "scripts/install_doc_hooks.py": {
+          "mode": "100644",
+          "blob": "d1a793bbf8fd5e127b4fc0855be42991b4680ac3"
+        },
+        "scripts/update_docs.py": {
+          "mode": "100644",
+          "blob": "731e009d26607db89956cf91d9d8ec40a6696d4e"
+        },
+        "tests/test_documentation.py": {
+          "mode": "100644",
+          "blob": "d3a8ec5a9de136fdc641556af8bec158a6a0227e"
+        }
+      }
+    }
+  ]
+}

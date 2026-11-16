@@ -2,20 +2,16 @@
 
 Claude Code plugin untuk investigasi bug, perencanaan berbasis requirement,
 fix lokal, validasi terpisah, review, dan draft PR. Semua tahap dapat dijalankan
-manual atau lewat runner lokal berurutan. Versi saat ini: **0.14.0**.
+manual atau lewat runner lokal berurutan. Versi dan daftar command terkini ada
+di [referensi yang dibuat otomatis](docs/REFERENCE.md).
 
-| Command | Hasil | Kemampuan |
-| --- | --- | --- |
-| `/doforme:init` | inspeksi repo dan draft profil dengan --write eksplisit | helper terbatas; tidak menjalankan source/test |
-| `/doforme:doctor` | diagnosis prasyarat workflow baru dan daftar blocker | hanya inspeksi lokal; tidak menjalankan source/test/model |
-| `/doforme:analyze` | validitas issue, evidence, hipotesis, confidence | baca/pencarian |
-| `/doforme:plan` | dependency gates, langkah fix, AC → test | baca/pencarian |
-| `/doforme:fix` | implementasi scoped dan red/green regression | edit/write + command terotorisasi |
-| `/doforme:test` | hasil per AC: passed/failed/skipped/not_run | test terotorisasi; tanpa alat edit |
-| `/doforme:review` | pass/changes_requested/blocked, findings | baca + inspeksi Git lokal |
-| `/doforme:pr` | title/body draft beserta evidence | baca + inspeksi Git lokal; tanpa publikasi |
-| `/doforme:endtoend` | menjalankan adapter workflow lokal | satu invocation adapter yang diotorisasi |
-| `/doforme:status` | status checkpoint dan freshness | hanya membaca via helper |
+| Panduan | Isi |
+| --- | --- |
+| [Instalasi](docs/INSTALLATION.md) | Prasyarat, clone, memuat plugin, update dan troubleshooting |
+| [Penggunaan](docs/USAGE.md) | Setup repo, requirement/AC, input issue, command manual, runner dan resume |
+| [Referensi otomatis](docs/REFERENCE.md) | Versi, command, agent dan input dari source plugin |
+| [Changes history](CHANGELOG.md) | Riwayat awal Git dan perubahan berikutnya saat commit |
+| [Pemeliharaan otomatis](CONTRIBUTING.md) | Hook lokal, generation dan pemeriksaan GitHub |
 
 **Complete tidak berarti issue resolved.** Green test berlaku pada AC yang diuji.
 Review AI tidak menggantikan penerimaan pemilik requirement. Business acceptance
@@ -44,8 +40,9 @@ Setiap command punya konteks terpisah: laporan sebelumnya harus diberikan lengka
 sebagai inline input atau file yang disebut eksplisit, bukan diasumsikan tersedia.
 
 Mulai dengan `/doforme:init` pada repo target untuk inspeksi tanpa menulis.
-Gunakan repo percobaan untuk uji pertama. Pengujian otomatis GitHub Actions belum
-aktif; template integrasi di repo adalah contoh opt-in, bukan workflow terpasang.
+Gunakan repo percobaan untuk uji pertama. Workflow dokumentasi/tes offline ada
+di `.github/workflows/documentation.yml` dan tersedia setelah dipush serta Actions
+diizinkan. Template integrasi issue tetap opt-in, bukan workflow intake terpasang.
 
 ```text
 /doforme:analyze ISSUE.md; requirement dan konfirmasi scope di REQUIREMENTS.md
