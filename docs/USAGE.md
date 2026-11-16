@@ -39,6 +39,10 @@ Review dan commit setup tersebut sebelum memulai workflow yang memerlukan baseli
 
 ## Siapkan input per issue
 
+Ekspor teks sumber dapat dibundel dengan hash/provenance menggunakan
+[source snapshots](SOURCES.md). Tool ini membaca ekspor lokal yang disebut
+eksplisit dan tidak memberi authority atau mengambil dokumen remote secara live.
+
 Simpan input di luar checkout target, misalnya `/absolute/inputs/bug-123.json`:
 
 ```json

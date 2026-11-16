@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.20.0
+
+Phase 20 foundation: preserve explicit local requirement exports with bounded provenance and hashes
+
+Change ID: `777a7dc06246`.
+
+File: `.claude-plugin/plugin.json`, `docs/PHASES.md`, `docs/SOURCES.md`, `docs/USAGE.md`, `scripts/requirement_sources.py`, `tests/test_requirement_sources.py`.
+
 ## 2026-11-16 — v0.19.0
 
 Phase 19 preparation: document real pilot inputs and observed missing owner target and acceptance criteria

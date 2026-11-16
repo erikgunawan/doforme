@@ -245,3 +245,13 @@ to edit another repo was supplied. PILOT.md provides the input checklist,
 execution/evidence procedure and explicit stop conditions. No target source was
 modified and no synthetic fixture was relabeled as a real business issue. Pilot
 execution remains pending the requested owner inputs; this is a preparation commit.
+
+Version 0.20 (2026-11-16) implements portable source-snapshot ingestion for
+explicit local business-document/Jira/Figma/spec/user exports. It preserves exact
+UTF-8 bytes, bounded provenance, source/capture times and SHA-256 in new private
+external bundles; authority stays unconfirmed. Seventeen focused tests passed,
+including duplicate/escaping/symlink/FIFO/size/credential-origin/malformed-kind
+cases and partial creation behavior. No model, source code or remote fetch ran.
+This completes local acquisition infrastructure, not live Docs/Jira/Figma access:
+an actual approved source URL/account and applicability confirmation are still
+missing. SOURCES.md records the supported contract and live limitation.

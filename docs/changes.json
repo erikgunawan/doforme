@@ -1133,6 +1133,39 @@
           "blob": "b306982a6a76c0a5a0e6fbf796dc8efabca850e3"
         }
       }
+    },
+    {
+      "id": "777a7dc062464dd09cdf37a6b3868c53c4e3ccc334a2ab10df6c44d6eea37f0e",
+      "base_commit": "e08fafc883d2e4ab74501023c43a46429dbdcd18",
+      "date": "2026-11-16",
+      "version": "0.20.0",
+      "summary": "Phase 20 foundation: preserve explicit local requirement exports with bounded provenance and hashes",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "63fe549b6ece8d69e287d9fc96742aa7043994a2"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "7fde2050ff550f254f61cadc586f30a22ed2c956"
+        },
+        "docs/SOURCES.md": {
+          "mode": "100644",
+          "blob": "778357a389b6393d46641f01a6a7eba954fd7147"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "0df5513565321d72365c0b1123d432dec51ae71d"
+        },
+        "scripts/requirement_sources.py": {
+          "mode": "100644",
+          "blob": "584ceea728502e47eaf795065976597eb457d5e5"
+        },
+        "tests/test_requirement_sources.py": {
+          "mode": "100644",
+          "blob": "053c0dc17e132259a215e4e9103f8d6137a23be9"
+        }
+      }
     }
   ]
 }
