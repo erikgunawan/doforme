@@ -292,3 +292,16 @@ it does not migrate human acceptance. Ten focused mock-API/real-local-Git tests
 passed, including the commit handoff and case-canonical repository regression
 found in cross-review. No actual remote PR or live publication test was performed;
 head/base branches, reviewed proposal and authorization remain operator inputs.
+
+Version 0.23 (2026-11-16) adds an offline-by-default integration readiness guard
+with explicit read-only GitHub metadata checks. Fifteen tests passed, including
+malformed/incomplete workflow/secret records and exact template/path/base64 checks.
+An actual authorized metadata query on erikgunawan/doforme observed repository
+issue intake, optional analysis and Telegram not configured: no active intake
+workflow, opt-in variables/pinned CLI version or expected repository secret names
+were present. Organization/environment secrets were not inferred. Evidence is
+private in sibling artifacts. No actual event/trusted owner-confirmed sources or
+Telegram recipient were supplied, so activation/live verification remains pending.
+No secret value was read, setting changed, workflow dispatched, model called or
+notification sent. INTEGRATION-READINESS.md distinguishes configuration from live
+verification; this commit is readiness infrastructure, not claimed live activation.

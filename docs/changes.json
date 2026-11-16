@@ -1277,6 +1277,39 @@
           "blob": "4da15884affed9cf8df20dce1c4b1c5cf6bc7a29"
         }
       }
+    },
+    {
+      "id": "c9c21f023cc29c0dea6483c8a1a8d3370469ea6c8038d5bccceb1242ff99b48a",
+      "base_commit": "5e3a5f456371e2789241b7d9cc9ec9461b616d0b",
+      "date": "2026-11-16",
+      "version": "0.23.0",
+      "summary": "Phase 23 readiness: inspect integration metadata without activating workflows or sending notifications",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "d0a3e57b375b10c3eb1899a15958fa41195d7bf8"
+        },
+        "docs/INTEGRATION-READINESS.md": {
+          "mode": "100644",
+          "blob": "71f843710f8f7c3091c94c7420a6188e73bb7c7d"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "3efc04abf963e4e1ea0fc2f5799d51f4d3284eba"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "6c6063e830bb68ed85a302f83608e90719452262"
+        },
+        "scripts/integration_readiness.py": {
+          "mode": "100644",
+          "blob": "e6a7e2162df5c4e3217a8ac4c2ce00f547cf4bf8"
+        },
+        "tests/test_integration_readiness.py": {
+          "mode": "100644",
+          "blob": "9da76db9485d97b414c30b3e5d1f7cb1aeea77bb"
+        }
+      }
     }
   ]
 }

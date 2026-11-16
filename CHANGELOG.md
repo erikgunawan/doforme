@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.23.0
+
+Phase 23 readiness: inspect integration metadata without activating workflows or sending notifications
+
+Change ID: `c9c21f023cc2`.
+
+File: `.claude-plugin/plugin.json`, `docs/INTEGRATION-READINESS.md`, `docs/PHASES.md`, `docs/USAGE.md`, `scripts/integration_readiness.py`, `tests/test_integration_readiness.py`.
+
 ## 2026-11-16 — v0.22.0
 
 Phase 22: add read-only publication preview and explicitly authorized content-bound draft PR delivery

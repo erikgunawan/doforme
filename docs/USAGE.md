@@ -163,6 +163,11 @@ freshness normal status/resume dan attestation lama tidak diubah diam-diam.
 
 ## Integrasi dan pengujian
 
+[Pemeriksaan kesiapan integrasi](INTEGRATION-READINESS.md) menyediakan diagnosis
+offline atau pembacaan metadata GitHub eksplisit. Keberadaan konfigurasi/secret
+tidak dianggap bukti pengiriman berhasil. Helper tidak memasang secret, mengaktifkan
+workflow, dispatch, memanggil model atau mengirim pesan.
+
 GitHub issue intake/Telegram tetap contoh opt-in terpisah, belum aktif otomatis.
 Workflow documentation hanya memeriksa docs/history dan tes offline; tidak
 memproses issue atau memanggil model. Lihat [integrasi](INTEGRATIONS.md),
