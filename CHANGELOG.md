@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.18.0
+
+Phase 18: bind supplied human acceptance decisions to workflow content and exact acceptance criteria
+
+Change ID: `3fd667feccf7`.
+
+File: `.claude-plugin/plugin.json`, `docs/ACCEPTANCE.md`, `docs/PHASES.md`, `docs/USAGE.md`, `scripts/business_acceptance.py`, `tests/test_business_acceptance.py`.
+
 ## 2026-11-16 — v0.17.0
 
 Phase 17: verify actual endtoend slash routing and scoped requirement/authorization stops

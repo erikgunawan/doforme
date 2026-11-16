@@ -226,3 +226,13 @@ tests, plugin structure and generated-doc checks. RUNTIME-0.17.md describes the
 real helper-output/checkpoint audit and private evidence. Concurrent later-phase
 files were excluded from this tested export. No pilot on a real issue, business
 acceptance, remote PR or live integration is claimed.
+
+Version 0.18 (2026-11-16) implements a read-only business-acceptance sidecar.
+It binds explicit canonical AC statements/source confirmations, complete fresh
+workflow/report/validation identities and current content before evaluating a
+supplied owner claimant's per-AC accepted/rejected/pending attestation and hashed
+local UAT evidence. Twelve focused tests passed, covering missing/changed criteria,
+stale workflow/evidence, identity fields, coverage and acceptance states. The tool
+reports attested decisions with owner identity/authority not_verified, preserves
+the original workflow and leaves resolution/publication unestablished. No actual
+owner/UAT artifact has been supplied; real business acceptance remains pending.

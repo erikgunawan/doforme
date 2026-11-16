@@ -1075,6 +1075,39 @@
           "blob": "4c1333fdd122847019f111b1445689d443a4d551"
         }
       }
+    },
+    {
+      "id": "3fd667feccf7d83200203f32666b6700d197043e3a8728973deea682aaddd371",
+      "base_commit": "7119127e838309784b1680e6a51aa29bcb1b6661",
+      "date": "2026-11-16",
+      "version": "0.18.0",
+      "summary": "Phase 18: bind supplied human acceptance decisions to workflow content and exact acceptance criteria",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "50c18384c52a6d31ed7bae2e67c125a676ae496c"
+        },
+        "docs/ACCEPTANCE.md": {
+          "mode": "100644",
+          "blob": "ccc8f3e75626a39b7d0913b7918ca56a95621ed1"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "748cf1072ec8b80f84513a35e179f56d18552ea9"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "bd64ec0e8d6ad7505f75f9e3a8577007d753271b"
+        },
+        "scripts/business_acceptance.py": {
+          "mode": "100644",
+          "blob": "5cdc64372fb568cdb257544c3e3c5443c1cc85f8"
+        },
+        "tests/test_business_acceptance.py": {
+          "mode": "100644",
+          "blob": "c28709f728c8b4ff87a35c5ab1636087e5ffc055"
+        }
+      }
     }
   ]
 }

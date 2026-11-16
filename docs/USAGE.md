@@ -141,6 +141,11 @@ Issue bukan bug atau review changes_requested dapat menghentikan handoff meskipu
 tahap sebelumnya complete. Baca reason dan laporan, bukan hanya status proses.
 Complete seluruh runner tetap berarti draft siap ditinjau, bukan siap publikasi.
 
+Bukti keputusan manusia per AC dapat diperiksa dengan validator read-only di
+[panduan acceptance](ACCEPTANCE.md). Bukti terikat pada konten/checkpoint/AC yang
+diuji; keputusan supplied diberi label attested, bukan identitas owner yang sudah
+diautentikasi. Validator ini tidak mengubah status runner atau menutup issue.
+
 ## Integrasi dan pengujian
 
 GitHub issue intake/Telegram tetap contoh opt-in terpisah, belum aktif otomatis.
