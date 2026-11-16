@@ -112,8 +112,24 @@ class BusinessAcceptanceTests(unittest.TestCase):
     def test_source_criteria_cannot_be_invented_or_omitted(self):
         self.criteria_data['criteria'][0]['statement'] = 'Invented business rule'
         self.criteria.write_text(json.dumps(self.criteria_data))
-        with self.assertRaisesRegex(ValueError, 'not present'):
+        with self.assertRaisesRegex(ValueError, 'same exact source AC entry'):
             ACCEPT.binding(self.repo, self.output, self.criteria)
+
+    def test_swapped_ac_statements_cannot_reuse_another_entry_in_same_source(self):
+        first, second = self.criteria_data['criteria']
+        first['statement'], second['statement'] = second['statement'], first['statement']
+        self.criteria.write_text(json.dumps(self.criteria_data))
+        with self.assertRaisesRegex(ValueError, 'same exact source AC entry'):
+            ACCEPT.binding(self.repo, self.output, self.criteria)
+
+    def test_ambiguous_or_multiline_ac_entries_fail_closed(self):
+        for source in ('AC1: First.\nAC1: Second.\n',
+                       'AC1: First.\n    Additional condition.\n',
+                       '| AC1 | First. |\n',
+                       '**AC1:** First.\n'):
+            with self.subTest(source=source), self.assertRaisesRegex(ValueError, 'entry'):
+                ACCEPT.source_ac_entry(source, 'AC1')
+        self.assertEqual(ACCEPT.source_ac_entry('- AC1: Exact condition.\n\nNotes.\n', 'AC1'), 'Exact condition.')
 
     def test_acceptance_requires_local_hashed_evidence_not_link_only(self):
         self.attestation['evidence_files'][0]['path'] = 'https://example.invalid/approval'

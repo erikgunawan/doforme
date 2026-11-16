@@ -29,8 +29,17 @@ sintetis; statement harus berupa kutipan persis dari source requirement workflow
 ```
 
 Sertakan tepat semua AC ID kanonis seperti AC1/AC2 yang disebut pada report
-plan/test/review; ID duplikat, hilang, baru atau statement yang tidak ditemukan
-di source ditolak. Source harus merupakan salah satu requirement input workflow.
+plan/test/review. Locator source yang didukung adalah tepat satu definisi satu
+baris `AC1: statement lengkap` (opsional bullet `- AC1: ...` atau `* AC1: ...`).
+Field statement harus sama persis dengan isi setelah colon pada **entri ID yang
+sama**, bukan sekadar teks yang terdapat di bagian lain file. Dengan demikian
+statement AC2 tidak dapat dipasangkan ke AC1. Entri duplikat, tabel, label bold,
+definisi multiline atau layout ambigu ditolak, bukan ditebak. Pisahkan narasi
+berikutnya dengan baris kosong; definisi AC berikutnya boleh langsung mengikuti
+baris sebelumnya. Siapkan export teks satu baris yang ditinjau owner bila format
+dokumen asli tidak didukung; jangan diam-diam menyederhanakan kondisi bisnis.
+
+ID duplikat, hilang atau baru ditolak. Source harus merupakan salah satu requirement input workflow.
 Pemeriksaan ini tidak dapat membuktikan bahwa report/manifest telah mencakup
 seluruh requirement bisnis di luar scope yang dinyatakan.
 
@@ -120,9 +129,26 @@ Persetujuan publikasi, keputusan bahwa issue benar-benar resolved, dan tindakan
 remote tetap membutuhkan kebijakan/otorisasi terpisah. Belum ada acceptance
 bisnis nyata yang diklaim hanya karena fitur validator ini tersedia.
 
+## Batas sebelum commit
+
+Validator fase ini hanya berlaku selama HEAD **dan** konten tetap sama dengan
+checkpoint yang diuji, termasuk pola baseline HEAD plus patch working tree.
+Ambil binding dan validasi keputusan manusia sebelum membuat commit/push patch
+tersebut. Bahkan commit yang byte-identik tetap mengubah HEAD dan membuat
+acceptance validator menolak checkpoint sebagai stale. Ini batas yang disengaja;
+jangan mengedit revision/report atau menghapus gate untuk menggunakan ulang
+artifact lama.
+
+Adapter publikasi memiliki handoff commit byte-identik yang terpisah, tetapi itu
+hanya memverifikasi konten proposal PR. Handoff tersebut tidak memigrasikan atau
+mengesahkan ulang acceptance manusia fase ini. Setelah commit, penggunaan ulang
+acceptance memerlukan mekanisme validasi/keputusan baru yang belum didukung
+validator ini; jangan mengklaim penerimaan bisnis baru berdasarkan draft PR.
+
 ## Pengujian
 
 Tes memakai Git/checkpoint/artifact sintetis, bukan keputusan owner sungguhan.
-Tes mencakup binding HEAD/content/report, AC coverage, evidence hash, pemisahan
+Tes mencakup binding HEAD/content/report, asosiasi ID dengan entri source yang
+sama (termasuk penolakan statement tertukar), layout ambigu/multiline, AC coverage, evidence hash, pemisahan
 accepted/rejected/pending, penolakan field trust palsu dan inspeksi CLI tanpa
 perubahan target/checkpoint. Tidak ada model call atau pesan ke owner dalam tes.

@@ -15,6 +15,7 @@ from run_workflow import checkpoint_results_checked, status_checkpoint
 from workflow_state import Checkpoints, digest
 
 AC_ID = re.compile(r'\bAC[1-9][0-9]*\b')
+AC_ENTRY = re.compile(r'^[ \t]*(?:[-*][ \t]+)?(AC[1-9][0-9]*):[ \t]*(.*?)[ \t]*$')
 
 
 def regular_path(path, maximum=1_000_000):
@@ -39,6 +40,21 @@ def nonempty(value, label, maximum=2000):
     if not isinstance(value, str) or not value.strip() or len(value) > maximum:
         raise ValueError('Missing or oversized ' + label)
     return value
+
+
+def source_ac_entry(raw, ident):
+    """Resolve one unambiguous single-line canonical AC definition, not mentions."""
+    lines = raw.splitlines()
+    matches = [(index, match.group(2)) for index, line in enumerate(lines)
+               if (match := AC_ENTRY.fullmatch(line)) and match.group(1) == ident]
+    if len(matches) != 1 or not matches[0][1]:
+        raise ValueError('AC source entry is missing, duplicate or unsupported; require one canonical ACn: statement line')
+    index, statement = matches[0]
+    if index + 1 < len(lines):
+        following = lines[index + 1]
+        if following.strip() and not AC_ENTRY.fullmatch(following) and not re.match(r'^\s*#{1,6}\s', following):
+            raise ValueError('Multiline/ambiguous AC source entry is unsupported; provide a reviewed single-line export')
+    return statement
 
 
 def criteria_checked(repo, config, state, data):
@@ -67,8 +83,8 @@ def criteria_checked(repo, config, state, data):
         if name not in config['requirements']:
             raise ValueError('AC source is not a workflow requirement input')
         raw = regular_path(source).read_text(encoding='utf-8')
-        if ident not in AC_ID.findall(raw) or statement not in raw:
-            raise ValueError('AC ID/statement is not present in its named supplied source')
+        if statement != source_ac_entry(raw, ident):
+            raise ValueError('AC ID/statement must match the same exact source AC entry')
         ids.add(ident)
         normalized.append({'id': ident, 'statement': statement, 'source_path': name,
                            'confirmation_reference': confirmation})

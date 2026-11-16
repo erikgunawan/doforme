@@ -255,3 +255,11 @@ cases and partial creation behavior. No model, source code or remote fetch ran.
 This completes local acquisition infrastructure, not live Docs/Jira/Figma access:
 an actual approved source URL/account and applicability confirmation are still
 missing. SOURCES.md records the supported contract and live limitation.
+
+A cross-review follow-up (0.20.1) corrected a phase18 association bug before
+publication: an AC ID and a different AC's statement could previously be found
+independently in the same source file. Binding now requires the exact statement
+on its uniquely labeled canonical AC entry and rejects ambiguous layouts. The
+swapped-statement/layout regressions pass; all 14 acceptance tests passed.
+ACCEPTANCE.md also makes the before-commit-only freshness restriction explicit;
+a publication commit handoff does not silently migrate a human attestation.

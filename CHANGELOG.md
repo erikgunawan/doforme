@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.20.1
+
+Phase 18 review fix: bind each decision to its own exact source AC entry and reject swapped statements
+
+Change ID: `c12ab19c1492`.
+
+File: `.claude-plugin/plugin.json`, `docs/ACCEPTANCE.md`, `docs/PHASES.md`, `scripts/business_acceptance.py`, `tests/test_business_acceptance.py`.
+
 ## 2026-11-16 — v0.20.0
 
 Phase 20 foundation: preserve explicit local requirement exports with bounded provenance and hashes

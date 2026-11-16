@@ -1166,6 +1166,35 @@
           "blob": "053c0dc17e132259a215e4e9103f8d6137a23be9"
         }
       }
+    },
+    {
+      "id": "c12ab19c1492ad8d92cdcd41c4ff97c93f825635349535bdd75d8440db2d7bef",
+      "base_commit": "26deb6e4431f0e97fdc347a6fcb9f934461eed8e",
+      "date": "2026-11-16",
+      "version": "0.20.1",
+      "summary": "Phase 18 review fix: bind each decision to its own exact source AC entry and reject swapped statements",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "577537621c3c0c6d17d38132cbf0a79d74888970"
+        },
+        "docs/ACCEPTANCE.md": {
+          "mode": "100644",
+          "blob": "ad145ed028dbb7995eeb25e89609b68edb9e1f2c"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "c8314d3b8f21c9b292ef8abd73a2ac527a906286"
+        },
+        "scripts/business_acceptance.py": {
+          "mode": "100644",
+          "blob": "4712a85cd2a99ec48bec4d88cedfb24a605d9c11"
+        },
+        "tests/test_business_acceptance.py": {
+          "mode": "100644",
+          "blob": "ea9ce50efd64a08a9fde6bf38b80443c2f7e8ead"
+        }
+      }
     }
   ]
 }
