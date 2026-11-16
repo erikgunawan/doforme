@@ -26,8 +26,12 @@ tersedia sebagai template opt-in yang tidak aktif, bukan aksi otomatis default.
 ## Instalasi dan penggunaan
 
 Prasyarat: Git, Python 3.9+, Claude Code dengan akses model aktif. CLI yang diuji:
-2.1.323. Gunakan checkout lokal ini sampai commit dipublikasikan oleh owner;
-repo remote masih memerlukan akses dan persetujuan push terpisah.
+2.1.323. Clone repo GitHub dengan akun yang memiliki akses, atau update checkout
+plugin yang sudah ada. Plugin saat ini dimuat dari checkout lokal, bukan marketplace.
+
+```bash
+git clone https://github.com/erikgunawan/doforme.git /absolute/path/to/doforme
+```
 
 ```bash
 cd /absolute/path/to/target-repository
@@ -38,6 +42,10 @@ Periksa `/help` dan `/agents`. `--add-dir` memberi akses baca metode/template di
 luar cwd; tanpa akses itu command dapat berhenti. Restart/reload setelah perubahan.
 Setiap command punya konteks terpisah: laporan sebelumnya harus diberikan lengkap
 sebagai inline input atau file yang disebut eksplisit, bukan diasumsikan tersedia.
+
+Mulai dengan `/doforme:init` pada repo target untuk inspeksi tanpa menulis.
+Gunakan repo percobaan untuk uji pertama. Pengujian otomatis GitHub Actions belum
+aktif; template integrasi di repo adalah contoh opt-in, bukan workflow terpasang.
 
 ```text
 /doforme:analyze ISSUE.md; requirement dan konfirmasi scope di REQUIREMENTS.md
