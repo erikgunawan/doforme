@@ -174,8 +174,17 @@ content changes under the same path, rename/delete and multi-commit squash
 coverage. The local hook was enabled for this doforme checkout. The new GitHub
 documentation workflow uses pinned checkout and contents:read, checks generated
 docs/history coverage and runs offline tests only. YAML syntax/configuration
-was checked locally; actionlint was unavailable and no hosted Actions run is
-claimed. The workflow becomes available only after publication and repository
+was checked locally; actionlint was unavailable. Hosted verification is recorded
+below. The workflow becomes available only after publication and repository
 Actions policy permits it; required status rules remain owner configuration.
 No new model calls, live issue intake, business acceptance or external
 notifications were performed in this documentation phase.
+
+After publishing commit 9f8635e on 2026-11-16, the first hosted
+[documentation/history run](https://github.com/erikgunawan/doforme/actions/runs/43797371270)
+completed successfully. Its logs show generated-doc/history coverage verified
+against f3324ea, the plugin structure check passed, and all 138 offline tests
+passed. The workflow had contents:read and invoked no model. This demonstrates
+the hosted check is active for this repo; required branch-status enforcement
+has not been configured. This follow-up evidence update is itself recorded by
+the same automatic history hook.

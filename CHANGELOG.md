@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-16 — v0.15.0
 
+Record successful hosted documentation workflow and 138-test evidence
+
+Change ID: `29903a6ab530`.
+
+File: `docs/PHASES.md`.
+
+## 2026-11-16 — v0.15.0
+
 Document installation and usage; automate content-bound change history and command reference updates
 
 Change ID: `ec1457e0146d`.

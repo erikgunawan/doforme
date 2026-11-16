@@ -980,6 +980,19 @@
           "blob": "d3a8ec5a9de136fdc641556af8bec158a6a0227e"
         }
       }
+    },
+    {
+      "id": "29903a6ab5300c3b088c699fd70e750d396bec92d07bcef39be9c509448d2b54",
+      "base_commit": "9f8635e02acf4c4182fb3ea07b5badb9321d3d64",
+      "date": "2026-11-16",
+      "version": "0.15.0",
+      "summary": "Record successful hosted documentation workflow and 138-test evidence",
+      "changes": {
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "b4d3f44be67ddd54d384e56935a098dc7a466c69"
+        }
+      }
     }
   ]
 }
