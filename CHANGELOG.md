@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.22.0
+
+Phase 22: add read-only publication preview and explicitly authorized content-bound draft PR delivery
+
+Change ID: `e5407cc6de65`.
+
+File: `.claude-plugin/plugin.json`, `README.md`, `docs/PHASES.md`, `docs/PUBLISHING.md`, `docs/USAGE.md`, `scripts/publish_pr.py`, `tests/test_publish_pr.py`.
+
 ## 2026-11-16 — v0.21.0
 
 Phase 21: bound model subprocess output/lifecycle and verify real read-only Claude execution

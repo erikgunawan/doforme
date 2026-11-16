@@ -1240,6 +1240,43 @@
           "blob": "abf82e07cf603646ef3d40fd6d4dff81a40548b1"
         }
       }
+    },
+    {
+      "id": "e5407cc6de65cef940fd436463a1cefa3bcd147e47ac3883309928e20ccde3ba",
+      "base_commit": "ad9bd3c22ea6d7a4225feb0251c590fd949db398",
+      "date": "2026-11-16",
+      "version": "0.22.0",
+      "summary": "Phase 22: add read-only publication preview and explicitly authorized content-bound draft PR delivery",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "826e67bfb451b4efaafc6078611898609d8c185a"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "c5a5cbe872b9bac06648490829333a06dd61c9ff"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "86bd60340384d77c6c3bb318422565a722118804"
+        },
+        "docs/PUBLISHING.md": {
+          "mode": "100644",
+          "blob": "1377709eba08eb5683b88f5a0005e72320f6691d"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "c634b1752f8ca264fb932cb3bc4e8882069d8b21"
+        },
+        "scripts/publish_pr.py": {
+          "mode": "100644",
+          "blob": "b33db6938c95091748390174ca810790781f8cf6"
+        },
+        "tests/test_publish_pr.py": {
+          "mode": "100644",
+          "blob": "4da15884affed9cf8df20dce1c4b1c5cf6bc7a29"
+        }
+      }
     }
   ]
 }

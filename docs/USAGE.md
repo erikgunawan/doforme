@@ -155,6 +155,12 @@ Bukti keputusan manusia per AC dapat diperiksa dengan validator read-only di
 diuji; keputusan supplied diberi label attested, bukan identitas owner yang sudah
 diautentikasi. Validator ini tidak mengubah status runner atau menutup issue.
 
+[Publikasi draft PR](PUBLISHING.md) adalah helper terpisah: default hanya preview
+read-only, sedangkan POST memerlukan --publish, digest proposal yang ditinjau dan
+receipt privat baru. Helper tidak melakukan push, membuat branch, merge atau
+menutup issue. Commit byte-identik dapat diperiksa melalui handoff terpisah;
+freshness normal status/resume dan attestation lama tidak diubah diam-diam.
+
 ## Integrasi dan pengujian
 
 GitHub issue intake/Telegram tetap contoh opt-in terpisah, belum aktif otomatis.

@@ -280,3 +280,15 @@ still rejecting empty executable/NUL arguments), a fresh immutable-tree probe
 ran real read-only analyze and blocked on unconfirmed requirements, with fresh
 state, unchanged HEAD, no edits or denials. Both outcomes remain recorded; no
 new six-stage run under this executor or OS sandbox proof is claimed.
+
+Version 0.22 (2026-11-16) adds a separate controlled draft-PR adapter. Default
+preview uses read-only GitHub.com metadata, original report/content integrity,
+remote full-tree/ancestry/diff scope and duplicate-PR checks. Explicit publication
+requires a reviewed preview digest and an exclusive durable private receipt
+before POST; uncertain delivery/branch movement is disclosed without auto retry.
+No push, branch creation, merge or issue closure occurs. A content-identical
+commit handoff preserves original reports and normal status/resume freshness;
+it does not migrate human acceptance. Ten focused mock-API/real-local-Git tests
+passed, including the commit handoff and case-canonical repository regression
+found in cross-review. No actual remote PR or live publication test was performed;
+head/base branches, reviewed proposal and authorization remain operator inputs.

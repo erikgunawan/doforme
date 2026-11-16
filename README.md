@@ -16,7 +16,10 @@ di [referensi yang dibuat otomatis](docs/REFERENCE.md).
 **Complete tidak berarti issue resolved.** Green test berlaku pada AC yang diuji.
 Review AI tidak menggantikan penerimaan pemilik requirement. Business acceptance
 masih not_evaluated, resolution_status not_established, publication_ready false.
-Tidak ada push, PR remote atau komentar/penutupan issue. Integrasi notifikasi
+Alur command default tidak melakukan push, PR remote atau komentar/penutupan issue.
+[Publikasi draft opsional](docs/PUBLISHING.md) memakai helper terpisah dengan izin
+eksplisit, digest proposal dan receipt privat; tidak melakukan push/merge/issue closure.
+Integrasi notifikasi
 tersedia sebagai template opt-in yang tidak aktif, bukan aksi otomatis default.
 
 ## Instalasi dan penggunaan
