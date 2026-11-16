@@ -1195,6 +1195,51 @@
           "blob": "ea9ce50efd64a08a9fde6bf38b80443c2f7e8ead"
         }
       }
+    },
+    {
+      "id": "a039a314ba204ef6b08d0896b171fae3486a1b2ac95b438842b95222b0a368e9",
+      "base_commit": "ad3ad7bd854be6fc63ecea121eb299f4ada15316",
+      "date": "2026-11-16",
+      "version": "0.21.0",
+      "summary": "Phase 21: bound model subprocess output/lifecycle and verify real read-only Claude execution",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "55e14a25cb46e7bcf68ece13fd14bdcb168955e5"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "e42fc3d9452df38b2598e8d33707a2dacfd24eb7"
+        },
+        "docs/OPERATIONS.md": {
+          "mode": "100644",
+          "blob": "3cf3eaa1de97e677184f33ff98b264808f462a57"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "67bcb72362abeb9cd9f009b13999d867393f2f8c"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "501e092a170b8357af6d4d90df29d2815e28a7e6"
+        },
+        "scripts/execution_runtime.py": {
+          "mode": "100644",
+          "blob": "282ee17558d5e72343bd459d4f8a904aecac99a0"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "b3db808fd3f74c98e7c28881655ae9493b01919e"
+        },
+        "tests/test_execution_runtime.py": {
+          "mode": "100644",
+          "blob": "cc602a3f036c9da1d2e3df6e9acb1a7f69cea00c"
+        },
+        "tests/test_workflow.py": {
+          "mode": "100644",
+          "blob": "abf82e07cf603646ef3d40fd6d4dff81a40548b1"
+        }
+      }
     }
   ]
 }

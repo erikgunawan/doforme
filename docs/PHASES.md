@@ -263,3 +263,20 @@ on its uniquely labeled canonical AC entry and rejects ambiguous layouts. The
 swapped-statement/layout regressions pass; all 14 acceptance tests passed.
 ACCEPTANCE.md also makes the before-commit-only freshness restriction explicit;
 a publication commit handoff does not silently migrate a human attestation.
+
+Version 0.21 (2026-11-16) integrates bounded POSIX execution into ClaudeExecutor:
+combined stdout/stderr capture (16 MB default), deadlines/cancellation, process
+group cleanup and unrelated credential-environment filtering. Twelve real
+subprocess tests and two adapter regressions passed; the workflow adapter's
+49-test suite passed. Partial bounded traces remain private while diagnostics
+avoid raw child output. A same-session process group is not OS isolation;
+setsid escapes, model-auth inheritance, CPU/memory/network isolation and scale
+remain outside this implementation. Read-only Docker/bwrap probes failed in the
+current allowed environment without changing host settings. OPERATIONS.md records
+these limits; arbitrary untrusted production execution is not declared ready.
+The initial live adapter probe rejected the legitimate empty --setting-sources
+argument before spawning Claude. After accepting empty option values (while
+still rejecting empty executable/NUL arguments), a fresh immutable-tree probe
+ran real read-only analyze and blocked on unconfirmed requirements, with fresh
+state, unchanged HEAD, no edits or denials. Both outcomes remain recorded; no
+new six-stage run under this executor or OS sandbox proof is claimed.

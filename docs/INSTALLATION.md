@@ -14,6 +14,8 @@ Jira, Figma atau Telegram.
 
 Contoh shell di panduan ini memakai Linux/macOS. Helper tersedia sebagai Python
 CLI; perilaku Windows dan lingkungan enterprise lain belum diuji di fase ini.
+Runner model memakai proses/pipe POSIX; backend isolasi OS harus ditinjau dan
+divalidasi terpisah sesuai [panduan operasional](OPERATIONS.md).
 
 ## 1. Ambil plugin
 

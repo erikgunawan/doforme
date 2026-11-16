@@ -13,6 +13,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from workflow_state import Checkpoints, atomic_text, digest, write_json
+from execution_runtime import ExecutionError, model_environment as execution_environment, run_process
 
 PLUGIN = Path(__file__).resolve().parents[1]
 ORDER = ('analyze', 'plan', 'fix', 'test', 'review', 'pr')
@@ -207,11 +208,7 @@ def parse_result_text(text):
 
 
 def model_environment(source=None):
-    environment = dict(os.environ if source is None else source)
-    for key in list(environment):
-        if key == 'CLAUDECODE' or key.startswith(('GITHUB_', 'GH_', 'TELEGRAM_', 'ACTIONS_')):
-            environment.pop(key, None)
-    return git_environment(environment)
+    return execution_environment(source)
 
 
 class ClaudeExecutor:
@@ -223,17 +220,21 @@ class ClaudeExecutor:
         denials = ['Read(**/.env*)', 'Read(**/.aws/**)', 'Read(**/.ssh/**)', 'Read(**/*.pem)', 'Read(**/*.key)', 'Read(**/.npmrc)', 'Read(**/.pypirc)', 'Read(**/credentials.json)']
         command = ['claude', '-p', prompt, '--agent', 'doforme:' + AGENTS[ORDER.index(stage)], '--plugin-dir', str(PLUGIN), '--add-dir', str(PLUGIN / 'skills'), '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--no-session-persistence', '--max-turns', str(config['max_turns']), '--max-budget-usd', str(config['max_budget_usd']), '--verbose', '--output-format', 'stream-json', '--settings', json.dumps({'permissions': {'deny': denials}}), '--allowedTools', *tools]
         environment = model_environment()
-        process = subprocess.Popen(command, env=environment, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
         try:
-            stdout, stderr = process.communicate(timeout=config['timeout_seconds'])
-        except (subprocess.TimeoutExpired, KeyboardInterrupt):
-            os.killpg(process.pid, signal.SIGTERM)
-            try:
-                process.communicate(timeout=5)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                process.communicate()
-            raise ValueError('Model stage timed out; inspect partial edits before retry')
+            executed = run_process(command, cwd=repo, env=environment,
+                                   timeout_seconds=config['timeout_seconds'])
+        except ExecutionError as error:
+            self.last_trace = []
+            if error.partial_result is not None:
+                for line in error.partial_result.stdout.splitlines():
+                    try:
+                        row = json.loads(line)
+                    except ValueError:
+                        continue
+                    if isinstance(row, dict):
+                        self.last_trace.append(row)
+            raise
+        stdout, stderr = executed.stdout, executed.stderr
         rows = []
         for line in stdout.splitlines():
             try:
@@ -242,7 +243,7 @@ class ClaudeExecutor:
                 pass
         self.last_trace = rows
         results = [row for row in rows if row.get('type') == 'result']
-        if process.returncode or not results or results[-1].get('is_error') or results[-1].get('permission_denials'):
+        if executed.returncode or not results or results[-1].get('is_error') or results[-1].get('permission_denials'):
             raise ValueError('Model stage failed or permission denied; no automatic retry')
         result = results[-1].get('structured_output')
         if result is None:

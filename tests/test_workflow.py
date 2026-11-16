@@ -74,6 +74,33 @@ class WorkflowTests(unittest.TestCase):
             with self.subTest(command=command), self.assertRaisesRegex(ValueError, 'Unscoped program'):
                 WF.audit_calls(self.repo, rows, 'pr', self.config)
 
+    def test_model_adapter_uses_bounded_execution_and_returns_observed_trace(self):
+        from unittest.mock import patch
+        from execution_runtime import ExecutionResult
+        expected, _ = self.executor('analyze', self.repo, '', self.config)
+        output = json.dumps({'type': 'result', 'is_error': False, 'permission_denials': [], 'structured_output': expected})
+        execution = ExecutionResult(0, output, '', len(output))
+        with patch.object(WF, 'run_process', return_value=execution) as bounded:
+            result, rows = WF.ClaudeExecutor()('analyze', self.repo, 'synthetic prompt',
+                {**self.config, 'max_turns': 10, 'max_budget_usd': 1, 'timeout_seconds': 30})
+        self.assertEqual(result, expected)
+        self.assertEqual(rows[0]['type'], 'result')
+        self.assertEqual(bounded.call_args.kwargs['timeout_seconds'], 30)
+        self.assertEqual(bounded.call_args.kwargs['cwd'], self.repo)
+
+    def test_model_adapter_retains_bounded_partial_trace_without_secret_diagnostic(self):
+        from unittest.mock import patch
+        from execution_runtime import ExecutionError, ExecutionResult
+        output = '{"type":"result","is_error":true,"result":"SENSITIVE_SENTINEL"}\n'
+        error = ExecutionError('output_limit', ExecutionResult(-1, output, 'SENSITIVE_SENTINEL', len(output)))
+        executor = WF.ClaudeExecutor()
+        with patch.object(WF, 'run_process', side_effect=error):
+            with self.assertRaises(ExecutionError) as caught:
+                executor('analyze', self.repo, 'prompt',
+                    {**self.config, 'max_turns': 10, 'max_budget_usd': 1, 'timeout_seconds': 30})
+        self.assertNotIn('SENSITIVE_SENTINEL', str(caught.exception))
+        self.assertEqual(executor.last_trace[0]['type'], 'result')
+
     def test_full_sequence_with_explicit_scope(self):
         result = self.run_pipeline(allow_fix=True, allow_execution=True)
         self.assertEqual(self.calls, list(WF.ORDER))

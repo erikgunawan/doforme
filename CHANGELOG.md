@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.21.0
+
+Phase 21: bound model subprocess output/lifecycle and verify real read-only Claude execution
+
+Change ID: `a039a314ba20`.
+
+File: `.claude-plugin/plugin.json`, `docs/INSTALLATION.md`, `docs/OPERATIONS.md`, `docs/PHASES.md`, `docs/USAGE.md`, `scripts/execution_runtime.py`, `scripts/run_workflow.py`, `tests/test_execution_runtime.py`, `tests/test_workflow.py`.
+
 ## 2026-11-16 — v0.20.1
 
 Phase 18 review fix: bind each decision to its own exact source AC entry and reject swapped statements

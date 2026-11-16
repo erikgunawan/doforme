@@ -124,6 +124,11 @@ Normal permission dan audit setelah call bukan sandbox OS.
 
 ## Status, resume dan hasil blocked
 
+Eksekusi model memakai timeout, batas output gabungan 16 MB per tahap, dan
+pembersihan process group pada POSIX. Ini bukan isolasi OS atau jaminan bahwa
+test tidak dapat mengakses credential yang masih diperlukan model. Lihat
+[operasional dan batas isolasi](OPERATIONS.md) sebelum memakai source tidak tepercaya.
+
 ```text
 /doforme:status /absolute/runs/bug-123
 ```
