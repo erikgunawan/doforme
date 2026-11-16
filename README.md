@@ -12,6 +12,8 @@ di [referensi yang dibuat otomatis](docs/REFERENCE.md).
 | [Referensi otomatis](docs/REFERENCE.md) | Versi, command, agent dan input dari source plugin |
 | [Changes history](CHANGELOG.md) | Riwayat awal Git dan perubahan berikutnya saat commit |
 | [Pemeliharaan otomatis](CONTRIBUTING.md) | Hook lokal, generation dan pemeriksaan GitHub |
+| [Status roadmap](docs/ROADMAP.md) | Hasil fase 17–24 serta keputusan owner/live yang masih pending |
+| [Kandidat rilis](docs/RELEASE-CANDIDATE.md) | Paket reproducible dan verifikasi; tidak mengklaim stable/v1.0 |
 
 **Complete tidak berarti issue resolved.** Green test berlaku pada AC yang diuji.
 Review AI tidak menggantikan penerimaan pemilik requirement. Business acceptance

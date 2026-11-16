@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.24.0
+
+Phase 24 candidate: reproducible packaging and explicit remaining owner/live gates; combined 234-test verification
+
+Change ID: `6112a6072b79`.
+
+File: `.claude-plugin/plugin.json`, `README.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/RELEASE-CANDIDATE.md`, `docs/ROADMAP.md`, `docs/USAGE.md`, `scripts/package_release.py`, `tests/test_package_release.py`.
+
 ## 2026-11-16 — v0.23.0
 
 Phase 23 readiness: inspect integration metadata without activating workflows or sending notifications

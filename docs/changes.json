@@ -1310,6 +1310,51 @@
           "blob": "9da76db9485d97b414c30b3e5d1f7cb1aeea77bb"
         }
       }
+    },
+    {
+      "id": "6112a6072b792dc991cf1fe44fb50565a9841bfc15394686c161611a9281eb8a",
+      "base_commit": "4ad8b7e94c9b345143ab2f43f937ed4df11776a1",
+      "date": "2026-11-16",
+      "version": "0.24.0",
+      "summary": "Phase 24 candidate: reproducible packaging and explicit remaining owner/live gates; combined 234-test verification",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "ab65ae8b60fbc5c2b0d63d8cda6292a17ad38256"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "5b0d752e87e3b585b6040b0a657b199a096449b8"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "753d2d4656fe13d34e7696636849a439732e3123"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "4a5cd35c47ec5c1a2a80b0a15c1097bc47cff9e7"
+        },
+        "docs/RELEASE-CANDIDATE.md": {
+          "mode": "100644",
+          "blob": "ff13add0dcca2c5b437bee4e2c6b309dca8a948c"
+        },
+        "docs/ROADMAP.md": {
+          "mode": "100644",
+          "blob": "076185b2c1f508711d188eb89a223281603353c6"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "9b8e1e2012c085a6e25cef3bc14bf1e11c7d2b82"
+        },
+        "scripts/package_release.py": {
+          "mode": "100644",
+          "blob": "5307e3fdecf27af83855d8b2ef81af2fb03ae2d3"
+        },
+        "tests/test_package_release.py": {
+          "mode": "100644",
+          "blob": "5bff86a123982200e15544209c3d1759836661b9"
+        }
+      }
     }
   ]
 }

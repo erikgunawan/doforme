@@ -184,3 +184,7 @@ izin eksekusi, diuji terpisah dalam [slash acceptance](RUNTIME-0.17.md).
 Untuk mencoba issue bisnis nyata, ikuti [prosedur pilot](PILOT.md). Target repo,
 izin source, requirement/AC owner dan evidence UAT harus dipilih secara eksplisit;
 hasil fixture tidak dapat menggantikan pilot tersebut.
+
+[Status roadmap](ROADMAP.md) membedakan implementasi helper, uji fixture/model,
+pilot bisnis, aktivasi live dan release stabil. Nomor versi bukan bukti bahwa
+seluruh kondisi operasional atau keputusan owner sudah selesai.

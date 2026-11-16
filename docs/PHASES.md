@@ -305,3 +305,21 @@ Telegram recipient were supplied, so activation/live verification remains pendin
 No secret value was read, setting changed, workflow dispatched, model called or
 notification sent. INTEGRATION-READINESS.md distinguishes configuration from live
 verification; this commit is readiness infrastructure, not claimed live activation.
+
+Version 0.24 (2026-11-16) adds reproducible candidate packaging/verification from
+an explicit full clean HEAD commit or matching existing tag. Eleven real-Git/
+archive tests passed: deterministic private artifacts, exact source selection,
+regular-file/credential/evidence path checks, Git replacement-ref suppression,
+bounded decompression, content/hash/mode/traversal/tamper guards and stable-claim
+rejection. The packager makes no tag/release/push or license choice and reports
+stable_ready/publication_ready false. Actual candidate construction requires this
+phase's clean committed source; artifacts/verification remain outside Git.
+ROADMAP.md records the distinction between completed infrastructure and pending
+real pilot, owner acceptance, live connectors/integrations, OS isolation and
+license/release decisions. v1.0 or completion of all live gates is not claimed.
+After combining the independently developed components, all 234 offline tests,
+plugin structure/resource checks and generated-doc checks passed. The real-model
+phase17 slash suite and phase21 bounded-executor probe remain evidence for their
+respective immutable policies; they are not relabeled as a full model run of
+the final combined candidate. Each roadmap phase/preparation has its own commit,
+with a separate phase18 cross-review fix rather than rewritten history.

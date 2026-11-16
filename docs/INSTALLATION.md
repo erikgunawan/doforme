@@ -68,6 +68,11 @@ tidak perlu memasangnya di setiap repo target.
 
 ## Update plugin
 
+Jika memakai arsip kandidat, baca [cara memverifikasi kandidat](RELEASE-CANDIDATE.md)
+dan pilih commit/provenance melalui jalur yang Anda percayai. Hash mendeteksi
+perubahan terhadap manifest yang diberikan; bukan tanda tangan owner atau bukti
+kesiapan stable. [Status roadmap](ROADMAP.md) mencatat gate live yang masih pending.
+
 ```bash
 git -C "$HOME/doforme" status --short
 git -C "$HOME/doforme" pull --ff-only
