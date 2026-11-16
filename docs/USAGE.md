@@ -152,3 +152,6 @@ Uji integrasi profil repo sampai draft, requirement-blocked, resume dan status
 tersedia pada [workflow acceptance](RUNTIME-0.16.md). Tanpa --live hanya menampilkan
 rencana; mode --live memakai repo sintetis dan dapat memanggil model sampai
 delapan kali. Ini bukan cara menguji source produksi secara otomatis.
+
+Routing `/doforme:endtoend` langsung, termasuk requirement-blocked dan kasus tanpa
+izin eksekusi, diuji terpisah dalam [slash acceptance](RUNTIME-0.17.md).

@@ -214,3 +214,15 @@ no final whole-suite rerun after quote normalization or /endtoend slash-routing
 test is claimed. Raw traces/checkpoints remain private in sibling artifacts.
 All inputs/owner confirmations are synthetic; no actual business acceptance,
 issue resolution, live integration, notification or remote PR is established.
+
+Version 0.17 (2026-11-16) validates actual /doforme:endtoend slash routing with
+three independent synthetic Git fixtures. On frozen staged plugin tree
+753290e4d39a8dcb6443c4a448cbd3126c8baf2a, unconfirmed requirements blocked at
+analyze; absent execution/edit grants blocked before fix after complete analyze/
+plan; explicit scoped authorization completed all six stages. All had fresh
+checkpoints, unchanged HEAD and zero permission denials. Only the authorized case
+changed the two named pagination files. The same immutable tree passed 153 offline
+tests, plugin structure and generated-doc checks. RUNTIME-0.17.md describes the
+real helper-output/checkpoint audit and private evidence. Concurrent later-phase
+files were excluded from this tested export. No pilot on a real issue, business
+acceptance, remote PR or live integration is claimed.

@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.17.0
+
+Phase 17: verify actual endtoend slash routing and scoped requirement/authorization stops
+
+Change ID: `8cc10281d2b5`.
+
+File: `.claude-plugin/plugin.json`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/RUNTIME-0.17.md`, `docs/USAGE.md`, `tests/runtime_endtoend.py`, `tests/test_runtime_endtoend.py`.
+
 ## 2026-11-16 — v0.16.0
 
 Verify real profile workflow, requirement stops, resume and status; unify exact command permissions and prompt

@@ -1038,6 +1038,43 @@
           "blob": "6bf22a09d89436e71f2905b017960344afd5ee7f"
         }
       }
+    },
+    {
+      "id": "8cc10281d2b5f3b1f1ffe12163fb247e9a01151e4d9f4475b5cd32845e0bb662",
+      "base_commit": "ef45d1d12696a4cfca04fcc2b18ecb62212d4c02",
+      "date": "2026-11-16",
+      "version": "0.17.0",
+      "summary": "Phase 17: verify actual endtoend slash routing and scoped requirement/authorization stops",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "d83af484ce688ea4a639fbda1fc518e063731a53"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "109a5e2e1bb6ac33def8e580325c26bb5b244a39"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "8dcfd37cf278cd4e84b54b6fbdc2d98213514cf5"
+        },
+        "docs/RUNTIME-0.17.md": {
+          "mode": "100644",
+          "blob": "d1707fcff450bbe00a5f53cd026e0fb945f7b154"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "3e66bd95a8e03a3c9d6b9b8b4398d69257c5bbac"
+        },
+        "tests/runtime_endtoend.py": {
+          "mode": "100644",
+          "blob": "066ecc0d3f647fddbcdecf3e313eecdbd054e688"
+        },
+        "tests/test_runtime_endtoend.py": {
+          "mode": "100644",
+          "blob": "4c1333fdd122847019f111b1445689d443a4d551"
+        }
+      }
     }
   ]
 }
