@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.19.0
+
+Phase 19 preparation: document real pilot inputs and observed missing owner target and acceptance criteria
+
+Change ID: `738b125e1180`.
+
+File: `.claude-plugin/plugin.json`, `docs/PHASES.md`, `docs/PILOT.md`, `docs/USAGE.md`.
+
 ## 2026-11-16 — v0.18.0
 
 Phase 18: bind supplied human acceptance decisions to workflow content and exact acceptance criteria

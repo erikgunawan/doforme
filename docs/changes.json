@@ -1108,6 +1108,31 @@
           "blob": "c28709f728c8b4ff87a35c5ab1636087e5ffc055"
         }
       }
+    },
+    {
+      "id": "738b125e118012e60e5e9a71586d7f3239be5b53152bc2c5724d839d920d7781",
+      "base_commit": "23300566d97e54e30b0402c16cb517f9228f3172",
+      "date": "2026-11-16",
+      "version": "0.19.0",
+      "summary": "Phase 19 preparation: document real pilot inputs and observed missing owner target and acceptance criteria",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "5f83184d90e1436efd88738d481e99103a9f9cd0"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "f97fe31f4210d7d0988dc1963d1868c0437e2b95"
+        },
+        "docs/PILOT.md": {
+          "mode": "100644",
+          "blob": "beca2417c04986439a150e320c7c68f25210988c"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "b306982a6a76c0a5a0e6fbf796dc8efabca850e3"
+        }
+      }
     }
   ]
 }

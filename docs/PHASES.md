@@ -236,3 +236,12 @@ stale workflow/evidence, identity fields, coverage and acceptance states. The to
 reports attested decisions with owner identity/authority not_verified, preserves
 the original workflow and leaves resolution/publication unestablished. No actual
 owner/UAT artifact has been supplied; real business acceptance remains pending.
+
+Version 0.19 (2026-11-16) records pilot preparation and its actual prerequisites,
+not a completed real pilot. The authorized GitHub account observed no open issues
+in erikgunawan/doforme; a connected Drive metadata search for doforme documents
+returned no results. No different target/issue, owner-confirmed AC or permission
+to edit another repo was supplied. PILOT.md provides the input checklist,
+execution/evidence procedure and explicit stop conditions. No target source was
+modified and no synthetic fixture was relabeled as a real business issue. Pilot
+execution remains pending the requested owner inputs; this is a preparation commit.

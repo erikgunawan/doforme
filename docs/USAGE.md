@@ -160,3 +160,7 @@ delapan kali. Ini bukan cara menguji source produksi secara otomatis.
 
 Routing `/doforme:endtoend` langsung, termasuk requirement-blocked dan kasus tanpa
 izin eksekusi, diuji terpisah dalam [slash acceptance](RUNTIME-0.17.md).
+
+Untuk mencoba issue bisnis nyata, ikuti [prosedur pilot](PILOT.md). Target repo,
+izin source, requirement/AC owner dan evidence UAT harus dipilih secara eksplisit;
+hasil fixture tidak dapat menggantikan pilot tersebut.
