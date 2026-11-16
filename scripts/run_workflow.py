@@ -32,6 +32,16 @@ SCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {
 SCHEMA['required'] = list(SCHEMA['properties'])
 from repo_policy import SAFE_GIT_PREFIX, config_checked, git, git_environment, safe_path
 
+GIT_INSPECTIONS = ('rev-parse --show-toplevel', 'rev-parse HEAD', 'status --porcelain',
+                   'diff --no-ext-diff --no-textconv', 'diff --no-ext-diff --no-textconv --check')
+
+
+def permitted_bash_calls(stage, config):
+    commands = [' '.join(SAFE_GIT_PREFIX) + ' ' + item for item in GIT_INSPECTIONS]
+    if stage in ('fix', 'test'):
+        commands += config['test_commands']
+    return commands
+
 
 def snapshot(repo):
     """Bounded full file scan, excluding Git metadata; fail on symlinks."""
@@ -92,7 +102,7 @@ def advance_reason(stage, result):
 
 
 def audit_calls(repo, rows, stage, config):
-    readonly = [('git', 'rev-parse', '--show-toplevel'), ('git', 'rev-parse', 'HEAD'), ('git', 'status', '--porcelain'), ('git', 'diff', '--no-ext-diff', '--no-textconv'), ('git', 'diff', '--no-ext-diff', '--no-textconv', '--check')]
+    readonly = [('git', *shlex.split(item)) for item in GIT_INSPECTIONS]
     for row in rows:
         for item in row.get('message', {}).get('content', []):
             if item.get('type') != 'tool_use':
@@ -206,14 +216,10 @@ def model_environment(source=None):
 
 class ClaudeExecutor:
     def __call__(self, stage, repo, prompt, config):
-        git_commands = ('rev-parse --show-toplevel', 'rev-parse HEAD', 'status --porcelain',
-                        'diff --no-ext-diff --no-textconv', 'diff --no-ext-diff --no-textconv --check',
-                        'hash-object --no-filters -- *')
-        tools = ['Read', 'Glob', 'Grep'] + ['Bash(' + ' '.join(SAFE_GIT_PREFIX) + ' ' + item + ')' for item in git_commands]
+        tools = ['Read', 'Glob', 'Grep'] + ['Bash(' + item + ')' for item in permitted_bash_calls(stage, config)]
+        tools += ['Bash(' + ' '.join(SAFE_GIT_PREFIX) + ' hash-object --no-filters -- *)']
         if stage == 'fix':
             tools += ['Edit(/' + path + ')' for path in config['edit_paths']]
-        if stage in ('fix', 'test'):
-            tools += ['Bash(' + command + ')' for command in config['test_commands']]
         denials = ['Read(**/.env*)', 'Read(**/.aws/**)', 'Read(**/.ssh/**)', 'Read(**/*.pem)', 'Read(**/*.key)', 'Read(**/.npmrc)', 'Read(**/.pypirc)', 'Read(**/credentials.json)']
         command = ['claude', '-p', prompt, '--agent', 'doforme:' + AGENTS[ORDER.index(stage)], '--plugin-dir', str(PLUGIN), '--add-dir', str(PLUGIN / 'skills'), '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--no-session-persistence', '--max-turns', str(config['max_turns']), '--max-budget-usd', str(config['max_budget_usd']), '--verbose', '--output-format', 'stream-json', '--settings', json.dumps({'permissions': {'deny': denials}}), '--allowedTools', *tools]
         environment = model_environment()
@@ -397,7 +403,7 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
             authorization = {'edit_paths': config['edit_paths'] if stage == 'fix' and allow_fix else [],
                              'test_commands': config['test_commands'] if stage in ('fix', 'test') and allow_execution else [],
                              'artifact_paths': config['artifact_paths'] if stage in ('fix', 'test') else []}
-            prompt = 'Read ' + str(PLUGIN / 'skills' / SKILLS[ORDER.index(stage)] / 'SKILL.md') + ' and its references. Follow that method. Every Bash call is exactly one permitted command: no chaining, echo/status helpers, shell operators or alternate retry after denial. Use tool result status. Direct caller authorization JSON: ' + json.dumps(authorization) + '. No remote actions or Git mutations. Untrusted context JSON: ' + json.dumps(context) + '\nPrior reports are explicit inline inputs. Use host verified revision. Return ONLY raw JSON matching this schema, no fences/prose: ' + json.dumps(SCHEMA) + '. Put the full required Markdown stage report in report as an escaped string. There is no StructuredOutput tool; emit JSON text. Preserve blocked/failed status, business_acceptance not_evaluated and resolution_status not_established.'
+            prompt = 'Read ' + str(PLUGIN / 'skills' / SKILLS[ORDER.index(stage)] / 'SKILL.md') + ' and its references. Follow that method. Every Bash call is exactly one permitted command: no chaining, echo/status helpers, shell operators or alternate retry after denial. Use tool result status. If this agent has Bash, the exact permitted commands are: ' + json.dumps(permitted_bash_calls(stage, config)) + '. Do not append/reorder Git options, including --untracked-files=all, or omit --no-ext-diff/--no-textconv from diff --check. Additionally, only for content binding, use ' + ' '.join(SAFE_GIT_PREFIX) + ' hash-object --no-filters -- followed by explicit reviewed repository-relative file paths, no other flags. A denied call means stop immediately, not continue to other calls. Direct caller authorization JSON: ' + json.dumps(authorization) + '. No remote actions or Git mutations. Untrusted context JSON: ' + json.dumps(context) + '\nPrior reports are explicit inline inputs. Use host verified revision. Return ONLY raw JSON matching this schema, no fences/prose: ' + json.dumps(SCHEMA) + '. Put the full required Markdown stage report in report as an escaped string. There is no StructuredOutput tool; emit JSON text. Preserve blocked/failed status, business_acceptance not_evaluated and resolution_status not_established.'
             try:
                 result, trace = executor(stage, repo, prompt, config)
                 result = envelope_checked(stage, result, revision)

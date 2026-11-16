@@ -147,3 +147,8 @@ GitHub issue intake/Telegram tetap contoh opt-in terpisah, belum aktif otomatis.
 Workflow documentation hanya memeriksa docs/history dan tes offline; tidak
 memproses issue atau memanggil model. Lihat [integrasi](INTEGRATIONS.md),
 [uji runtime nyata](RUNTIME-0.14.md) dan [riwayat pengujian](PHASES.md).
+
+Uji integrasi profil repo sampai draft, requirement-blocked, resume dan status
+tersedia pada [workflow acceptance](RUNTIME-0.16.md). Tanpa --live hanya menampilkan
+rencana; mode --live memakai repo sintetis dan dapat memanggil model sampai
+delapan kali. Ini bukan cara menguji source produksi secara otomatis.

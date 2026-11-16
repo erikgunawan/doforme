@@ -993,6 +993,51 @@
           "blob": "b4d3f44be67ddd54d384e56935a098dc7a466c69"
         }
       }
+    },
+    {
+      "id": "72986f8d2e4167aa8af1fdb9e2aa2dc7d5a88b8b11baf3c064c5e2ba7a7c79d0",
+      "base_commit": "15a27acc63579e70e49fbde2d5c4d105156fbf43",
+      "date": "2026-11-16",
+      "version": "0.16.0",
+      "summary": "Verify real profile workflow, requirement stops, resume and status; unify exact command permissions and prompt",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "88f1421256d4f022b97b86e1b6de72904df8a953"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "9109ae934dd4ef4d365ae280bb33a5cc1e407741"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "b36ee2a86f8e44155d3993483aa815457f0c8214"
+        },
+        "docs/RUNTIME-0.16.md": {
+          "mode": "100644",
+          "blob": "1381bddf6478139917af6fd992aa697fb3737880"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "496c5713457539cef80ef96afcdc2857dd2b302f"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "1768adcb7872032e7483d1c09f29b71b64472e21"
+        },
+        "tests/runtime_workflow.py": {
+          "mode": "100644",
+          "blob": "e335d5d4caa76f3d19da35ac9445a6a207473426"
+        },
+        "tests/test_runtime_workflow.py": {
+          "mode": "100644",
+          "blob": "14433077f11ed922f1a03da240366e141f580657"
+        },
+        "tests/test_workflow.py": {
+          "mode": "100644",
+          "blob": "6bf22a09d89436e71f2905b017960344afd5ee7f"
+        }
+      }
     }
   ]
 }

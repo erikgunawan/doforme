@@ -58,6 +58,22 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(self.calls, ["analyze", "plan"])
         self.assertEqual((result["status"], result["stopped_stage"]), ("blocked", "fix"))
 
+    def test_host_prompt_supplies_the_exact_git_permission_commands(self):
+        def inspect_prompt(stage, repo, prompt, config):
+            for command in WF.permitted_bash_calls(stage, config):
+                self.assertIn(command, prompt)
+            return self.executor(stage, repo, prompt, config)
+        result = self.run_pipeline(executor=inspect_prompt, allow_fix=True, allow_execution=True)
+        self.assertEqual(result['status'], 'complete')
+        self.assertNotIn(self.config['test_commands'][0], WF.permitted_bash_calls('pr', self.config))
+
+    def test_observed_pr_command_variants_remain_outside_permission_scope(self):
+        for suffix in ('status --porcelain --untracked-files=all', 'diff --check'):
+            command = ' '.join(WF.SAFE_GIT_PREFIX) + ' ' + suffix
+            rows = [{'message': {'content': [{'type': 'tool_use', 'name': 'Bash', 'input': {'command': command}}]}}]
+            with self.subTest(command=command), self.assertRaisesRegex(ValueError, 'Unscoped program'):
+                WF.audit_calls(self.repo, rows, 'pr', self.config)
+
     def test_full_sequence_with_explicit_scope(self):
         result = self.run_pipeline(allow_fix=True, allow_execution=True)
         self.assertEqual(self.calls, list(WF.ORDER))

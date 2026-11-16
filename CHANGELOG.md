@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-16 — v0.16.0
+
+Verify real profile workflow, requirement stops, resume and status; unify exact command permissions and prompt
+
+Change ID: `72986f8d2e41`.
+
+File: `.claude-plugin/plugin.json`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/RUNTIME-0.16.md`, `docs/USAGE.md`, `scripts/run_workflow.py`, `tests/runtime_workflow.py`, `tests/test_runtime_workflow.py`, `tests/test_workflow.py`.
+
 ## 2026-11-16 — v0.15.0
 
 Record successful hosted documentation workflow and 138-test evidence

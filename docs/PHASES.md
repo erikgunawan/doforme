@@ -188,3 +188,29 @@ passed. The workflow had contents:read and invoked no model. This demonstrates
 the hosted check is active for this repo; required branch-status enforcement
 has not been configured. This follow-up evidence update is itself recorded by
 the same automatic history hook.
+
+Version 0.16 (2026-11-16) adds opt-in real-model acceptance of profile-based
+workflow requirements, all six stages, completed resume and /doforme:status.
+The first suite stopped at PR after successful analyze/plan/fix/test/review:
+the model appended an unallowed status option and shortened the diff check.
+Prompt, executor permissions and Git audit now share an exact command catalog;
+the observed variants remain rejected rather than receiving broader grants.
+
+Fresh suite B completed analyze through PR draft with real red/green evidence,
+independent test/review, fresh content binding, unchanged HEAD and exactly two
+edited fixture files. Unconfirmed requirements blocked at analyze despite the
+same direct execution/edit grants. Completed resume made no model call and
+changed no target/checkpoint files. Its first slash-status test was denied for
+quote spelling, so the original overall suite summary remains failed. After a
+test-only fix accepting bounded equivalent quoting of the same exact arguments,
+a separate fresh status session passed with one helper call, zero denials,
+fresh true and no target/checkpoint mutation. Saved production completion and
+resume were independently reverified under the same unchanged policy digest.
+
+All 148 offline tests passed, including rejection of observed Git variants,
+no-retry/fixture guards and exact-argv quote equivalence. Strict local component
+checks passed. RUNTIME-0.16.md records the separate runs and their boundaries;
+no final whole-suite rerun after quote normalization or /endtoend slash-routing
+test is claimed. Raw traces/checkpoints remain private in sibling artifacts.
+All inputs/owner confirmations are synthetic; no actual business acceptance,
+issue resolution, live integration, notification or remote PR is established.

@@ -91,6 +91,7 @@ claude plugin validate skills --strict
 
 Tes unittest bersifat offline dan tidak menggunakan model. Uji model nyata adalah
 opt-in berbiaya, memakai repo sementara; baca [runtime acceptance](RUNTIME-0.14.md).
+Uji workflow dengan profil, status dan resume dijelaskan di [workflow acceptance](RUNTIME-0.16.md).
 Validasi plugin lokal berbeda dari kelayakan direktori/marketplace: lisensi dan
 ikon publikasi belum ditetapkan.
 
