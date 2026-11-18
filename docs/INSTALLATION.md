@@ -1,7 +1,7 @@
 # Instalasi doforme
 
-doforme adalah plugin Claude Code. Plugin dimuat dari checkout GitHub; instalasi
-marketplace belum disediakan. Penggunaan lokal tidak memerlukan GitHub Actions,
+doforme adalah plugin Claude Code. Marketplace lokal mendukung instalasi permanen
+dengan scope user dari checkout GitHub. Penggunaan lokal tidak memerlukan GitHub Actions,
 Jira, Figma atau Telegram.
 
 ## Prasyarat
@@ -31,7 +31,34 @@ SSH yang memang sudah diotorisasi. Jangan memasukkan token ke file konfigurasi
 plugin, command, issue atau requirement. Tidak ada package/dependency tambahan
 yang perlu diinstal untuk pemeriksaan struktur ini.
 
-## 2. Muat dari repo target
+## 2. Pasang sekali, gunakan dari sesi biasa
+
+Daftarkan marketplace lokal, lalu install untuk pengguna komputer ini:
+
+```bash
+claude plugin validate "$HOME/doforme"
+claude plugin marketplace add "$HOME/doforme"
+claude plugin install doforme@doforme-marketplace --scope user
+claude plugin list
+```
+
+Sesuaikan path bila checkout bukan di ~/doforme. Scope user membuat plugin
+tersedia di semua repo pada komputer ini; tidak perlu menyalin plugin atau
+mengubah konfigurasi Claude setiap repo. Instalasi memakai salinan cache plugin.
+Biarkan checkout marketplace tersedia untuk update berikutnya.
+
+Buka sesi Claude Code baru dari repo target:
+
+```bash
+cd /absolute/path/repo-percobaan
+claude
+```
+
+Gunakan `/doforme:init` atau `/doforme:analyze`, bukan `/doforme` saja. Jika sesi
+lama belum menampilkan command, tutup dan buka kembali. Izin tools tetap mengikuti
+Claude Code dan project; konfirmasi akses yang diminta saat membaca resource plugin.
+
+### Alternatif untuk pengembangan: muat hanya satu sesi
 
 ```bash
 cd /absolute/path/repo-percobaan
@@ -132,8 +159,15 @@ git -C "$HOME/doforme" status --short
 git -C "$HOME/doforme" pull --ff-only
 ```
 
-Simpan/review perubahan lokal sebelum update. Restart sesi Claude dengan opsi
-plugin yang sama. Baca [history](../CHANGELOG.md) sebelum memakai versi baru.
+Untuk instalasi permanen, perbarui juga salinan cache:
+
+```bash
+claude plugin update doforme@doforme-marketplace --scope user
+```
+
+Simpan/review perubahan lokal sebelum update. Restart sesi Claude sesudahnya.
+Mode --plugin-dir langsung memakai checkout dan tidak memerlukan plugin update.
+Baca [history](../CHANGELOG.md) sebelum memakai versi baru.
 Checkpoint mengikat policy plugin: perubahan versi/source dapat membuat checkpoint
 lama stale. Jangan memaksa resume; lakukan review dan mulai run baru bila diperlukan.
 

@@ -1,6 +1,9 @@
 # Penggunaan doforme
 
-Mulai dari repo percobaan. Muat plugin sesuai [instalasi](INSTALLATION.md).
+Mulai dari repo percobaan. Pasang plugin sekali dengan scope user sesuai
+[instalasi](INSTALLATION.md), lalu buka sesi biasa dengan `claude`. Command
+`/doforme:init` dan `/doforme:analyze` tersedia tanpa flag --plugin-dir;
+`/doforme` saja belum merupakan command.
 Daftar command/agent dan versi terkini ada di [referensi otomatis](REFERENCE.md).
 
 ## Alur utama

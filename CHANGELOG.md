@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Tambahkan marketplace lokal dan panduan instalasi permanen dengan scope user
+
+Change ID: `dc165026c09a`.
+
+File: `.claude-plugin/marketplace.json`, `README.md`, `docs/INSTALLATION.md`, `docs/USAGE.md`.
+
+## 2026-11-18 — v0.25.0
+
 Tambahkan lisensi MIT dengan copyright Erik Gunawan dan tautan lisensi di README
 
 Change ID: `d1cc92f81f6a`.

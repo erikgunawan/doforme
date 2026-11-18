@@ -15,23 +15,27 @@ Plugin doforme tersedia dengan [lisensi MIT](LICENSE).
 ## Instalasi
 
 Prasyarat: Git, Python 3.9+, dan Claude Code dengan akses model aktif. Runner model
-memerlukan lingkungan POSIX. Plugin dimuat dari checkout lokal.
+memerlukan lingkungan POSIX. Pasang sekali dengan scope user dari checkout lokal:
 
 ```bash
 git clone https://github.com/erikgunawan/doforme.git "$HOME/doforme"
+claude plugin marketplace add "$HOME/doforme"
+claude plugin install doforme@doforme-marketplace --scope user
 
 cd /absolute/path/to/project
-claude --plugin-dir "$HOME/doforme" --add-dir "$HOME/doforme/skills"
+claude
 ```
 
 Gunakan akun GitHub yang memiliki akses ke repo. Direktori aktif adalah repo
-project yang akan dianalisis. Opsi --add-dir memberi akses baca ke metode plugin.
-Periksa `/help` dan `/agents` setelah Claude terbuka.
+project yang akan dianalisis. Instalasi user tersedia untuk semua project pada
+komputer ini. Buka sesi Claude baru, lalu periksa `/help` dan `/agents`.
+Panggil `/doforme:init` atau `/doforme:analyze`; `/doforme` saja belum tersedia.
 
 Untuk memperbarui checkout yang bersih:
 
 ```bash
 git -C "$HOME/doforme" pull --ff-only
+claude plugin update doforme@doforme-marketplace --scope user
 ```
 
 Restart sesi Claude setelah memperbarui plugin. Detail prasyarat dan pemecahan

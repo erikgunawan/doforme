@@ -1471,6 +1471,31 @@
           "blob": "d5126d54d70bd259a53fa99c7eac6bea6301117e"
         }
       }
+    },
+    {
+      "id": "dc165026c09a847f44f17b666404be3ef0615cd0b3f0dbbf734022d615f6fc0e",
+      "base_commit": "85c1390d814f79f306ce1cd997f9b5e7f397f4e8",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Tambahkan marketplace lokal dan panduan instalasi permanen dengan scope user",
+      "changes": {
+        ".claude-plugin/marketplace.json": {
+          "mode": "100644",
+          "blob": "9c6e81387652395c3b61727ff146ea33ea583290"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "abcddb143544a6fc15a129efd8da2101aa333744"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "b8c8122e467112a3ab43c66b6a6cc6fc2fc71252"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "c0a03dd33d79563c6dcfe2795e722a5f1cb11360"
+        }
+      }
     }
   ]
 }

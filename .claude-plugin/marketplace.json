@@ -1,0 +1,14 @@
+{
+  "name": "doforme-marketplace",
+  "description": "Install the doforme Claude Code plugin from this repository.",
+  "owner": {
+    "name": "Erik Gunawan"
+  },
+  "plugins": [
+    {
+      "name": "doforme",
+      "source": "./",
+      "description": "Evidence-based bug investigation and requirement-grounded resolution workflows."
+    }
+  ]
+}
