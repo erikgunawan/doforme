@@ -323,3 +323,27 @@ phase17 slash suite and phase21 bounded-executor probe remain evidence for their
 respective immutable policies; they are not relabeled as a full model run of
 the final combined candidate. Each roadmap phase/preparation has its own commit,
 with a separate phase18 cross-review fix rather than rewritten history.
+
+Version 0.25 (2026-11-18) adds standalone target-repo configuration for Telegram
+new-bug and owner-attested resolved messages. Only bug-labeled issues qualify.
+Resolved requires current closed/completed state, matching closure timeline,
+merged default-branch PR/SHA, successful required GitHub Actions checks, current
+unedited approver declaration and same-issue approver QA/UAT evidence naming that
+SHA. Test/model completion or bare issue closure does not establish acceptance.
+Reopen invalidates old evidence. Source/AC relationship and business sufficiency
+remain explicitly owner-attested, not independently inferred by the helper.
+
+The inactive templates copy a standalone helper into the app repo; no full plugin
+or model key is required for notifications. A durable artifact attempt precedes
+Telegram, state is revalidated before POST, and retained receipt/local-attempt
+guards stop duplicate/uncertain retries within their documented retention bounds.
+No project source/test code or PR branch is executed in the Telegram-secret job.
+Twenty-three focused tests passed, including mock-API/transport gates and actual
+isolated CLI/module-shadow rejection; YAML triggers/read-only scopes
+were checked locally. No live repo activation, Telegram delivery, credential setup
+or real business acceptance was performed. TELEGRAM.md provides the full repo
+settings, CI template, operator evidence procedure and delivery limitations.
+The combined offline suite passed all 257 tests. Template YAML, triggers,
+read-only permissions, default-branch checkout, secret separation and durable
+receipt-before-send ordering were checked locally; no hosted target-project
+notification workflow or real Telegram recipient was exercised.

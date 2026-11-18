@@ -1,5 +1,9 @@
 # Pemeriksaan kesiapan integrasi — fondasi fase 23
 
+Helper pada halaman ini memeriksa template intake legacy. Untuk workflow
+standalone bug-baru/resolved v0.25, gunakan [konfigurasi Telegram](TELEGRAM.md);
+hasil pemeriksa legacy tidak dianggap validasi live atas workflow baru tersebut.
+
 Helper ini memeriksa prasyarat GitHub issue intake dan Telegram tanpa memasang
 workflow, mengubah variable/secret, menjalankan workflow/model atau mengirim
 pesan. Default sepenuhnya offline. Fase aktivasi live belum selesai tanpa issue

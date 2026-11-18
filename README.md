@@ -14,6 +14,7 @@ di [referensi yang dibuat otomatis](docs/REFERENCE.md).
 | [Pemeliharaan otomatis](CONTRIBUTING.md) | Hook lokal, generation dan pemeriksaan GitHub |
 | [Status roadmap](docs/ROADMAP.md) | Hasil fase 17–24 serta keputusan owner/live yang masih pending |
 | [Kandidat rilis](docs/RELEASE-CANDIDATE.md) | Paket reproducible dan verifikasi; tidak mengklaim stable/v1.0 |
+| [Telegram bug/resolved](docs/TELEGRAM.md) | Konfigurasi repo target untuk issue baru dan resolved menurut approval owner |
 
 **Complete tidak berarti issue resolved.** Green test berlaku pada AC yang diuji.
 Review AI tidak menggantikan penerimaan pemilik requirement. Business acceptance

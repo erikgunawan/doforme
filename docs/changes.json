@@ -1355,6 +1355,67 @@
           "blob": "5bff86a123982200e15544209c3d1759836661b9"
         }
       }
+    },
+    {
+      "id": "40c9d8949443ad3a5582118ff822901c8aef486f23f0d68487f2ab34ed2de7a4",
+      "base_commit": "8a311eba3e2f8d434fd5c20575972cb351698c66",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Configure target-repo Telegram new-bug and owner-attested resolved notifications with durable receipt and acceptance gates",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "564d11b2a59ae30ad6958db9db14a5785e198c9e"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "bd1ba73d00cb0a7f6ef8f6970b12dd70c1fffbf4"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "dc35287694a4d78dbdfb014d57189a3b32036f6a"
+        },
+        "docs/INTEGRATION-READINESS.md": {
+          "mode": "100644",
+          "blob": "fe1586ee3f09aea5f05e7ea4ea284ea6ee18bf04"
+        },
+        "docs/INTEGRATIONS.md": {
+          "mode": "100644",
+          "blob": "51798b32255b3c77346c0bb819770fdfedc41726"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "c5be99597801d9cc0869c49de1740c5423789820"
+        },
+        "docs/ROADMAP.md": {
+          "mode": "100644",
+          "blob": "aa55dd3c50f85aba2c4c3d83f3d522df4a468040"
+        },
+        "docs/TELEGRAM.md": {
+          "mode": "100644",
+          "blob": "64e5961b599542d932b3025a9f2b48ac5678cc68"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "f6a033525fc46be7554dc1a7f687e8a706bb6d9d"
+        },
+        "integrations/klikdown-tests.yml.example": {
+          "mode": "100644",
+          "blob": "6e3363dc4df31e3131525263c6740b6e9a3cce81"
+        },
+        "integrations/telegram-bugs.yml.example": {
+          "mode": "100644",
+          "blob": "328471a1e50c73c6d458be84535a699eaeeca2e2"
+        },
+        "integrations/telegram_bugs.py": {
+          "mode": "100644",
+          "blob": "24a205696985ce44786d588f526d4cb31c2b129e"
+        },
+        "tests/test_telegram_bugs.py": {
+          "mode": "100644",
+          "blob": "f4e916cb22966c3af0e98c8c4f111f4948b8d2b9"
+        }
+      }
     }
   ]
 }

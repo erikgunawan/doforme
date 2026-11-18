@@ -1,5 +1,11 @@
 # GitHub issue intake and optional Telegram notifications
 
+For a target application repo that needs both new-bug and owner-attested resolved
+notifications, use [the standalone Telegram configuration](TELEGRAM.md),
+integrations/telegram-bugs.yml.example and integrations/telegram_bugs.py. They do
+not require copying the plugin's full Python workflow into the app. The legacy
+intake adapter described below remains new-issue-only; its behavior is unchanged.
+
 The [workflow template](../integrations/github-issues.yml.example) is deliberately
 outside `.github/workflows`: committing or pushing this repository does not
 activate it. No secret/account was configured and no notification was sent during
@@ -42,7 +48,9 @@ secrets `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID`. Secret presence alone never ena
 sending. The script also requires the explicit `--send-telegram` action.
 No recipient is inferred. The message contains the issue reference/title and
 explicitly does not mark it resolved. Business-acceptance or resolved notifications
-are not implemented because those states cannot yet be established automatically.
+are not implemented in this legacy helper. The separate lifecycle notifier uses
+explicit approver evidence and merged-commit/check gates instead of inferring
+business acceptance automatically; see TELEGRAM.md.
 
 The helper posts only to Telegram's fixed HTTPS API host, rejects credential URL
 injection, disables redirects and link previews, and does not log token-bearing

@@ -34,3 +34,9 @@ dibuat hanya karena roadmap atau test fixture berstatus pass.
 Panduan: [pilot](PILOT.md), [acceptance](ACCEPTANCE.md), [sumber](SOURCES.md),
 [operasional](OPERATIONS.md), [publikasi](PUBLISHING.md),
 [integrasi](INTEGRATION-READINESS.md), dan [kandidat rilis](RELEASE-CANDIDATE.md).
+
+Pada v0.25 ditambahkan [konfigurasi Telegram lifecycle](TELEGRAM.md) untuk repo
+target. Ia mendukung bug baru dan resolved menurut bukti/keputusan approver,
+tanpa menganggap closed/test hijau sebagai acceptance otomatis. Template tersebut
+belum dipasang atau dikirim ke chat nyata; kebutuhan operator/secret/recipient
+dan batas live-verification di atas tetap berlaku.

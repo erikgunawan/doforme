@@ -54,6 +54,10 @@ Penggunaan lebih lanjut ada di [panduan penggunaan](USAGE.md).
 
 ## 3. Opsional: setup repo target
 
+Jika ingin notifikasi bug baru/resolved, gunakan [konfigurasi repo Telegram](TELEGRAM.md)
+di repo aplikasi. Fitur notifikasi memakai GitHub Actions, bukan sesi Claude
+lokal, dan tidak memerlukan API key model.
+
 ```text
 /doforme:init --write
 ```

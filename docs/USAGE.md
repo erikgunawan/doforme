@@ -163,6 +163,11 @@ freshness normal status/resume dan attestation lama tidak diubah diam-diam.
 
 ## Integrasi dan pengujian
 
+Untuk notifikasi issue bug baru dan resolved pada repo aplikasi, pakai
+[konfigurasi Telegram](TELEGRAM.md). Alur manual dan end-to-end memakai gerbang
+yang sama: PR merged, check wajib lulus, bukti/keputusan approver dan issue
+closed/completed. Test hijau atau draft PR saja tidak mengirim status resolved.
+
 [Pemeriksaan kesiapan integrasi](INTEGRATION-READINESS.md) menyediakan diagnosis
 offline atau pembacaan metadata GitHub eksplisit. Keberadaan konfigurasi/secret
 tidak dianggap bukti pengiriman berhasil. Helper tidak memasang secret, mengaktifkan

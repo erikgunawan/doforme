@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-18 — v0.25.0
+
+Configure target-repo Telegram new-bug and owner-attested resolved notifications with durable receipt and acceptance gates
+
+Change ID: `40c9d8949443`.
+
+File: `.claude-plugin/plugin.json`, `README.md`, `docs/INSTALLATION.md`, `docs/INTEGRATION-READINESS.md`, `docs/INTEGRATIONS.md`, `docs/PHASES.md`, `docs/ROADMAP.md`, `docs/TELEGRAM.md`, `docs/USAGE.md`, `integrations/klikdown-tests.yml.example`, `integrations/telegram-bugs.yml.example`, `integrations/telegram_bugs.py`, `tests/test_telegram_bugs.py`.
+
 ## 2026-11-16 — v0.24.0
 
 Phase 24 candidate: reproducible packaging and explicit remaining owner/live gates; combined 234-test verification
