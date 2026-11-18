@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Catat hasil instalasi nyata: CLI 2.1.327 membaca marketplace lokal langsung dari checkout
+
+Change ID: `a41ac13a48c2`.
+
+File: `docs/INSTALLATION.md`.
+
+## 2026-11-18 — v0.25.0
+
 Tambahkan marketplace lokal dan panduan instalasi permanen dengan scope user
 
 Change ID: `dc165026c09a`.

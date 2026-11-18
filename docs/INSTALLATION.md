@@ -44,8 +44,10 @@ claude plugin list
 
 Sesuaikan path bila checkout bukan di ~/doforme. Scope user membuat plugin
 tersedia di semua repo pada komputer ini; tidak perlu menyalin plugin atau
-mengubah konfigurasi Claude setiap repo. Instalasi memakai salinan cache plugin.
-Biarkan checkout marketplace tersedia untuk update berikutnya.
+mengubah konfigurasi Claude setiap repo. Pada CLI 2.1.327 yang diuji, instalasi
+marketplace lokal membaca langsung checkout (readFromFolder). Biarkan checkout
+tersedia dan review perubahan lokal sebelum membuka sesi baru. Versi CLI lain
+dapat memakai salinan cache.
 
 Buka sesi Claude Code baru dari repo target:
 
@@ -159,7 +161,7 @@ git -C "$HOME/doforme" status --short
 git -C "$HOME/doforme" pull --ff-only
 ```
 
-Untuk instalasi permanen, perbarui juga salinan cache:
+Untuk instalasi permanen, minta Claude memperbarui instalasi setelah pull:
 
 ```bash
 claude plugin update doforme@doforme-marketplace --scope user

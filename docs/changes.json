@@ -1496,6 +1496,19 @@
           "blob": "c0a03dd33d79563c6dcfe2795e722a5f1cb11360"
         }
       }
+    },
+    {
+      "id": "a41ac13a48c214a43af2dece492c7ec4a5e2fbd7d01db4b10f947f67ed036630",
+      "base_commit": "f5526223cf3db5dba9f8de8af0ef379481e1d142",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Catat hasil instalasi nyata: CLI 2.1.327 membaca marketplace lokal langsung dari checkout",
+      "changes": {
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "77250b41b572cd2ad536f5968324b315dc85be7b"
+        }
+      }
     }
   ]
 }
