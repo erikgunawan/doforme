@@ -8,9 +8,12 @@ Requirement dan acceptance criteria (AC) menjadi acuan perilaku yang diharapkan.
 Test hijau dan workflow complete tidak otomatis berarti issue sudah diterima
 pemilik requirement atau dinyatakan resolved.
 
+Pelajari [cara kerja dan diagram alur end-to-end](docs/HOW-IT-WORKS.md).
 Riwayat versi dan perubahan tersedia di [CHANGELOG](CHANGELOG.md).
 
-Plugin doforme tersedia dengan [lisensi MIT](LICENSE).
+Plugin doforme memakai [lisensi MIT](LICENSE), yang mengizinkan penggunaan,
+modifikasi, dan distribusi, termasuk untuk kebutuhan komersial, dengan menyertakan
+pemberitahuan copyright dan lisensi. Software disediakan tanpa jaminan.
 
 ## Instalasi
 

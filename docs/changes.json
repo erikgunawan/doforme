@@ -1522,6 +1522,23 @@
           "blob": "c8b586481690c674fef60df20600ac2ae4acbd04"
         }
       }
+    },
+    {
+      "id": "149b34b5653db1eb7d0ed90a9e53ac5c6154f7ee3a6384a8e2f020cf0be5b80b",
+      "base_commit": "4cac5f7d94921ecb7cbb483fc2caf66ee05a7863",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Tambahkan penjelasan cara kerja, diagram alur end-to-end dan Telegram, serta ringkasan lisensi MIT di README",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "74ec9284622ad34589e59f42dece1c93ffca8c7d"
+        },
+        "docs/HOW-IT-WORKS.md": {
+          "mode": "100644",
+          "blob": "636cc52be6b78e1189e7cdc26f60bf035e522fd7"
+        }
+      }
     }
   ]
 }

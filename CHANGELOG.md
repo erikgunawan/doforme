@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Tambahkan penjelasan cara kerja, diagram alur end-to-end dan Telegram, serta ringkasan lisensi MIT di README
+
+Change ID: `149b34b5653d`.
+
+File: `README.md`, `docs/HOW-IT-WORKS.md`.
+
+## 2026-11-18 — v0.25.0
+
 Ringkas README dengan menghapus keterangan command utama yang tidak diperlukan
 
 Change ID: `035023f19fdd`.
