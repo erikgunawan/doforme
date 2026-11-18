@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Ringkas README dengan menghapus keterangan command utama yang tidak diperlukan
+
+Change ID: `035023f19fdd`.
+
+File: `README.md`.
+
+## 2026-11-18 — v0.25.0
+
 Catat hasil instalasi nyata: CLI 2.1.327 membaca marketplace lokal langsung dari checkout
 
 Change ID: `a41ac13a48c2`.

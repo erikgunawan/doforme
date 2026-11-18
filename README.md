@@ -29,7 +29,7 @@ claude
 Gunakan akun GitHub yang memiliki akses ke repo. Direktori aktif adalah repo
 project yang akan dianalisis. Instalasi user tersedia untuk semua project pada
 komputer ini. Buka sesi Claude baru, lalu periksa `/help` dan `/agents`.
-Panggil `/doforme:init` atau `/doforme:analyze`; `/doforme` saja belum tersedia.
+Panggil `/doforme:init` atau `/doforme:analyze`.
 
 Untuk memperbarui checkout yang bersih:
 

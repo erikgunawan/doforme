@@ -1509,6 +1509,19 @@
           "blob": "77250b41b572cd2ad536f5968324b315dc85be7b"
         }
       }
+    },
+    {
+      "id": "035023f19fdda06e898ba1ba6da152dfe15a3ad5bf2cdceddad6fc4bce970ed7",
+      "base_commit": "bba84dc5db060c76397db3346b416be59cc41161",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Ringkas README dengan menghapus keterangan command utama yang tidak diperlukan",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "c8b586481690c674fef60df20600ac2ae4acbd04"
+        }
+      }
     }
   ]
 }
