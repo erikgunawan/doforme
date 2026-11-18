@@ -1416,6 +1416,19 @@
           "blob": "f4e916cb22966c3af0e98c8c4f111f4948b8d2b9"
         }
       }
+    },
+    {
+      "id": "506df788f7bc726877bafdddd3d073d69ab87a95fda5093e82852692fa24d724",
+      "base_commit": "7022f04f38534a20a4e0b339266aa5211346f211",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Rapikan README: hanya pengenalan plugin, instalasi dan cara pakai; pusatkan riwayat versi di CHANGELOG",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "2ece9ce3ee40d7e9763a53686d430659735909a3"
+        }
+      }
     }
   ]
 }

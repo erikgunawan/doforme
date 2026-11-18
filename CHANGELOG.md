@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Rapikan README: hanya pengenalan plugin, instalasi dan cara pakai; pusatkan riwayat versi di CHANGELOG
+
+Change ID: `506df788f7bc`.
+
+File: `README.md`.
+
+## 2026-11-18 — v0.25.0
+
 Configure target-repo Telegram new-bug and owner-attested resolved notifications with durable receipt and acceptance gates
 
 Change ID: `40c9d8949443`.
