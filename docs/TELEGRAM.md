@@ -5,6 +5,13 @@ Ia berlaku untuk fix manual maupun doforme end-to-end. Notifikasi tidak menjalan
 Claude, memperbaiki source, membuat PR, menutup issue atau mengaktifkan hook lab.
 API key model tidak diperlukan untuk notifikasi.
 
+**Telegram sepenuhnya opsional.** Repo tanpa workflow ini, tanpa token/chat ID,
+atau dengan DOFORME_NOTIFY_TELEGRAM kosong/false tetap dapat memakai semua tahap
+doforme manual dan end-to-end. Hanya notifikasi yang tidak dikirim. Credential
+Telegram tidak diperlukan oleh init, doctor, analyze, plan, fix, test, review,
+draft PR, status atau resume. Ringkasan instalasi ada di
+[panduan instalasi plugin](INSTALLATION.md#4-opsional-pasang-template-telegram).
+
 ## Definisi status
 
 | Kejadian | Telegram |
@@ -27,11 +34,11 @@ Jalankan dari root repo KlikDown yang sudah menjadi checkout Git. Gunakan checko
 doforme versi 0.25 atau lebih baru dan review file sebelum menyalinnya:
 
 ```bash
-DOFORME="$HOME/Documents/ChatGPT/gli/doforme"
+DOFORME="$HOME/doforme"
 mkdir -p .github/workflows .github/scripts
-cp "$DOFORME/integrations/telegram_bugs.py" .github/scripts/doforme_telegram.py
-cp "$DOFORME/integrations/telegram-bugs.yml.example" .github/workflows/doforme-telegram.yml
-cp "$DOFORME/integrations/klikdown-tests.yml.example" .github/workflows/tests.yml
+cp -i "$DOFORME/integrations/telegram_bugs.py" .github/scripts/doforme_telegram.py
+cp -i "$DOFORME/integrations/telegram-bugs.yml.example" .github/workflows/doforme-telegram.yml
+cp -i "$DOFORME/integrations/klikdown-tests.yml.example" .github/workflows/tests.yml
 ```
 
 Gunakan path baru atau gabungkan dengan file existing secara sadar; jangan

@@ -54,10 +54,6 @@ Penggunaan lebih lanjut ada di [panduan penggunaan](USAGE.md).
 
 ## 3. Opsional: setup repo target
 
-Jika ingin notifikasi bug baru/resolved, gunakan [konfigurasi repo Telegram](TELEGRAM.md)
-di repo aplikasi. Fitur notifikasi memakai GitHub Actions, bukan sesi Claude
-lokal, dan tidak memerlukan API key model.
-
 ```text
 /doforme:init --write
 ```
@@ -69,6 +65,60 @@ File lama tidak ditimpa. Lihat [onboarding](ONBOARDING.md) untuk konfigurasi len
 
 Hook pembaruan dokumentasi hanya untuk kontributor repo doforme; pengguna plugin
 tidak perlu memasangnya di setiap repo target.
+
+## 4. Opsional: pasang template Telegram
+
+Lewati seluruh bagian ini jika tidak memerlukan notifikasi. Analyze, plan, fix,
+test, review, draft PR, status dan end-to-end tidak bergantung pada Telegram.
+Token/chat ID yang belum dikonfigurasi bukan blocker untuk workflow plugin lokal.
+
+Template dipasang di repo aplikasi target, bukan di repo plugin. Dari root
+project, salin dua file berikut dari checkout doforme yang sudah diperbarui:
+
+```bash
+DOFORME="$HOME/doforme"
+cd /absolute/path/to/project
+mkdir -p .github/workflows .github/scripts
+cp -i "$DOFORME/integrations/telegram_bugs.py" .github/scripts/doforme_telegram.py
+cp -i "$DOFORME/integrations/telegram-bugs.yml.example" .github/workflows/doforme-telegram.yml
+```
+
+Opsi -i meminta konfirmasi sebelum menimpa file; review dan gabungkan jika project
+sudah memiliki konfigurasi serupa. Project dengan CI existing tetap memakai test
+dan check yang sesuai project tersebut. Khusus lab KlikDown yang belum memiliki
+CI, template tambahan tersedia di integrations/klikdown-tests.yml.example:
+
+```bash
+cp -i "$DOFORME/integrations/klikdown-tests.yml.example" .github/workflows/tests.yml
+```
+
+Jangan memakai command test KlikDown untuk project dengan stack berbeda. Setelah
+meninjau file, commit dan push konfigurasi ke default branch **repo project**.
+
+Di Settings → Secrets and variables → Actions repo project, isi:
+
+| Jenis | Nama | Isi |
+| --- | --- | --- |
+| Secret | TELEGRAM_BOT_TOKEN | Token bot yang dipilih operator |
+| Secret | TELEGRAM_CHAT_ID | Chat/grup tujuan |
+| Variable | DOFORME_NOTIFY_TELEGRAM | false selama setup; true setelah siap mengirim |
+| Variable | DOFORME_BUG_LABEL | bug, atau label pilihan project |
+| Variable | DOFORME_RESOLUTION_APPROVERS | Akun GitHub approver yang ditunjuk operator |
+| Variable | DOFORME_REQUIRED_CHECKS | Nama check CI wajib, satu per baris; contoh tests |
+
+Isi token langsung di GitHub Secrets, bukan di source, issue atau chat. Bot harus
+bisa mengirim ke chat yang dipilih. API key model tidak diperlukan oleh notifier;
+akses model tetap diperlukan bila menjalankan workflow doforme.
+
+Sesudah konfigurasi lengkap, ubah DOFORME_NOTIFY_TELEGRAM menjadi true dan uji
+dengan issue latihan baru berlabel bug. Notifikasi resolved baru dikirim setelah
+PR merge, check pada commit terkait lulus, bukti/deklarasi approver tersedia dan
+issue closed/completed. Ikuti format dan gerbang di [panduan Telegram](TELEGRAM.md).
+Template tidak menjalankan auto-fix, membuat PR atau menutup issue sendiri.
+
+Jika workflow Telegram tidak dipasang, flag kosong/false, atau pengiriman gagal,
+fungsi plugin manual/end-to-end tetap tersedia. Masalah delivery ditangani pada
+workflow notifikasi di GitHub Actions; itu terpisah dari hasil run plugin lokal.
 
 ## Update plugin
 

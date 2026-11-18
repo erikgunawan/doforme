@@ -1429,6 +1429,31 @@
           "blob": "2ece9ce3ee40d7e9763a53686d430659735909a3"
         }
       }
+    },
+    {
+      "id": "c2bc726eacf84391096cc2d9640ac47132604eb04106a43283ceff33ebf6dce9",
+      "base_commit": "cfe391c7ac090e8c68a401354d834af3a6c218ae",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Lengkapi instalasi template Telegram di repo project dan tegaskan plugin manual/end-to-end tetap berjalan tanpa Telegram",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "371019ef39602edbefe4aab95569cb3f67c40258"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "20993c46463b069a705126146ff5eed4f8edb555"
+        },
+        "docs/TELEGRAM.md": {
+          "mode": "100644",
+          "blob": "e26698f4b9abbb5e8e8eef0b62f7dc08cf44a8cc"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "6c575e36611e0651c3854b69cc8949451d0ab4c1"
+        }
+      }
     }
   ]
 }

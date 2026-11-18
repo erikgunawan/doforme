@@ -35,6 +35,18 @@ git -C "$HOME/doforme" pull --ff-only
 Restart sesi Claude setelah memperbarui plugin. Detail prasyarat dan pemecahan
 masalah ada di [panduan instalasi](docs/INSTALLATION.md).
 
+### Opsional: template Telegram
+
+**Telegram bukan prasyarat doforme.** Seluruh tahap manual maupun end-to-end
+tetap tersedia tanpa bot, chat ID, Secrets/Variables Telegram, atau workflow
+notifikasi. Requirement, akses model dan izin eksekusi tetap mengikuti project.
+
+Jika membutuhkan notifikasi, pasang helper dan workflow Telegram di **repo project**,
+lalu isi Secrets/Variables di repo tersebut. Ikuti
+[langkah instalasi template](docs/INSTALLATION.md#4-opsional-pasang-template-telegram)
+dan [panduan konfigurasi Telegram](docs/TELEGRAM.md). Push repo plugin doforme
+tidak mengaktifkan notifikasi project.
+
 ## Cara pakai
 
 ### 1. Siapkan project dan requirement

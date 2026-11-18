@@ -163,6 +163,10 @@ freshness normal status/resume dan attestation lama tidak diubah diam-diam.
 
 ## Integrasi dan pengujian
 
+Telegram tidak wajib dikonfigurasi. Seluruh jalur manual/end-to-end serta
+status/resume tetap tersedia tanpa workflow atau credential Telegram; hanya
+pengiriman notifikasi yang memerlukan opt-in dan konfigurasi tambahan.
+
 Untuk notifikasi issue bug baru dan resolved pada repo aplikasi, pakai
 [konfigurasi Telegram](TELEGRAM.md). Alur manual dan end-to-end memakai gerbang
 yang sama: PR merged, check wajib lulus, bukti/keputusan approver dan issue

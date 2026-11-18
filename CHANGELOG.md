@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Lengkapi instalasi template Telegram di repo project dan tegaskan plugin manual/end-to-end tetap berjalan tanpa Telegram
+
+Change ID: `c2bc726eacf8`.
+
+File: `README.md`, `docs/INSTALLATION.md`, `docs/TELEGRAM.md`, `docs/USAGE.md`.
+
+## 2026-11-18 — v0.25.0
+
 Rapikan README: hanya pengenalan plugin, instalasi dan cara pakai; pusatkan riwayat versi di CHANGELOG
 
 Change ID: `506df788f7bc`.
