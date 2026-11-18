@@ -10,6 +10,8 @@ pemilik requirement atau dinyatakan resolved.
 
 Riwayat versi dan perubahan tersedia di [CHANGELOG](CHANGELOG.md).
 
+Plugin doforme tersedia dengan [lisensi MIT](LICENSE).
+
 ## Instalasi
 
 Prasyarat: Git, Python 3.9+, dan Claude Code dengan akses model aktif. Runner model

@@ -1454,6 +1454,23 @@
           "blob": "6c575e36611e0651c3854b69cc8949451d0ab4c1"
         }
       }
+    },
+    {
+      "id": "d1cc92f81f6a85c1de136e5b676eb8cc5a3286ca5100caf6aeba9d8c0c7409ab",
+      "base_commit": "32942542d23353f53e344ee8878a8ae3681fc6d2",
+      "date": "2026-11-18",
+      "version": "0.25.0",
+      "summary": "Tambahkan lisensi MIT dengan copyright Erik Gunawan dan tautan lisensi di README",
+      "changes": {
+        "LICENSE": {
+          "mode": "100644",
+          "blob": "d1e3cdb53267bd2fdd9ddc066250720da683137a"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "d5126d54d70bd259a53fa99c7eac6bea6301117e"
+        }
+      }
     }
   ]
 }

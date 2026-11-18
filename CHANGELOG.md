@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-18 — v0.25.0
 
+Tambahkan lisensi MIT dengan copyright Erik Gunawan dan tautan lisensi di README
+
+Change ID: `d1cc92f81f6a`.
+
+File: `LICENSE`, `README.md`.
+
+## 2026-11-18 — v0.25.0
+
 Lengkapi instalasi template Telegram di repo project dan tegaskan plugin manual/end-to-end tetap berjalan tanpa Telegram
 
 Change ID: `c2bc726eacf8`.
