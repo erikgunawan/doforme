@@ -31,9 +31,9 @@ class BoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "only Read"):
             CHECKER.check(self.root)
 
-    def test_main_context_bypass_rejected(self):
-        self.replace("commands/analyze.md", "context: fork", "context: inline")
-        with self.assertRaisesRegex(ValueError, "restricted investigator"):
+    def test_coordinator_cannot_preapprove_shell(self):
+        self.replace("commands/analyze.md", "Read, Glob, Grep, AskUserQuestion", "Read, Glob, Grep, AskUserQuestion, Bash")
+        with self.assertRaisesRegex(ValueError, "guided coordinator"):
             CHECKER.check(self.root)
 
     def test_missing_report_resource_rejected(self):

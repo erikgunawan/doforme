@@ -76,6 +76,11 @@ def check_graph(graph):
 
 def check(root):
     root = Path(root).resolve()
+    guide = frontmatter(root / 'skills/guided-workflow/SKILL.md')
+    if guide != {'name': 'guided-workflow',
+                 'description': 'Conversational setup, issue selection, saved reports, and concrete scope approvals',
+                 'user-invocable': 'false', 'disable-model-invocation': 'true'}:
+        raise ValueError('Guided method must remain an explicit hidden helper')
     manifest = json.loads((root / ".claude-plugin/plugin.json").read_text())
     if manifest["name"] != "doforme":
         raise ValueError("Plugin namespace must be doforme")
@@ -87,12 +92,18 @@ def check(root):
     for command_name, agent_name, skill_name in components:
         command_path = root / f"commands/{command_name}.md"
         command = frontmatter(command_path)
-        required = {"context": "fork", "agent": f"doforme:{agent_name}",
-                    "disable-model-invocation": "true", "background": "false"}
+        # Public commands are interactive coordinators; worker agents remain restricted.
+        required = {"disable-model-invocation": "true",
+                    "allowed-tools": "Read, Glob, Grep, AskUserQuestion"}
         if any(command.get(key) != value for key, value in required.items()):
-            raise ValueError(f"{command_name} must run explicitly in the restricted {agent_name}")
+            raise ValueError(f"{command_name} must use the explicit guided coordinator")
         if set(command) - {*required, "description", "argument-hint"}:
-            raise ValueError("Review new command capabilities")
+            raise ValueError("Review new command capabilities; coordinators cannot fork or preapprove Bash")
+        guided = '${CLAUDE_PLUGIN_ROOT}/skills/guided-workflow/SKILL.md'
+        helper = '${CLAUDE_PLUGIN_ROOT}/scripts/guided_workflow.py'
+        legacy = root / f'skills/guided-workflow/references/advanced/{command_name}.md'
+        if guided not in command_path.read_text() or helper not in command_path.read_text() or not legacy.is_file():
+            raise ValueError("Coordinator must keep its guided helper and restricted advanced method")
         agent = frontmatter(root / f"agents/{agent_name}.md")
         expected_tools = {**STAGES, **UTILITIES}[command_name][2]
         if agent.get("name") != agent_name or agent.get("tools") != expected_tools:
@@ -110,7 +121,7 @@ def check(root):
             if helper not in body:
                 raise ValueError(f'{command_name} must supply its exact packaged helper path')
         resource = "${CLAUDE_PLUGIN_ROOT}/skills/" + skill_name + "/SKILL.md"
-        if "$ARGUMENTS" not in body or resource not in body:
+        if "$ARGUMENTS" not in body or resource not in legacy.read_text():
             raise ValueError(f"{command_name} must forward input and resolve its packaged skill")
     graph = json.loads((root / "skills/bug-resolution/references/workflow.json").read_text())
     check_graph(graph)

@@ -135,7 +135,7 @@ def reference(root, staged=False):
         else:
             fields = frontmatter(root / name)
         command = Path(name).stem
-        values = (f'/doforme:{command}', fields['description'], fields['agent'], fields.get('argument-hint', ''))
+        values = (f'/doforme:{command}', fields['description'], fields.get('agent', 'guided coordinator'), fields.get('argument-hint', ''))
         lines.append('| ' + ' | '.join(escape(value) for value in values) + ' |')
     lines += ['', 'Referensi ini dibuat dari manifest dan frontmatter command. Ini bukan bukti',
               'bahwa fitur telah diuji melalui model atau memenuhi requirement bisnis.', '',

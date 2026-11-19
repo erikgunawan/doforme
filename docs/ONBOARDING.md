@@ -1,4 +1,7 @@
-# Onboarding per repository — v0.12
+# Onboarding per repository
+
+For the interactive setup and short issue commands, see [guided usage](GUIDED-USAGE.md).
+The utilities below describe the preserved advanced helper interface.
 
 The plugin is loaded once into the selected Claude session. Each target repo can
 then have reusable defaults without copying plugin source or changing application
@@ -7,7 +10,7 @@ code. Onboarding is a separate utility, not an automatic bug-workflow stage.
 ## Inspect, then explicitly create draft files
 
 ```text
-/doforme:init
+/doforme:init --inspect
 /doforme:init --write
 ```
 

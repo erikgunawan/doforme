@@ -7,7 +7,7 @@ Jira, Figma atau Telegram.
 ## Prasyarat
 
 - Git dan Python 3.9 atau lebih baru. Helper memakai Python standard library.
-- Claude Code dengan akun/model yang dapat digunakan. Versi CLI yang diuji: 2.1.323.
+- Claude Code dengan akun/model yang dapat digunakan. Validasi struktur CLI terbaru: 2.1.327; uji interaktif terpandu dilaporkan terpisah.
 - Hak baca ke repo GitHub doforme dan repo target yang ingin diperiksa.
 - Untuk workflow fix: Git checkout kecil yang terisolasi, HEAD tersedia, sumber
   requirement/AC, serta perintah test lokal yang sudah ditinjau.
@@ -77,11 +77,15 @@ Di Claude, periksa `/help` dan `/agents`, lalu jalankan:
 /doforme:init
 ```
 
-Hasil awal yang diharapkan: inspection_only, tidak ada file dibuat, test tidak
-dijalankan, dan belum siap fix. Ini adalah pemeriksaan aman untuk mulai mencoba.
-Penggunaan lebih lanjut ada di [panduan penggunaan](USAGE.md).
+Hasil awal: inspeksi repo dan pertanyaan singkat tentang konfigurasi yang diusulkan.
+Default init kini terpandu; ia tidak menulis sebelum persetujuan proposal. Untuk
+inspeksi helper lama tanpa percakapan setup, gunakan `/doforme:init --inspect`.
+Lanjutkan dengan [panduan command singkat](GUIDED-USAGE.md).
 
-## 3. Opsional: setup repo target
+## 3. Setup terpandu atau draft advanced
+
+Mode terpandu `/doforme:init` membaca kandidat sumber/test dan meminta keputusan
+AC serta persetujuan menyimpan konfigurasi. Untuk membuat template kosong saja:
 
 ```text
 /doforme:init --write

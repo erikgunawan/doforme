@@ -1539,6 +1539,167 @@
           "blob": "636cc52be6b78e1189e7cdc26f60bf035e522fd7"
         }
       }
+    },
+    {
+      "id": "e5a36abf545a8dbd03aa2e4ec9a1b6aaec96e56efb3bc15a8e7d89ed758b62f0",
+      "base_commit": "9abf795c6f4799312c41f78e7a59667f33dc7363",
+      "date": "2026-11-19",
+      "version": "0.26.0",
+      "summary": "Tambahkan pengalaman terpandu: command per issue, setup dengan konfirmasi, laporan otomatis, scope hasil plan, dan end-to-end yang dapat dijeda",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "ea29a5ede82ddd65dd3a445921a2b4eb0ba2445e"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "a541eb14cee615a183d4c957f7e728828411c45d"
+        },
+        "commands/analyze.md": {
+          "mode": "100644",
+          "blob": "ff70adc2ee6d15673c091d63797811d237ea6421"
+        },
+        "commands/doctor.md": {
+          "mode": "100644",
+          "blob": "723e5e811218361b281d3d4f5fc22c0786108f81"
+        },
+        "commands/endtoend.md": {
+          "mode": "100644",
+          "blob": "92d29181ab71165c05f71b844f7a2d524449cf4d"
+        },
+        "commands/fix.md": {
+          "mode": "100644",
+          "blob": "9dabfd548de91a377f46f0a67d645642552ed69e"
+        },
+        "commands/init.md": {
+          "mode": "100644",
+          "blob": "ca8f229cedd479012fdf0edf9fb34d0bcea95fb3"
+        },
+        "commands/plan.md": {
+          "mode": "100644",
+          "blob": "459ea02f9052fca09bacf72bc9953b5edc25335e"
+        },
+        "commands/pr.md": {
+          "mode": "100644",
+          "blob": "618a0e440ea5788a0ecf4d783dbe21ffb3b71687"
+        },
+        "commands/review.md": {
+          "mode": "100644",
+          "blob": "3c40b61cc152e93be72f3aa588d7f9b7b7e16699"
+        },
+        "commands/status.md": {
+          "mode": "100644",
+          "blob": "d64a69dc9f20335be18d47959b1adaf9590c38e5"
+        },
+        "commands/test.md": {
+          "mode": "100644",
+          "blob": "bb870db9850574f0cd5819c322e1ee90bdb3144f"
+        },
+        "docs/GUIDED-USAGE.md": {
+          "mode": "100644",
+          "blob": "6b3f9c445aadd4c9bd8a58054e3139644876c83e"
+        },
+        "docs/HOW-IT-WORKS.md": {
+          "mode": "100644",
+          "blob": "90c5282f4f62196ac31e17fe24da4f325a02236e"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "d29db7fcb47f1011d60ca14583e30950825d8af1"
+        },
+        "docs/ONBOARDING.md": {
+          "mode": "100644",
+          "blob": "a09e954b667a10bcbeb5b5586cd3d29863b976d1"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "4f354d4baef462ebbea4bfb0b30cf6560d2a3208"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "2b9eea9c18150a3461fcbcc805a2367ccc2c46e7"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "99526ffbc274ed953ca1310280c0e8eafbbd328c"
+        },
+        "scripts/guided_workflow.py": {
+          "mode": "100644",
+          "blob": "a13b3ed2c412a68a6680f505c97e39700054a27d"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "9db7358ef8c90fe463356b0195fa45721271e0af"
+        },
+        "scripts/update_docs.py": {
+          "mode": "100644",
+          "blob": "cf46dbbd571d3c25938e2a25e988a2dcda349241"
+        },
+        "scripts/workflow_state.py": {
+          "mode": "100644",
+          "blob": "d4a650de3a249ebb67049c61d11d55075de733c2"
+        },
+        "skills/guided-workflow/SKILL.md": {
+          "mode": "100644",
+          "blob": "05d7ee85781df0c0af1ba92d3d6ddc578867f01b"
+        },
+        "skills/guided-workflow/references/advanced/analyze.md": {
+          "mode": "100644",
+          "blob": "7eddf1bb7cb4f0b09f6d8ceb60bfcd3416848e7a"
+        },
+        "skills/guided-workflow/references/advanced/doctor.md": {
+          "mode": "100644",
+          "blob": "0e0d64a256c05654a10026692755619edf08c8d2"
+        },
+        "skills/guided-workflow/references/advanced/endtoend.md": {
+          "mode": "100644",
+          "blob": "950f77901e0084c2501060c23a5f038103e96e22"
+        },
+        "skills/guided-workflow/references/advanced/fix.md": {
+          "mode": "100644",
+          "blob": "b59fb234da3be5a6257297f6ac218d96946a481e"
+        },
+        "skills/guided-workflow/references/advanced/init.md": {
+          "mode": "100644",
+          "blob": "ba127bc87c11525fa40c860e077b1b75dba3aa5e"
+        },
+        "skills/guided-workflow/references/advanced/plan.md": {
+          "mode": "100644",
+          "blob": "15c9f3bf4a5adccce2c1439a3f3777e2961cccb0"
+        },
+        "skills/guided-workflow/references/advanced/pr.md": {
+          "mode": "100644",
+          "blob": "cb2727997513b43b8fef2a823e3a19154a8cfd65"
+        },
+        "skills/guided-workflow/references/advanced/review.md": {
+          "mode": "100644",
+          "blob": "93fcace2d149127540f071a5081570f85522f0fd"
+        },
+        "skills/guided-workflow/references/advanced/status.md": {
+          "mode": "100644",
+          "blob": "0dca4bc9c9301a8e57d1d56a7ca9b2529e5a5f58"
+        },
+        "skills/guided-workflow/references/advanced/test.md": {
+          "mode": "100644",
+          "blob": "2224e0a10920ada8aa6b9dfffd5a795fb48a463c"
+        },
+        "skills/repo-onboarding/SKILL.md": {
+          "mode": "100644",
+          "blob": "76fce222745fef824428d424ef381394fc92b480"
+        },
+        "tests/runtime_utilities.py": {
+          "mode": "100644",
+          "blob": "c0f801fc9153a1741619faa3e929e1a28e79022e"
+        },
+        "tests/test_guided_workflow.py": {
+          "mode": "100644",
+          "blob": "d19d9836af8f6eb61c0f3acfbb37c4fb66a0e49b"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "22cc52219200fb3945f7d2dbf2f508e9f8e191ec"
+        }
+      }
     }
   ]
 }

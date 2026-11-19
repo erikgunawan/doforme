@@ -11,7 +11,8 @@ Run one properly quoted helper command from the current selected Git root:
 `python3 <plugin>/scripts/init_repo.py --repo <current-root>`.
 Use the exact absolute helper path rendered in the command invocation. Never
 derive it from this skill's location or add Python flags such as -I/-B/-m.
-No arguments to `/doforme:init` means this inspection only, with no file creation.
+This is the advanced worker method. Empty delegated input (public --inspect)
+means this inspection only, with no file creation; default public init is guided.
 Append --write only for a direct explicit caller request to create configuration.
 The entire write scope is `.doforme/repository.json` and `.doforme/requirements.md`.
 Do not add files, modify .gitignore/source, or create/commit a Git repository.
@@ -23,6 +24,8 @@ templates are marked unconfirmed, and ready_for_fix stays false. An existing
 setup is never overwritten; partial or unsafe paths need manual review.
 
 Explain the actual outcome: inspection_only, draft_created, or already_initialized.
+After draft creation, worktree_clean describes the post-write inspection. The new
+files themselves can make it false; do not infer that changes predated this run.
 If existing data needs review, do not call it ready. Missing requirement content,
 owner applicability and AC confirmation, exact reviewed test commands, and issue
 input remain explicit next steps. Re-running init cannot approve business intent.

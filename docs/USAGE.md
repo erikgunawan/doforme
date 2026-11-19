@@ -1,10 +1,14 @@
 # Penggunaan doforme
 
-Mulai dari repo percobaan. Pasang plugin sekali dengan scope user sesuai
-[instalasi](INSTALLATION.md), lalu buka sesi biasa dengan `claude`. Command
-`/doforme:init` dan `/doforme:analyze` tersedia tanpa flag --plugin-dir;
-`/doforme` saja belum merupakan command.
-Daftar command/agent dan versi terkini ada di [referensi otomatis](REFERENCE.md).
+Untuk penggunaan sehari-hari, ikuti [mode terpandu dengan command singkat](GUIDED-USAGE.md):
+`/doforme:init`, `/doforme:analyze BUG-301`, lalu `/doforme:fix BUG-301` setelah plan.
+Mode ini menyimpan laporan otomatis dan memandu persetujuan scope.
+
+Bagian di bawah menjelaskan **mode advanced** dengan laporan/input/path eksplisit.
+Pada mode manual advanced, laporan dikembalikan dalam chat dan tidak otomatis
+tersimpan. Stage worker tetap memakai konteks terpisah, sedangkan coordinator
+command singkat tetap di sesi utama untuk menerima jawaban pengguna.
+Daftar command ada di [referensi otomatis](REFERENCE.md).
 
 ## Alur utama
 
@@ -21,7 +25,7 @@ resolution_status tetap not_established.
 ## Setup sekali per repo
 
 ```text
-/doforme:init
+/doforme:init --inspect
 /doforme:init --write
 ```
 

@@ -2,7 +2,10 @@
 
 doforme adalah plugin Claude Code yang mengubah laporan bug menjadi investigasi,
 rencana, perubahan terbatas, bukti pengujian, review, dan draft PR. Setiap tahap
-memiliki agent, instruksi, dan laporan sendiri. Runner end-to-end mengoordinasikan
+memiliki agent, instruksi, dan laporan sendiri. Command singkat memakai coordinator
+di sesi utama untuk setup, pertanyaan, dan pengambilan laporan per issue. Worker
+tetap terpisah; coordinator bukan investigator atau fixer. [Panduan mudah](GUIDED-USAGE.md).
+Runner end-to-end mengoordinasikan
 tahap tersebut dengan pemeriksaan hasil dan checkpoint; mode manual memberikan
 kendali handoff kepada pengguna.
 
@@ -68,12 +71,19 @@ direproduksi atau diperbaiki.
 
 ## Manual atau end-to-end
 
-**Manual:** panggil `/doforme:analyze`, `/doforme:plan`, `/doforme:fix`,
+**Terpandu per issue:** panggil analyze, plan, fix, test, review dan pr dengan ID
+yang sama, misalnya `/doforme:analyze BUG-301`. Host menyimpan laporan dan berhenti
+setelah tahap yang diminta. Scope hasil plan ditinjau sebelum fix.
+
+**Manual advanced:** panggil `/doforme:analyze`, `/doforme:plan`, `/doforme:fix`,
 `/doforme:test`, `/doforme:review`, lalu `/doforme:pr`. Setiap tahap memakai
 konteks terpisah. Teruskan laporan lengkap sebagai input tahap berikutnya;
 command manual tidak otomatis menyimpan file laporan dengan nama tertentu.
 
-**End-to-end:** panggil `/doforme:endtoend` dengan input issue, profil repo, output
+**End-to-end terpandu:** `/doforme:endtoend BUG-301` berjalan sampai plan, meminta
+persetujuan scope, lalu melanjutkan. Penyimpanan/input dikelola helper.
+
+**End-to-end advanced:** panggil `/doforme:endtoend` dengan input issue, profil repo, output
 baru di luar checkout, dan izin eksplisit. Runner memanggil model terpisah per
 tahap, memvalidasi handoff, dan menyimpan laporan, evidence serta checkpoint.
 Biaya dan batas eksekusi mengikuti akun model serta konfigurasi run.

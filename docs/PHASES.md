@@ -347,3 +347,36 @@ The combined offline suite passed all 257 tests. Template YAML, triggers,
 read-only permissions, default-branch checkout, secret separation and durable
 receipt-before-send ordering were checked locally; no hosted target-project
 notification workflow or real Telegram recipient was exercised.
+
+
+## Guided user experience — v0.26.0
+
+Public commands now coordinate in the main conversation for guided setup, issue
+selection, concrete approvals, and saved-report lookup. Restricted worker agents
+and the audited engine remain separate. Advanced explicit-input invocations are
+preserved through packaged references, exact utility helpers, and restricted
+report-stage worker delegation.
+
+The guided helper previews setup/session/scope/execution before confirmation,
+resolves local or fixed-origin GitHub issue IDs, stores private issue-addressed
+sessions, pauses at requested stages, and binds approved plan scope before fix.
+End-to-end can pause after the read-only plan. New sessions preserve old reports
+and do not inherit edit grants. No project configuration, source, Telegram setting,
+Git mutation or remote publication is performed by this implementation task.
+
+Validation: the full offline suite passes, including guided host tests for scope
+confirmation, wrong-order commands, per-stage pause, end-to-end plan pause/resume,
+report reuse, changed-source rejection, issue isolation, new sessions, and lock
+protection. CLI 2.1.327 plugin validation passes (listing-icon warning only).
+
+Two real Claude Code smoke calls on a disposable fixture passed: short init read
+actual fixture sources and asked applicability/AC questions without writes;
+short fix without a session explained analyze/plan prerequisites and asked before
+continuing, without writes, tests, or worker execution. Observed helper/tool traces
+and snapshots were checked. Combined reported model cost: $0.1348038. Private
+local evidence: /tmp/doforme-guided-live-20261119/summary.json (temporary, not a
+published or durable acceptance artifact).
+
+The complete multi-turn interactive approval flow and six-stage real KlikDown
+fix remain for the user pilot. Synthetic executors establish host control flow
+only, not model quality, browser QA, owner acceptance or a completed KlikDown pilot.

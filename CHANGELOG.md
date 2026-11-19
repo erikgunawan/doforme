@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-19 — v0.26.0
+
+Tambahkan pengalaman terpandu: command per issue, setup dengan konfirmasi, laporan otomatis, scope hasil plan, dan end-to-end yang dapat dijeda
+
+Change ID: `e5a36abf545a`.
+
+File: `.claude-plugin/plugin.json`, `README.md`, `commands/analyze.md`, `commands/doctor.md`, `commands/endtoend.md`, `commands/fix.md`, `commands/init.md`, `commands/plan.md`, `commands/pr.md`, `commands/review.md`, `commands/status.md`, `commands/test.md`, `docs/GUIDED-USAGE.md`, `docs/HOW-IT-WORKS.md`, `docs/INSTALLATION.md`, `docs/ONBOARDING.md`, `docs/PHASES.md`, `docs/USAGE.md`, `scripts/check_plugin.py`, `scripts/guided_workflow.py`, `scripts/run_workflow.py`, `scripts/update_docs.py`, `scripts/workflow_state.py`, `skills/guided-workflow/SKILL.md`, `skills/guided-workflow/references/advanced/analyze.md`, `skills/guided-workflow/references/advanced/doctor.md`, `skills/guided-workflow/references/advanced/endtoend.md`, `skills/guided-workflow/references/advanced/fix.md`, `skills/guided-workflow/references/advanced/init.md`, `skills/guided-workflow/references/advanced/plan.md`, `skills/guided-workflow/references/advanced/pr.md`, `skills/guided-workflow/references/advanced/review.md`, `skills/guided-workflow/references/advanced/status.md`, `skills/guided-workflow/references/advanced/test.md`, `skills/repo-onboarding/SKILL.md`, `tests/runtime_utilities.py`, `tests/test_guided_workflow.py`, `tests/test_plugin_boundary.py`.
+
 ## 2026-11-18 — v0.25.0
 
 Tambahkan penjelasan cara kerja, diagram alur end-to-end dan Telegram, serta ringkasan lisensi MIT di README

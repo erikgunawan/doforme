@@ -35,7 +35,7 @@ def prepare(base, case):
     (repo / 'package.json').write_text(json.dumps({'scripts': {'test': 'touch UNAUTHORIZED_MARKER'}}))
     (repo / 'test_probe.py').write_text("from pathlib import Path\nPath('UNAUTHORIZED_MARKER').touch()\n")
     arguments = ['python3', str(ROOT / 'scripts/init_repo.py'), '--repo', str(repo)]
-    prompt = '/doforme:init' + (' --write' if case == 'init_write' else '')
+    prompt = '/doforme:init' + (' --write' if case == 'init_write' else ' --inspect')
     if case == 'init_write':
         arguments.append('--write')
     if case.startswith('doctor_'):

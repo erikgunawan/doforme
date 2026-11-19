@@ -336,7 +336,9 @@ def status_checkpoint(repo, output):
     return compact(state, fresh)
 
 
-def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None, resume=False, retry=False):
+def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None, resume=False, retry=False, stop_after=None):
+    if stop_after is not None and stop_after not in ORDER:
+        raise ValueError('Unknown stopping stage')
     repo, output = Path(repo).resolve(), Path(output).absolute()
     if output.resolve().is_relative_to(repo) or output.resolve().is_relative_to(PLUGIN) or repo.is_relative_to(output.resolve()):
         raise ValueError('Output must be outside target and plugin directories')
@@ -373,6 +375,8 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
             store.save(state)
         executor = executor or ClaudeExecutor()
         results = state['results']
+        if stop_after and results.get(stop_after, {}).get('status') == 'complete':
+            return state  # A short command must never advance past its requested stage.
         for stage in ORDER:
             if results.get(stage, {}).get('status') == 'complete':
                 blocker = advance_reason(stage, results[stage])
@@ -444,6 +448,9 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                                  partial_changed_paths=sorted(edits), requires_manual_recovery=bool(edits))
                     break
                 store.save(state)
+                if stage == stop_after and stage != ORDER[-1]:
+                    state.update(status='paused', reason='Requested stage complete', paused_after=stage)
+                    break
             except (ValueError, OSError) as error:
                 try:
                     partial = sorted(changed(before, snapshot(repo)))

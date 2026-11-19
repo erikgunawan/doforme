@@ -73,7 +73,7 @@ class Checkpoints:
         for key in ('repository', 'revision', 'config_digest', 'policy_digest'):
             if not isinstance(state.get(key), str) or not state[key]:
                 raise ValueError('Malformed checkpoint identity: ' + key)
-        if state.get('status') not in ('running', 'complete', 'blocked', 'failed'):
+        if state.get('status') not in ('running', 'complete', 'blocked', 'failed', 'paused'):
             raise ValueError('Malformed checkpoint status')
         if any(not isinstance(value, int) or isinstance(value, bool) or not 1 <= value <= 2 for value in state['attempt_counts'].values()):
             raise ValueError('Malformed checkpoint attempt count')
