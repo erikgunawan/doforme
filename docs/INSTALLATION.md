@@ -1,23 +1,24 @@
-# Instalasi doforme
+# Installing doforme
 
-doforme adalah plugin Claude Code. Marketplace lokal mendukung instalasi permanen
-dengan scope user dari checkout GitHub. Penggunaan lokal tidak memerlukan GitHub Actions,
-Jira, Figma atau Telegram.
+doforme is a Claude Code plugin. A local marketplace supports persistent user-scope
+installation from a GitHub checkout. Local use does not require GitHub Actions,
+Jira, Figma, or Telegram.
 
-## Prasyarat
+## Prerequisites
 
-- Git dan Python 3.9 atau lebih baru. Helper memakai Python standard library.
-- Claude Code dengan akun/model yang dapat digunakan. Validasi struktur CLI terbaru: 2.1.327; uji interaktif terpandu dilaporkan terpisah.
-- Hak baca ke repo GitHub doforme dan repo target yang ingin diperiksa.
-- Untuk workflow fix: Git checkout kecil yang terisolasi, HEAD tersedia, sumber
-  requirement/AC, serta perintah test lokal yang sudah ditinjau.
+- Git and Python 3.9+. Helpers use the Python standard library.
+- Claude Code with usable account/model access. Latest CLI structure validation:
+  2.1.327; guided interactive checks are reported separately.
+- Read access to the doforme GitHub repository and the target repository.
+- For fixes: a small isolated Git checkout, available HEAD, requirement/AC sources,
+  and reviewed local test commands.
 
-Contoh shell di panduan ini memakai Linux/macOS. Helper tersedia sebagai Python
-CLI; perilaku Windows dan lingkungan enterprise lain belum diuji di fase ini.
-Runner model memakai proses/pipe POSIX; backend isolasi OS harus ditinjau dan
-divalidasi terpisah sesuai [panduan operasional](OPERATIONS.md).
+Shell examples use Linux/macOS. Helpers are Python CLIs; Windows and other enterprise
+environments were not tested in this phase. The model runner uses POSIX processes/
+pipes; OS isolation backends need separate review and validation under the
+[operations guide](OPERATIONS.md).
 
-## 1. Ambil plugin
+## 1. Obtain the plugin
 
 ```bash
 git clone https://github.com/erikgunawan/doforme.git ~/doforme
@@ -26,14 +27,13 @@ python3 -B scripts/check_plugin.py
 python3 -B scripts/update_docs.py --check
 ```
 
-Jika GitHub menolak akses, gunakan autentikasi GitHub organisasi Anda atau URL
-SSH yang memang sudah diotorisasi. Jangan memasukkan token ke file konfigurasi
-plugin, command, issue atau requirement. Tidak ada package/dependency tambahan
-yang perlu diinstal untuk pemeriksaan struktur ini.
+If GitHub denies access, use your organization's GitHub authentication or an
+already authorized SSH URL. Do not put tokens in plugin configuration, commands,
+issues, or requirements. These structural checks need no additional packages/dependencies.
 
-## 2. Pasang sekali, gunakan dari sesi biasa
+## 2. Install once and use ordinary sessions
 
-Daftarkan marketplace lokal, lalu install untuk pengguna komputer ini:
+Register the local marketplace and install for this computer's user:
 
 ```bash
 claude plugin validate "$HOME/doforme"
@@ -42,74 +42,73 @@ claude plugin install doforme@doforme-marketplace --scope user
 claude plugin list
 ```
 
-Sesuaikan path bila checkout bukan di ~/doforme. Scope user membuat plugin
-tersedia di semua repo pada komputer ini; tidak perlu menyalin plugin atau
-mengubah konfigurasi Claude setiap repo. Pada CLI 2.1.327 yang diuji, instalasi
-marketplace lokal membaca langsung checkout (readFromFolder). Biarkan checkout
-tersedia dan review perubahan lokal sebelum membuka sesi baru. Versi CLI lain
-dapat memakai salinan cache.
+Adjust the path if the checkout is not ~/doforme. User scope makes the plugin
+available in every repository on this computer, without copying it or changing
+Claude configuration per project. In tested CLI 2.1.327, a local marketplace
+installation reads directly from the checkout (readFromFolder). Keep that checkout
+available and review local changes before a new session. Other CLI versions may
+use a cached copy.
 
-Buka sesi Claude Code baru dari repo target:
+Open a new Claude Code session from the target repository:
 
 ```bash
-cd /absolute/path/repo-percobaan
+cd /absolute/path/example-repo
 claude
 ```
 
-Gunakan `/doforme:init` atau `/doforme:analyze`, bukan `/doforme` saja. Jika sesi
-lama belum menampilkan command, tutup dan buka kembali. Izin tools tetap mengikuti
-Claude Code dan project; konfirmasi akses yang diminta saat membaca resource plugin.
+Use `/doforme:init` or `/doforme:analyze`; `/doforme` alone is not a command.
+If an older session does not show commands, close and reopen it. Tool permissions
+still follow Claude Code and the project; confirm requested plugin-resource access.
 
-### Alternatif untuk pengembangan: muat hanya satu sesi
+### Development alternative: load for one session
 
 ```bash
-cd /absolute/path/repo-percobaan
+cd /absolute/path/example-repo
 claude --plugin-dir "$HOME/doforme" --add-dir "$HOME/doforme/skills"
 ```
 
-Path plugin harus menunjuk checkout doforme, sedangkan direktori aktif menunjuk
-repo yang akan dianalisis. --add-dir memberi akses ke metode/reference plugin di
-luar repo target. Jangan menyalin source plugin ke setiap repo target.
+The plugin path must point to its checkout, while the current directory is the
+repository to analyze. --add-dir provides access to plugin methods/references
+outside the target. Do not copy plugin source into every target repository.
 
-Di Claude, periksa `/help` dan `/agents`, lalu jalankan:
+In Claude, check `/help` and `/agents`, then run:
 
 ```text
 /doforme:init
 ```
 
-Hasil awal: inspeksi repo dan pertanyaan singkat tentang konfigurasi yang diusulkan.
-Default init kini terpandu; ia tidak menulis sebelum persetujuan proposal. Untuk
-inspeksi helper lama tanpa percakapan setup, gunakan `/doforme:init --inspect`.
-Lanjutkan dengan [panduan command singkat](GUIDED-USAGE.md).
-`/doforme:doctor` memeriksa kesiapan repo tanpa memilih tiket; `/doforme:status`
-menampilkan run tersimpan. Pilihan issue mengutamakan GitHub origin dan selalu
-menampilkan sumber GitHub/Lokal.
+Expected initial result: repository inspection and short questions about proposed
+configuration. Default init is guided and does not write before proposal approval.
+For legacy helper inspection without setup conversation, use `/doforme:init --inspect`.
+Continue with [short-command usage](GUIDED-USAGE.md). `/doforme:doctor` checks
+repository readiness without selecting a ticket; `/doforme:status` lists saved
+runs. Issue selection prioritizes GitHub origin and always labels GitHub/Local sources.
 
-## 3. Setup terpandu atau draft advanced
+## 3. Guided setup or advanced drafts
 
-Mode terpandu `/doforme:init` membaca kandidat sumber/test dan meminta keputusan
-AC serta persetujuan menyimpan konfigurasi. Untuk membuat template kosong saja:
+Guided `/doforme:init` reads candidate sources/tests and asks for AC decisions
+and permission to save configuration. To create empty templates only:
 
 ```text
 /doforme:init --write
 ```
 
-Ini hanya membuat `.doforme/repository.json` dan `.doforme/requirements.md` bila
-belum ada. Isi requirement adalah draft belum terkonfirmasi, dan test_commands
-kosong. Tinjau sumber/AC dan command test sendiri; helper tidak mengesahkannya.
-File lama tidak ditimpa. Lihat [onboarding](ONBOARDING.md) untuk konfigurasi lengkap.
+This only creates `.doforme/repository.json` and `.doforme/requirements.md` when
+absent. Requirements remain an unconfirmed draft and test_commands is empty.
+Review sources/AC and test commands yourself; the helper does not approve them.
+Existing files are not overwritten. See [onboarding](ONBOARDING.md) for full configuration.
 
-Hook pembaruan dokumentasi hanya untuk kontributor repo doforme; pengguna plugin
-tidak perlu memasangnya di setiap repo target.
+The documentation-update hook is for doforme contributors; plugin users do not
+need it in every target repository.
 
-## 4. Opsional: pasang template Telegram
+## 4. Optional: install the Telegram template
 
-Lewati seluruh bagian ini jika tidak memerlukan notifikasi. Analyze, plan, fix,
-test, review, draft PR, status dan end-to-end tidak bergantung pada Telegram.
-Token/chat ID yang belum dikonfigurasi bukan blocker untuk workflow plugin lokal.
+Skip this section if you do not need notifications. Analyze, plan, fix, test,
+review, draft PR, status, and end-to-end do not depend on Telegram. Missing token/
+chat ID configuration does not block local plugin workflows.
 
-Template dipasang di repo aplikasi target, bukan di repo plugin. Dari root
-project, salin dua file berikut dari checkout doforme yang sudah diperbarui:
+Install templates in the target application repository, not the plugin. From the
+project root, copy these two files from an updated doforme checkout:
 
 ```bash
 DOFORME="$HOME/doforme"
@@ -119,68 +118,67 @@ cp -i "$DOFORME/integrations/telegram_bugs.py" .github/scripts/doforme_telegram.
 cp -i "$DOFORME/integrations/telegram-bugs.yml.example" .github/workflows/doforme-telegram.yml
 ```
 
-Opsi -i meminta konfirmasi sebelum menimpa file; review dan gabungkan jika project
-sudah memiliki konfigurasi serupa. Project dengan CI existing tetap memakai test
-dan check yang sesuai project tersebut. Khusus lab KlikDown yang belum memiliki
-CI, template tambahan tersedia di integrations/klikdown-tests.yml.example:
+-i asks before overwriting; review and merge if similar configuration exists.
+Projects with CI keep their appropriate tests/checks. Specifically for a KlikDown
+lab without CI, an additional template is available:
 
 ```bash
 cp -i "$DOFORME/integrations/klikdown-tests.yml.example" .github/workflows/tests.yml
 ```
 
-Jangan memakai command test KlikDown untuk project dengan stack berbeda. Setelah
-meninjau file, commit dan push konfigurasi ke default branch **repo project**.
+Do not use KlikDown test commands for projects with another stack. After reviewing
+files, commit/push configuration to the **project repository's** default branch.
 
-Di Settings → Secrets and variables → Actions repo project, isi:
+Under project Settings → Secrets and variables → Actions, configure:
 
-| Jenis | Nama | Isi |
+| Type | Name | Value |
 | --- | --- | --- |
-| Secret | TELEGRAM_BOT_TOKEN | Token bot yang dipilih operator |
-| Secret | TELEGRAM_CHAT_ID | Chat/grup tujuan |
-| Variable | DOFORME_NOTIFY_TELEGRAM | false selama setup; true setelah siap mengirim |
-| Variable | DOFORME_BUG_LABEL | bug, atau label pilihan project |
-| Variable | DOFORME_RESOLUTION_APPROVERS | Akun GitHub approver yang ditunjuk operator |
-| Variable | DOFORME_REQUIRED_CHECKS | Nama check CI wajib, satu per baris; contoh tests |
+| Secret | TELEGRAM_BOT_TOKEN | Operator-selected bot token |
+| Secret | TELEGRAM_CHAT_ID | Destination chat/group |
+| Variable | DOFORME_NOTIFY_TELEGRAM | false during setup; true when ready to send |
+| Variable | DOFORME_BUG_LABEL | bug, or the project's chosen label |
+| Variable | DOFORME_RESOLUTION_APPROVERS | Operator-designated GitHub approver accounts |
+| Variable | DOFORME_REQUIRED_CHECKS | Required CI check names, one per line; for example tests |
 
-Isi token langsung di GitHub Secrets, bukan di source, issue atau chat. Bot harus
-bisa mengirim ke chat yang dipilih. API key model tidak diperlukan oleh notifier;
-akses model tetap diperlukan bila menjalankan workflow doforme.
+Enter tokens directly in GitHub Secrets, not source, issues, or chat. The bot must
+be able to send to the selected chat. Notifications require no model API key;
+model access is still required to run doforme workflows.
 
-Sesudah konfigurasi lengkap, ubah DOFORME_NOTIFY_TELEGRAM menjadi true dan uji
-dengan issue latihan baru berlabel bug. Notifikasi resolved baru dikirim setelah
-PR merge, check pada commit terkait lulus, bukti/deklarasi approver tersedia dan
-issue closed/completed. Ikuti format dan gerbang di [panduan Telegram](TELEGRAM.md).
-Template tidak menjalankan auto-fix, membuat PR atau menutup issue sendiri.
+After setup, set DOFORME_NOTIFY_TELEGRAM to true and test with a new practice issue
+labeled bug. Resolution notifications require a merged PR, passing checks on the
+relevant commit, approver evidence/declaration, and a closed/completed issue.
+Follow the format and gates in [Telegram](TELEGRAM.md). The template does not
+fix code, create PRs, or close issues by itself.
 
-Jika workflow Telegram tidak dipasang, flag kosong/false, atau pengiriman gagal,
-fungsi plugin manual/end-to-end tetap tersedia. Masalah delivery ditangani pada
-workflow notifikasi di GitHub Actions; itu terpisah dari hasil run plugin lokal.
+Without the workflow, with an empty/false flag, or if delivery fails, manual and
+end-to-end plugin functions remain available. Delivery problems belong to the
+GitHub Actions notification workflow, separate from local plugin results.
 
-## Update plugin
+## Updating the plugin
 
-Jika memakai arsip kandidat, baca [cara memverifikasi kandidat](RELEASE-CANDIDATE.md)
-dan pilih commit/provenance melalui jalur yang Anda percayai. Hash mendeteksi
-perubahan terhadap manifest yang diberikan; bukan tanda tangan owner atau bukti
-kesiapan stable. [Status roadmap](ROADMAP.md) mencatat gate live yang masih pending.
+For candidate archives, read [candidate verification](RELEASE-CANDIDATE.md) and
+select commit/provenance through a trusted channel. Hashes detect changes against
+a supplied manifest; they are not owner signatures or proof of stable readiness.
+[Roadmap status](ROADMAP.md) records outstanding live gates.
 
 ```bash
 git -C "$HOME/doforme" status --short
 git -C "$HOME/doforme" pull --ff-only
 ```
 
-Untuk instalasi permanen, minta Claude memperbarui instalasi setelah pull:
+For persistent installation, ask Claude to update the installation after pulling:
 
 ```bash
 claude plugin update doforme@doforme-marketplace --scope user
 ```
 
-Simpan/review perubahan lokal sebelum update. Restart sesi Claude sesudahnya.
-Mode --plugin-dir langsung memakai checkout dan tidak memerlukan plugin update.
-Baca [history](../CHANGELOG.md) sebelum memakai versi baru.
-Checkpoint mengikat policy plugin: perubahan versi/source dapat membuat checkpoint
-lama stale. Jangan memaksa resume; lakukan review dan mulai run baru bila diperlukan.
+Save/review local changes before updating and restart Claude afterward.
+--plugin-dir uses the checkout directly and needs no plugin update. Read
+[history](../CHANGELOG.md) before using a new version. Checkpoints bind plugin
+policy: version/source changes may make old checkpoints stale. Do not force resume;
+review and start a new run when required.
 
-## Pengujian instalasi
+## Testing installation
 
 ```bash
 cd ~/doforme
@@ -193,24 +191,24 @@ claude plugin validate agents --strict
 claude plugin validate skills --strict
 ```
 
-Tes unittest bersifat offline dan tidak menggunakan model. Uji model nyata adalah
-opt-in berbiaya, memakai repo sementara; baca [runtime acceptance](RUNTIME-0.14.md).
-Uji workflow dengan profil, status dan resume dijelaskan di [workflow acceptance](RUNTIME-0.16.md).
-Uji slash endtoend langsung tersedia di [slash acceptance](RUNTIME-0.17.md).
-Validasi plugin lokal berbeda dari kelayakan direktori/marketplace: lisensi dan
-ikon publikasi belum ditetapkan.
+Unit tests are offline and call no model. Real-model tests are opt-in, incur cost,
+and use temporary repositories; see [runtime acceptance](RUNTIME-0.14.md).
+Profile/status/resume checks are in [workflow acceptance](RUNTIME-0.16.md), and
+direct endtoend routing in [slash acceptance](RUNTIME-0.17.md). Local validation
+differs from directory/marketplace eligibility; licensing and listing icons are
+separate publication considerations.
 
-## Pemecahan masalah
+## Troubleshooting
 
-| Gejala | Tindakan |
+| Symptom | Action |
 | --- | --- |
-| Command doforme tidak terlihat | Pastikan --plugin-dir benar; restart sesi dan periksa /help |
-| Skill/reference tidak dapat dibaca | Sertakan --add-dir ke folder skills plugin |
-| Helper meminta izin/ditolak | Periksa exact command dan path; jangan menambah bypass atau retry otomatis |
-| Repo root tidak valid | Jalankan dari root Git yang dipilih, bukan subfolder/non-Git |
-| Doctor blocked | Baca masing-masing blocker; doctor tidak memperbaiki repo otomatis |
-| Login/model tidak tersedia | Selesaikan akses Claude/organisasi; doctor hanya mengecek keberadaan CLI |
-| Checkpoint stale setelah update | Review konten/policy; gunakan run baru, bukan mengganti hash atau menghapus gate |
-| Clone berhasil tetapi issue tidak diproses otomatis | Integrasi issue intake tetap opt-in; lihat INTEGRATIONS.md |
+| doforme commands missing | Check installation/--plugin-dir, restart the session, and inspect /help |
+| Skill/reference unreadable | Include --add-dir for the plugin skills directory |
+| Helper permission request/denial | Check exact command/path; do not add a bypass or automatic retry |
+| Invalid repository root | Start at the selected Git root, not a subdirectory/non-Git folder |
+| Doctor blocked | Read each blocker; doctor does not automatically repair the repository |
+| Model/login unavailable | Resolve Claude/organization access; doctor only checks CLI presence |
+| Checkpoint stale after update | Review content/policy; use a new run, not changed hashes or removed gates |
+| Clone succeeds but issues are not processed automatically | Issue intake remains opt-in; see INTEGRATIONS.md |
 
-Tidak ada push, publikasi PR atau penutupan issue otomatis oleh workflow plugin.
+Plugin workflows do not automatically push, publish PRs, or close issues.

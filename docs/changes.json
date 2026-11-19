@@ -1778,6 +1778,95 @@
           "blob": "8f9f5dd6d2013a8113d80f01f8580343adcc60f7"
         }
       }
+    },
+    {
+      "id": "9ada113651796a8d51a9305a4bc5dd4c040bc5e2267780f15d2422d380fea539",
+      "base_commit": "f6dfb88a0f8b5c0f980166bff998e8cf02361ac5",
+      "date": "2026-11-19",
+      "version": "0.27.0",
+      "summary": "Translate all Markdown documentation into English and keep generated history/reference output in English without rewriting canonical history",
+      "changes": {
+        "CONTRIBUTING.md": {
+          "mode": "100644",
+          "blob": "1f3fe99049a2389ab033282bea3af81e72400616"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "28486652e84bb9bd253a47aab229e2eb3e01b82d"
+        },
+        "docs/ACCEPTANCE.md": {
+          "mode": "100644",
+          "blob": "88c37a73ac2480cba895b2a6feb802a0b14a2c6d"
+        },
+        "docs/GETTING-STARTED.md": {
+          "mode": "100644",
+          "blob": "220843ceea57e3b6160aa2c8e01a7b40038b6132"
+        },
+        "docs/GUIDED-USAGE.md": {
+          "mode": "100644",
+          "blob": "57a8ab854cb9c2c40bf893fde697da2726427cce"
+        },
+        "docs/HOW-IT-WORKS.md": {
+          "mode": "100644",
+          "blob": "51fd6d419e8a86b95053cea5e9c842223c5867a1"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "840cd3610cacf07e08f8a229142b8fb7545a6857"
+        },
+        "docs/INTEGRATION-READINESS.md": {
+          "mode": "100644",
+          "blob": "53c6a71cad9574cb4d4bf87e7d192e8d4d53fbce"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "7825b6e68a503ca17077a3f68c633065f458dd63"
+        },
+        "docs/PILOT.md": {
+          "mode": "100644",
+          "blob": "aaa8d150fbd7b451672a00ee1a17dfb19aec318c"
+        },
+        "docs/PUBLISHING.md": {
+          "mode": "100644",
+          "blob": "484c8117c92ed6bb2fd20e71e162d2b08ff9a8d1"
+        },
+        "docs/ROADMAP.md": {
+          "mode": "100644",
+          "blob": "c4f90e67664a4da947d8dcc06e3ce4efd58165c2"
+        },
+        "docs/SOURCES.md": {
+          "mode": "100644",
+          "blob": "72b7b65694049df2137f639a20833cf4767d65c8"
+        },
+        "docs/TELEGRAM.md": {
+          "mode": "100644",
+          "blob": "a5d8bee094ecb6241e735dbf693163c7f697cabb"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "7b5cceb8eb8917c869a1b2aa8b4457b2299928e8"
+        },
+        "docs/history-translations.json": {
+          "mode": "100644",
+          "blob": "86d6332fac5f0a7f935912a95c8ed8dadc601efe"
+        },
+        "docs/requirement-input.example.md": {
+          "mode": "100644",
+          "blob": "a1eee1e1742ba51d563f18a097522511cafc63cc"
+        },
+        "scripts/update_docs.py": {
+          "mode": "100644",
+          "blob": "87fe5b66c331b7b94484d1eaacffc1fc52f4f348"
+        },
+        "skills/guided-workflow/SKILL.md": {
+          "mode": "100644",
+          "blob": "927de8577fbfe881ff4e0566160925ff9a9a9ced"
+        },
+        "tests/test_documentation.py": {
+          "mode": "100644",
+          "blob": "51e4137ae1a2696072e8db53c59780988de69c6f"
+        }
+      }
     }
   ]
 }

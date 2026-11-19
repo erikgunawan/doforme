@@ -59,6 +59,40 @@ class DocumentationTests(unittest.TestCase):
         DOCS.check(self.repo)
         self.assertIn('/doforme:analyze', (self.repo / 'docs/REFERENCE.md').read_text())
 
+    def test_english_history_rendering_preserves_canonical_committed_records(self):
+        self.establish_history()
+        original = json.loads((self.repo / 'docs/changes.json').read_text())
+        old_id = original['entries'][0]['id']
+        translations = self.repo / 'docs/history-translations.json'
+        translations.write_text(json.dumps({old_id: 'English display summary'}))
+        self.git('add', 'docs/history-translations.json')
+        updated = self.sync(summary='Add English presentation')
+        self.assertEqual(updated['entries'][:len(original['entries'])], original['entries'])
+        self.assertIn('English display summary', (self.repo / 'CHANGELOG.md').read_text())
+        self.assertIn('# doforme command reference', (self.repo / 'docs/REFERENCE.md').read_text())
+        DOCS.check(self.repo)
+
+    def test_history_translation_uses_staged_content_and_detects_unstaged_changes(self):
+        data = self.sync()
+        identity = data['entries'][0]['id']
+        path = self.repo / 'docs/history-translations.json'
+        path.write_text(json.dumps({identity: 'Reviewed English translation'}))
+        self.git('add', 'docs/history-translations.json')
+        path.write_text(json.dumps({identity: 'Unstaged owner draft'}))
+        self.sync()
+        self.assertIn('Reviewed English translation', (self.repo / 'CHANGELOG.md').read_text())
+        self.assertNotIn('Unstaged owner draft', (self.repo / 'CHANGELOG.md').read_text())
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            DOCS.check(self.repo)
+
+    def test_invalid_history_translation_mapping_is_rejected(self):
+        self.sync()
+        path = self.repo / 'docs/history-translations.json'
+        path.write_text(json.dumps({'invalid-change-id': 'Display text'}))
+        self.git('add', 'docs/history-translations.json')
+        with self.assertRaisesRegex(ValueError, 'History translations'):
+            self.sync()
+
     def test_changes_are_recorded_from_index_without_staging_unrelated_source(self):
         self.change('staged\n')
         (self.repo / 'source.py').write_text('unstaged owner edits\n')

@@ -1,64 +1,63 @@
 # doforme
 
-**Dari laporan bug ke draft PR, lengkap dengan bukti di setiap langkah.**
+**From bug report to PR draft, with evidence at every step.**
 
-doforme adalah plugin Claude Code yang membantu tim menyelidiki bug, merencanakan
-perbaikan, mengubah kode dalam scope yang disetujui, dan memverifikasi hasilnya.
-Satu alur kerja menghubungkan issue, requirement, pengujian, dan review—dengan
-keputusan penting tetap di tangan Anda.
+doforme is a Claude Code plugin that helps teams investigate bugs, plan repairs,
+change code within approved scope, and verify the results. One workflow connects
+issues, requirements, testing, and review—with important decisions in your hands.
 
-[Panduan instalasi dan penggunaan](docs/GETTING-STARTED.md) ·
-[Cara kerja dan diagram alur](docs/HOW-IT-WORKS.md)
+[Installation and usage](docs/GETTING-STARTED.md) ·
+[How it works and workflow diagrams](docs/HOW-IT-WORKS.md)
 
-## Fitur
+## Features
 
-### Mulai dengan percakapan, bukan prompt panjang
+### Start a conversation, skip the long prompts
 
-Setup terpandu menemukan sumber requirement dan kandidat test di repo, lalu
-membantu Anda meninjau AC dan konfigurasi melalui pertanyaan singkat. Tidak perlu
-merangkai input JSON atau menyalin laporan antar-tahap pada mode terpandu.
+Guided setup discovers requirement sources and candidate tests in your repository,
+then helps you review acceptance criteria and configuration through short questions.
+In guided mode, you do not need to assemble input JSON or copy reports between stages.
 
-### Kerjakan issue dari GitHub atau tiket lokal
+### Work with GitHub issues or local tickets
 
-Pemilihan issue mengutamakan GitHub saat repo memiliki GitHub origin. Setiap tiket
-menampilkan sumbernya dengan jelas. Tiket lokal tersedia untuk lab dan alur offline.
+Issue selection prioritizes GitHub when the repository has a GitHub origin.
+Every ticket clearly identifies its source. Local tickets support labs and offline workflows.
 
-### Investigasi dengan evidence yang bisa ditelusuri
+### Investigate with traceable evidence
 
-Analisis memisahkan fakta, dugaan pelapor, dan hipotesis penyebab. Laporan memuat
-validitas issue, lokasi evidence, tingkat keyakinan, serta langkah berikutnya.
-Investigasi awal membaca source tanpa mengubah kode atau menjalankan test.
+Analysis separates facts, reporter assumptions, and root-cause hypotheses. Reports
+include issue validity, evidence locations, confidence, and next steps. Initial
+investigation reads source without changing code or running tests.
 
-### Perbaikan berpijak pada requirement bisnis
+### Ground fixes in business requirements
 
-Gunakan spesifikasi repo, dokumen bisnis, atau ekspor requirement Jira/Figma
-sebagai acuan yang dikonfirmasi berlaku. AC menghubungkan perilaku yang diharapkan
-dengan rencana perbaikan dan bukti pengujiannya. Jika ada ambiguitas, doforme
-memandu konfirmasi sebelum melanjutkan.
+Use repository specifications, business documents, or exported Jira/Figma
+requirements as confirmed references. Acceptance criteria connect expected behavior
+to the repair plan and test evidence. When intent is ambiguous, doforme guides
+confirmation before proceeding.
 
-### Enam tahap, satu alur yang terhubung
+### Six stages, one connected workflow
 
-Analyze → Plan → Fix → Test → Review → Draft PR. Peran spesialis menangani setiap
-tahap, dengan pemeriksaan hasil sebelum diteruskan ke tahap berikutnya. Jalankan per tahap untuk meninjau
-setiap keputusan, atau gunakan end-to-end dengan persetujuan scope setelah plan.
+Analyze → Plan → Fix → Test → Review → Draft PR. Specialized roles handle each
+stage, with results checked before the next handoff. Run stages individually to
+review each decision, or use end-to-end execution with scope approval after planning.
 
-### Kontrol perubahan sebelum kode disentuh
+### Review the scope before code changes
 
-Lihat file yang akan diubah, perintah pengujian, dan artefak sementara sebelum memberi
-persetujuan. Pengujian independen dan review memeriksa hasil terhadap scope serta
-evidence. Draft PR merangkum pekerjaan untuk ditinjau sebelum publikasi.
+See the files to be changed, test commands, and temporary artifacts before approving
+them. Independent testing and review check results against scope and evidence.
+The PR draft summarizes the work for review before publication.
 
-### Laporan tersimpan, progres mudah dilihat
+### Saved reports, visible progress
 
-Laporan dan checkpoint disimpan otomatis per issue di luar checkout. Periksa
-kesiapan repo, lihat run yang tersimpan, dan lanjutkan tahap tanpa kehilangan
-konteks. Run baru mempertahankan laporan sebelumnya untuk ditinjau kembali.
+Reports and checkpoints are saved automatically per issue outside the checkout.
+Check repository readiness, inspect saved runs, and continue stages without losing
+context. New runs preserve earlier reports for later review.
 
-### Notifikasi Telegram untuk lifecycle bug
+### Telegram notifications for the bug lifecycle
 
-Integrasi opsional pada repo project mengirim notifikasi bug baru dan resolved
-menurut persetujuan owner. Bukti PR merge, check wajib, dan keputusan QA/UAT
-menghubungkan notifikasi resolved dengan perubahan yang relevan.
+An optional integration in the project repository sends new-bug notifications and
+owner-attested resolution updates. Merged-PR evidence, required checks, and QA/UAT
+decisions connect resolution notifications to the relevant changes.
 
-[Mulai menggunakan doforme](docs/GETTING-STARTED.md) ·
-[Riwayat perubahan](CHANGELOG.md) · [Lisensi MIT](LICENSE)
+[Get started with doforme](docs/GETTING-STARTED.md) ·
+[Change history](CHANGELOG.md) · [MIT license](LICENSE)

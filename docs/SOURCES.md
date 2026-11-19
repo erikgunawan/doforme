@@ -1,19 +1,19 @@
-# Snapshot sumber requirement — fondasi fase 20
+# Requirement source snapshots — phase 20 foundation
 
-Helper ini mengimpor ekspor teks yang dipilih secara eksplisit dari dokumen bisnis,
-Jira, Figma, spec repo atau konfirmasi pengguna. Ia menyimpan konten asli beserta
-provenance dan hash tanpa mengubah source. Tidak ada pengambilan URL, koneksi akun,
-model call, eksekusi source, konfirmasi requirement otomatis atau validasi visual.
+This helper imports explicitly selected text exports from business documents,
+Jira, Figma, repository specifications, or user confirmations. It preserves original
+content with provenance and hashes without changing the source. It does not fetch
+URLs, connect accounts, call models, execute source, automatically confirm requirements,
+or validate visuals.
 
-Fase integrasi sumber live belum selesai: URL dokumen/tiket/frame yang benar,
-hak akses, kebutuhan sumber pilot dan akun layanan belum diberikan. Helper lokal
-ini adalah fondasi yang bisa dipakai sekarang; jangan menyebutnya integrasi
-Jira/Figma/Docs live yang sudah berhasil.
+Live-source integration remains incomplete: actual document/ticket/frame URLs,
+access rights, pilot-source needs, and service accounts were not supplied. This
+local helper is usable now; do not describe it as successful live Jira/Figma/Docs integration.
 
-## Manifest eksplisit
+## Explicit manifest
 
-Simpan ekspor sebagai file teks UTF-8 biasa di repo target. Manifest dapat berada
-di luar checkout, misalnya `/absolute/inputs/sources.json`:
+Save exports as regular UTF-8 text files in the target repository. The manifest
+may be outside the checkout, such as `/absolute/inputs/sources.json`:
 
 ```json
 {
@@ -24,59 +24,60 @@ di luar checkout, misalnya `/absolute/inputs/sources.json`:
       "kind": "jira",
       "path": "requirements/BUG-123-export.md",
       "origin": "https://example.atlassian.net/browse/BUG-123",
-      "origin_locator": "description dan acceptance criteria",
-      "version": "export yang diberikan owner; updated time belum diverifikasi",
+      "origin_locator": "description and acceptance criteria",
+      "version": "owner-supplied export; updated time not verified",
       "source_accessed_at": "unknown"
     }
   ]
 }
 ```
 
-Kind yang didukung: business_document, jira, figma, repository_spec dan
-user_confirmation. origin dan origin_locator adalah metadata yang diberikan
-pemanggil, bukan bukti bahwa helper membaca sistem remote. version yang tidak
-diberikan tetap unknown. source_accessed_at opsional menerima waktu ISO dengan
-timezone yang disediakan pemanggil; helper tidak mengarang waktu akses remote.
+Supported kinds: business_document, jira, figma, repository_spec, and
+user_confirmation. origin and origin_locator are caller-supplied metadata, not
+proof that the helper read a remote system. Omitted version remains unknown.
+Optional source_accessed_at accepts a caller-supplied timezone-aware ISO timestamp;
+the helper does not invent a remote access time.
 
 ```bash
 python3 -B /absolute/doforme/scripts/requirement_sources.py --repo /absolute/target --manifest /absolute/inputs/sources.json --output /absolute/snapshots/bug-123
 ```
 
-Repo harus root Git yang dipilih. Output harus direktori baru di luar target
-dan checkout plugin, dengan parent yang sudah ada. Output menggunakan mode 700,
-file mode 600; file existing tidak ditimpa. Satu kegagalan menulis dapat meninggalkan
-snapshot parsial, yang dilaporkan untuk review manual, bukan dihapus diam-diam.
+The repository must be the selected Git root. Output must be a new directory
+outside target and plugin checkouts, with an existing parent. Directories use mode
+700 and files mode 600; existing files are not overwritten. A write failure may
+leave a partial snapshot, disclosed for manual review rather than silently deleted.
 
-## Isi hasil
+## Output contents
 
-- S1.txt, S2.txt, dan seterusnya: byte UTF-8 ekspor yang dibaca, tanpa perubahan.
-- sources.json: origin, locator yang diberikan, lokasi lokal/line range yang
-  benar-benar dibaca, version, SHA-256, byte length dan timestamp import UTC.
-- authority selalu unconfirmed, freshness unknown, requirements_status
-  needs_information, business_acceptance not_evaluated dan remote_actions none.
+- S1.txt, S2.txt, and so on: unchanged UTF-8 bytes of the read exports.
+- sources.json: supplied origin/locator, actual local locations/line ranges read,
+  version, SHA-256, byte length, and UTC import timestamp.
+- authority remains unconfirmed, freshness unknown, requirements_status
+  needs_information, business_acceptance not_evaluated, and remote_actions none.
 
-Timestamp import berbeda dari waktu akses atau pembaruan sumber remote. Hash
-mendeteksi perubahan byte snapshot, bukan membuktikan identitas owner, keaslian
-ekspor atau versi remote terbaru. Teks berisi perintah tetap data tidak tepercaya
-dan tidak pernah dieksekusi. Jenis sumber user_confirmation tidak otomatis
-mengautentikasi identitas pemilik requirement.
+Import time differs from remote source access/update time. Hashes detect changed
+snapshot bytes; they do not establish owner identity, export authenticity, or
+latest remote version. Instructions inside text remain untrusted data and are
+never executed. A user_confirmation source does not automatically authenticate
+the requirement owner's identity.
 
-Review sumber dan metadata bersama-sama sebelum menempatkan salinan yang
-disetujui di repo target untuk konfigurasi requirements. Helper tidak mengedit
-profil, memasukkan sumber otomatis, men-stage file atau melakukan commit. Bukti
-owner applicability, konflik dan AC tetap harus diberikan serta diperiksa pada
-analyze/plan. Snapshot ekspor bukan bukti penerimaan implementasi.
+Review sources and metadata together before placing approved copies in the target
+repository for requirements configuration. The helper does not edit profiles,
+automatically add sources, stage files, or commit. Owner-applicability evidence,
+conflicts, and AC must still be supplied and checked during analyze/plan. Export
+snapshots are not implementation-acceptance evidence.
 
-## Batas dan pemeriksaan
+## Limits and checks
 
-Manifest dibatasi 1 MB, sumber 1 MB per file, total 4 MB dan maksimal 16 sumber.
-Source ID dan canonical path harus unik. File harus reguler, non-symlink dan teks
-UTF-8 nonempty; traversal, sumber credential, FIFO/special file, key JSON duplikat,
-field pemberi authority, serta origin URL bercredential ditolak. Tidak ada source
-precedence otomatis antara dokumen, Jira dan Figma. Figma yang diimpor sebagai
-teks hanya mendukung klaim tekstual; pixel, layout dan interaksi visual belum diuji.
+The manifest is limited to 1 MB, each source to 1 MB, total content to 4 MB, and
+source count to 16. Source IDs and canonical paths must be unique. Files must be
+regular, non-symlink, nonempty UTF-8 text. Traversal, credential sources, FIFO/special
+files, duplicate JSON keys, authority-granting fields, and credential-bearing origin
+URLs are rejected. No automatic source precedence exists between documents, Jira,
+and Figma. Text-only Figma imports support textual claims only; pixels, layout,
+and visual interactions are not tested.
 
-Validasi lokal memakai repo Git sementara dan ekspor sintetis, mencakup byte/hash,
-schema, scope, permission, special file, partial failure dan CLI nyata. Pengujian
-ini tidak menghubungi Jira, Figma, Google Docs atau GitHub dan tidak membuktikan
-integrasi akun atau bisnis live.
+Local validation uses temporary Git repositories and synthetic exports, covering
+bytes/hashes, schemas, scope, permissions, special files, partial failures, and the
+actual CLI. These tests do not contact Jira, Figma, Google Docs, or GitHub and do
+not establish live account or business integration.

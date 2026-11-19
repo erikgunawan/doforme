@@ -1,97 +1,96 @@
-# Penggunaan doforme
+# Using doforme
 
-Untuk penggunaan sehari-hari, ikuti [mode terpandu dengan command singkat](GUIDED-USAGE.md):
-`/doforme:init`, `/doforme:analyze BUG-301`, lalu `/doforme:fix BUG-301` setelah plan.
-Mode ini menyimpan laporan otomatis dan memandu persetujuan scope. Doctor
-tanpa input bersifat repo-level; status tanpa ID menampilkan run tersimpan.
-Pemilihan tiket mengutamakan GitHub origin dengan label sumber eksplisit.
+For everyday use, follow [guided short commands](GUIDED-USAGE.md): `/doforme:init`,
+`/doforme:analyze BUG-301`, then `/doforme:fix BUG-301` after planning. That mode
+saves reports automatically and guides scope approval. Doctor without input is
+repository-level; status without an ID lists saved runs. Ticket selection
+prioritizes GitHub origin with explicit source labels.
 
-Bagian di bawah menjelaskan **mode advanced** dengan laporan/input/path eksplisit.
-Pada mode manual advanced, laporan dikembalikan dalam chat dan tidak otomatis
-tersimpan. Stage worker tetap memakai konteks terpisah, sedangkan coordinator
-command singkat tetap di sesi utama untuk menerima jawaban pengguna.
-Daftar command ada di [referensi otomatis](REFERENCE.md).
+The following sections describe **advanced mode** with explicit reports/inputs/paths.
+Advanced manual reports are returned in chat and not automatically saved. Stage
+workers use separate contexts; short-command coordinators stay in the main session
+to receive user answers. Commands are listed in the [generated reference](REFERENCE.md).
 
-## Alur utama
+## Main workflow
 
-1. Inspeksi dan konfigurasi repo dengan init.
-2. Siapkan isi issue, sumber requirement dan AC yang berlaku.
-3. Periksa prasyarat lokal dengan doctor.
-4. Jalankan analyze → plan → fix → test → review → pr secara manual atau melalui runner.
-5. Review draft serta bukti; penerimaan bisnis dan publikasi dilakukan terpisah.
+1. Inspect/configure the repository with init.
+2. Supply issue content, requirement sources, and applicable AC.
+3. Check local prerequisites with doctor.
+4. Run analyze → plan → fix → test → review → pr manually or through the runner.
+5. Review the draft/evidence; business acceptance and publication are separate.
 
-Complete berarti tahap memenuhi kontraknya, bukan issue sudah resolved. Test hijau
-berlaku pada scope/AC yang diuji. Business acceptance tetap not_evaluated dan
-resolution_status tetap not_established.
+Complete means a stage met its contract, not that an issue is resolved. Passing
+tests apply to tested scope/AC. Business acceptance remains not_evaluated and
+resolution_status not_established.
 
-## Setup sekali per repo
+## Set up once per repository
 
 ```text
 /doforme:init --inspect
 /doforme:init --write
 ```
 
-Command pertama tidak menulis. Command kedua membuat dua draft onboarding dan
-tidak menimpa file existing. Isi `.doforme/requirements.md` dengan bukti nyata:
-kutipan dokumen bisnis, tiket Jira, anotasi/desain Figma atau spec repository,
-locator/version, scope yang berlaku dan konfirmasi pemilik AC. URL saja bukan
-konten; persetujuan scope bukan otomatis persetujuan hasil implementasi.
+The first command writes nothing. The second creates two onboarding drafts without
+overwriting existing files. Fill `.doforme/requirements.md` with actual evidence:
+business-document excerpts, Jira tickets, Figma annotations/designs, or repository
+specifications, locators/versions, applicable scope, and owner AC confirmation.
+A URL alone is not content; scope approval is not implementation acceptance.
 
-Jangan menganggap salah satu sumber selalu menang atas sumber lain. Konflik
-material perlu keputusan pemilik requirement. Validasi visual Figma tidak dapat
-diklaim dari teks saja. Lihat [contoh sumber](requirement-input.example.md).
+Do not assume one source always overrides another. Material conflicts require
+the requirement owner's decision. Figma visual validation cannot be claimed from
+text alone. See the [source example](requirement-input.example.md).
 
-Profil `.doforme/repository.json` berisi requirement paths, default test commands,
-temporary artifacts dan batas timeout/turn/biaya. Isikan command langsung setelah
-membaca test/code/config yang dipanggil. Tidak ada izin fix/test di dalam profil.
-Review dan commit setup tersebut sebelum memulai workflow yang memerlukan baseline bersih.
+`.doforme/repository.json` holds requirement paths, default test commands, temporary
+artifacts, and timeout/turn/cost caps. Add direct commands after reading the invoked
+test/code/configuration. A profile grants no fix/test permission. Review and commit
+setup before a workflow requiring a clean baseline.
 
-## Siapkan input per issue
+## Prepare per-issue input
 
-Ekspor teks sumber dapat dibundel dengan hash/provenance menggunakan
-[source snapshots](SOURCES.md). Tool ini membaca ekspor lokal yang disebut
-eksplisit dan tidak memberi authority atau mengambil dokumen remote secara live.
+Source text exports can be bundled with hashes/provenance using [source snapshots](SOURCES.md).
+This tool reads explicitly selected local exports; it grants no authority and
+fetches no live remote documents.
 
-Simpan input di luar checkout target, misalnya `/absolute/inputs/bug-123.json`:
+Save input outside the target checkout, for example `/absolute/inputs/bug-123.json`:
 
 ```json
 {
   "issue_ref": "BUG-123",
-  "issue_text": "Halaman terakhir melewatkan item. Expected [5], observed [] untuk input yang dijelaskan di sumber requirement.",
+  "issue_text": "The final page skips an item. Expected [5], observed [] for the input described in the requirement source.",
   "edit_paths": ["pagination.py", "test_pagination.py"],
   "test_commands": ["PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination"],
   "artifact_paths": []
 }
 ```
 
-Ini contoh fixture pagination, bukan scope universal. Gunakan path dan runner
-yang sesuai repo Anda. Issue boleh menambah sumber requirement, memilih command
-khusus dan menurunkan cap. Sumber dari profil tidak dapat dihilangkan dan cap
-tidak dapat dinaikkan oleh input issue.
+This uses the pagination fixture, not universal scope. Choose paths/runners
+appropriate to your repository. Issue input may add requirement sources, select
+specific commands, and lower caps. It cannot remove profile sources or raise caps.
 
 ```text
 /doforme:doctor --input /absolute/inputs/bug-123.json --profile .doforme/repository.json --output /absolute/runs/bug-123
 ```
 
-Output run harus belum ada, parent tersedia, serta di luar checkout target dan
-plugin. Doctor tidak membuatnya. local_preflight passed hanya pemeriksaan teknis
-lokal; isi/otoritas requirement dan AC masih belum dievaluasi. Lihat [doctor](PREFLIGHT.md).
+Run output must not exist, must have an existing parent, and must be outside both
+target and plugin checkouts. Doctor does not create it. local_preflight passed
+is a local technical check only; requirement content/authority and AC remain
+unevaluated. See [doctor](PREFLIGHT.md).
 
-Untuk melihat konfigurasi gabungan tanpa model/test/checkpoint:
+To inspect effective configuration without models/tests/checkpoints:
 
 ```bash
 python3 /absolute/doforme/scripts/run_workflow.py --repo /absolute/target --profile .doforme/repository.json --input /absolute/inputs/bug-123.json --inspect-config
 ```
 
-## Menjalankan tiap tahap secara manual
+## Run stages manually
 
-Setiap command memakai konteks terpisah. Berikan laporan sebelumnya secara
-eksplisit; jangan mengandalkan ingatan percakapan. Command menghasilkan laporan,
-bukan otomatis menyimpan file dengan nama contoh di bawah. Simpan keluaran yang
-ditinjau di lokasi laporan, atau teruskan sebagai inline input lengkap.
+Each command uses a separate worker context. Supply prior reports explicitly;
+do not rely on conversation memory. Commands produce reports but do not automatically
+save files with the example names below. Save reviewed output at your report
+location or pass complete inline inputs.
 
 ```text
-/doforme:analyze ISSUE.md; sumber dan konfirmasi scope di REQUIREMENTS.md
+/doforme:analyze ISSUE.md; sources and scope confirmation in REQUIREMENTS.md
 /doforme:plan /absolute/reports/ANALYSIS.md
 /doforme:fix /absolute/reports/PLAN.md; authorize edits ONLY pagination.py and test_pagination.py; authorize ONLY PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination; artifacts none
 /doforme:test /absolute/reports/PLAN.md /absolute/reports/FIX.md; authorize ONLY PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination; artifacts none
@@ -99,110 +98,109 @@ ditinjau di lokasi laporan, atau teruskan sebagai inline input lengkap.
 /doforme:pr /absolute/reports/PLAN.md /absolute/reports/FIX.md /absolute/reports/TEST.md /absolute/reports/REVIEW.md
 ```
 
-Analyze/plan hanya membaca. Fix butuh baseline bersih, revision plan yang sama,
-scope edit tepat dan izin langsung. Fix mengamati regression failure terkait bug,
-kemudian hasil sesudah perbaikan; error import/dependency bukan bukti regression.
-Test terpisah mengecek AC dan hasil tool nyata. Review memeriksa content hashes,
-diff dan evidence tanpa menjalankan test. PR hanya menyiapkan title/body draft;
-tidak membuat PR remote atau menutup issue.
+Analyze/plan only read. Fix requires a clean baseline, matching plan revision,
+exact edit scope, and direct permission. It observes a bug-related regression
+failure and post-fix results; import/dependency errors are not regression evidence.
+Independent test checks AC and actual tool results. Review checks content hashes,
+diff, and evidence without running tests. PR only prepares draft title/body;
+it does not create a remote PR or close an issue.
 
-## Runner end-to-end
+## End-to-end runner
 
-Lihat scope gabungan terlebih dahulu. Contoh berikut memberi izin langsung untuk
-edit/test tepat sesuai input; jalankan hanya setelah Anda menyetujui scope itu:
+Inspect effective scope first. This example directly authorizes input-matching
+edits/tests; run it only after approving that scope:
 
 ```bash
 python3 /absolute/doforme/scripts/run_workflow.py --repo /absolute/target --profile .doforme/repository.json --input /absolute/inputs/bug-123.json --output /absolute/runs/bug-123 --allow-fix --allow-execution
 ```
 
-Tanpa flag izin, runner dapat analyze/plan lalu berhenti sebelum fix. Profil atau
-isi issue tidak dapat mengaktifkan flag sendiri. Padanan percakapan:
+Without grant flags, the runner may analyze/plan and stop before fixing. Profiles
+or issue contents cannot enable flags themselves. Conversation equivalent:
 
 ```text
 /doforme:endtoend --input /absolute/inputs/bug-123.json --profile .doforme/repository.json --output /absolute/runs/bug-123; authorize output creation; authorize edits ONLY pagination.py and test_pagination.py; authorize execution ONLY PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_pagination; artifacts none
 ```
 
-Runner memakai model call terpisah per tahap; batas default per tahap adalah 180
-detik, 45 turns dan $1, yang dapat dibatasi lewat profil/input. Enam tahap bukan
-satu panggilan; run dapat berhenti lebih awal dan memakai biaya model.
+The runner makes a separate model call per stage. Default stage caps are 180 seconds,
+45 turns, and $1, adjustable downward through profile/input. Six stages are not
+one call; runs may stop earlier and incur model costs.
 
-Output privat menyimpan input efektif, checkpoint, history laporan dan bukti
-validasi. Jangan memasukkan credentials atau data pribadi yang tidak diperlukan.
-Target saat ini dibatasi 20.000 file/100 MB dan menolak symlink/special file.
-Normal permission dan audit setelah call bukan sandbox OS.
+Private output stores effective input, checkpoints, report history, and validation
+evidence. Do not include unnecessary credentials or personal data. Targets are
+currently limited to 20,000 files/100 MB; symlinks/special files are rejected.
+Normal permissions and post-call audit are not an OS sandbox.
 
-## Status, resume dan hasil blocked
+## Status, resume, and blocked results
 
-Eksekusi model memakai timeout, batas output gabungan 16 MB per tahap, dan
-pembersihan process group pada POSIX. Ini bukan isolasi OS atau jaminan bahwa
-test tidak dapat mengakses credential yang masih diperlukan model. Lihat
-[operasional dan batas isolasi](OPERATIONS.md) sebelum memakai source tidak tepercaya.
+Model execution has timeouts, a combined 16 MB output cap per stage, and POSIX
+process-group cleanup. This is not OS isolation or a guarantee that tests cannot
+access credentials still needed by the model. Read [operations and isolation limits](OPERATIONS.md)
+before using untrusted source.
 
 ```text
 /doforme:status /absolute/runs/bug-123
 ```
 
-Atau baca status tanpa model:
+Or read status without a model:
 
 ```bash
 python3 /absolute/doforme/scripts/run_workflow.py --status --repo /absolute/target --output /absolute/runs/bug-123
 ```
 
-Resume memakai command runner awal dengan input, output dan izin yang sama,
-ditambah --resume. Tahap interrupted/failed/blocked memerlukan --retry langsung
-dan maksimal dua attempt. Retry tidak dapat melewati requirement atau verdict gate.
-Changed HEAD/content/policy/config/grants menolak resume. Partial edit memerlukan
-review/recovery manual; jangan reset, menghapus lock aktif, memalsukan revision
-atau memperluas izin untuk memaksa kelanjutan.
+Resume uses the original runner command, identical input/output/grants, and --resume.
+Interrupted/failed/blocked stages need explicit --retry, with at most two attempts.
+Retry cannot bypass requirement or verdict gates. Changed HEAD/content/policy/config/
+grants reject resume. Partial edits need manual review/recovery; do not reset,
+delete active locks, falsify revisions, or widen permissions to force continuation.
 
-Issue bukan bug atau review changes_requested dapat menghentikan handoff meskipun
-tahap sebelumnya complete. Baca reason dan laporan, bukan hanya status proses.
-Complete seluruh runner tetap berarti draft siap ditinjau, bukan siap publikasi.
+A non-bug issue or changes_requested review can stop handoff even when the previous
+stage is complete. Read reasons/reports, not just process status. A complete runner
+still means a draft is ready for review, not ready for publication.
 
-Bukti keputusan manusia per AC dapat diperiksa dengan validator read-only di
-[panduan acceptance](ACCEPTANCE.md). Bukti terikat pada konten/checkpoint/AC yang
-diuji; keputusan supplied diberi label attested, bukan identitas owner yang sudah
-diautentikasi. Validator ini tidak mengubah status runner atau menutup issue.
+Read-only [acceptance validation](ACCEPTANCE.md) checks supplied per-AC human
+decisions bound to tested content/checkpoint/AC. Supplied decisions are labeled
+attested, not authenticated owner identity. The validator changes no runner status
+and closes no issues.
 
-[Publikasi draft PR](PUBLISHING.md) adalah helper terpisah: default hanya preview
-read-only, sedangkan POST memerlukan --publish, digest proposal yang ditinjau dan
-receipt privat baru. Helper tidak melakukan push, membuat branch, merge atau
-menutup issue. Commit byte-identik dapat diperiksa melalui handoff terpisah;
-freshness normal status/resume dan attestation lama tidak diubah diam-diam.
+[Draft PR publication](PUBLISHING.md) is separate: default read-only preview; POST
+requires --publish, a reviewed proposal digest, and a new private receipt. It does
+not push, create branches, merge, or close issues. A separate handoff checks
+byte-identical commits; normal status/resume freshness and old attestations are
+not silently changed.
 
-## Integrasi dan pengujian
+## Integrations and testing
 
-Telegram tidak wajib dikonfigurasi. Seluruh jalur manual/end-to-end serta
-status/resume tetap tersedia tanpa workflow atau credential Telegram; hanya
-pengiriman notifikasi yang memerlukan opt-in dan konfigurasi tambahan.
+Telegram is optional. Manual/end-to-end paths and status/resume remain available
+without Telegram workflows or credentials; only notification delivery requires
+additional opt-in/configuration.
 
-Untuk notifikasi issue bug baru dan resolved pada repo aplikasi, pakai
-[konfigurasi Telegram](TELEGRAM.md). Alur manual dan end-to-end memakai gerbang
-yang sama: PR merged, check wajib lulus, bukti/keputusan approver dan issue
-closed/completed. Test hijau atau draft PR saja tidak mengirim status resolved.
+For new-bug/resolved notifications in an application repository, use [Telegram configuration](TELEGRAM.md).
+Manual and end-to-end fixes share the same notification gates: merged PR, passing
+required checks, approver evidence/decision, and closed/completed issue. Passing
+tests or a PR draft alone do not send resolved status.
 
-[Pemeriksaan kesiapan integrasi](INTEGRATION-READINESS.md) menyediakan diagnosis
-offline atau pembacaan metadata GitHub eksplisit. Keberadaan konfigurasi/secret
-tidak dianggap bukti pengiriman berhasil. Helper tidak memasang secret, mengaktifkan
-workflow, dispatch, memanggil model atau mengirim pesan.
+[Integration readiness](INTEGRATION-READINESS.md) provides offline diagnosis or
+explicit GitHub metadata reads. Configuration/secret presence is not successful
+delivery evidence. The helper installs no secrets, activates/dispatches no workflows,
+calls no models, and sends no messages.
 
-GitHub issue intake/Telegram tetap contoh opt-in terpisah, belum aktif otomatis.
-Workflow documentation hanya memeriksa docs/history dan tes offline; tidak
-memproses issue atau memanggil model. Lihat [integrasi](INTEGRATIONS.md),
-[uji runtime nyata](RUNTIME-0.14.md) dan [riwayat pengujian](PHASES.md).
+GitHub intake/Telegram remain separate opt-in examples, not automatically active.
+The documentation workflow only checks docs/history and offline tests; it processes
+no issues and calls no models. See [integrations](INTEGRATIONS.md), [real runtime tests](RUNTIME-0.14.md),
+and [test history](PHASES.md).
 
-Uji integrasi profil repo sampai draft, requirement-blocked, resume dan status
-tersedia pada [workflow acceptance](RUNTIME-0.16.md). Tanpa --live hanya menampilkan
-rencana; mode --live memakai repo sintetis dan dapat memanggil model sampai
-delapan kali. Ini bukan cara menguji source produksi secara otomatis.
+[Workflow acceptance](RUNTIME-0.16.md) covers profile-to-draft integration,
+requirement stops, resume, and status. Without --live it only prints a plan;
+--live uses synthetic repositories and may make up to eight model calls. It is
+not an automatic production-source testing method.
 
-Routing `/doforme:endtoend` langsung, termasuk requirement-blocked dan kasus tanpa
-izin eksekusi, diuji terpisah dalam [slash acceptance](RUNTIME-0.17.md).
+Direct `/doforme:endtoend` routing, including requirement-blocked/no-execution-grant
+cases, is tested separately in [slash acceptance](RUNTIME-0.17.md).
 
-Untuk mencoba issue bisnis nyata, ikuti [prosedur pilot](PILOT.md). Target repo,
-izin source, requirement/AC owner dan evidence UAT harus dipilih secara eksplisit;
-hasil fixture tidak dapat menggantikan pilot tersebut.
+For real business issues, follow the [pilot procedure](PILOT.md). Target repository,
+source permission, owner requirements/AC, and UAT evidence must be explicitly selected;
+fixture results cannot replace that pilot.
 
-[Status roadmap](ROADMAP.md) membedakan implementasi helper, uji fixture/model,
-pilot bisnis, aktivasi live dan release stabil. Nomor versi bukan bukti bahwa
-seluruh kondisi operasional atau keputusan owner sudah selesai.
+[Roadmap status](ROADMAP.md) distinguishes helper implementation, fixture/model tests,
+business pilots, live activation, and stable releases. Versions do not establish
+that all operational conditions or owner decisions are complete.

@@ -423,3 +423,22 @@ Total reported cost including the rejected trace: $0.3729788.
 These tests do not establish complete multi-turn owner-confirmation/config-save
 acceptance, browser correctness, or a successful real KlikDown fix. The existing
 pilot must still supply confirmed requirement scope and actual test/QA evidence.
+
+## English documentation
+
+Reviewed all 90 Markdown files and translated remaining Indonesian documentation,
+examples, diagram labels, and packaged guided-conversation examples into English.
+Machine field names, report contracts, and actual source locators are preserved;
+the KlikDown source-heading literal in Telegram configuration remains unchanged
+because it identifies the original target document.
+
+The documentation generator now emits English reference/changelog text. Curated
+English summary translations are keyed by change ID in docs/history-translations.json;
+original committed docs/changes.json entries remain unchanged. Tests cover display
+translation, staged versus unstaged mapping content, invalid mappings, and history
+immutability. All 289 offline tests and plugin validation passed. Code-fence counts,
+JSON example structure, and local section anchors were checked. No model calls,
+project-source edits, or notification sends were required for this translation.
+
+Packaged skill text changes also change the policy digest; existing workflow
+checkpoints may require a new run even though command contracts are unchanged.

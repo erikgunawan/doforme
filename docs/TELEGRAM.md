@@ -1,37 +1,35 @@
-# Konfigurasi repo: bug baru dan resolved → Telegram
+# Repository configuration: new and resolved bugs → Telegram
 
-Konfigurasi ini dipasang di repo aplikasi target, misalnya sandbox KlikDown.
-Ia berlaku untuk fix manual maupun doforme end-to-end. Notifikasi tidak menjalankan
-Claude, memperbaiki source, membuat PR, menutup issue atau mengaktifkan hook lab.
-API key model tidak diperlukan untuk notifikasi.
+Install this configuration in the target application repository, such as a KlikDown
+sandbox. It supports manual and doforme end-to-end fixes. Notifications do not run
+Claude, repair source, create PRs, close issues, or activate lab hooks. No model
+API key is required for notifications.
 
-**Telegram sepenuhnya opsional.** Repo tanpa workflow ini, tanpa token/chat ID,
-atau dengan DOFORME_NOTIFY_TELEGRAM kosong/false tetap dapat memakai semua tahap
-doforme manual dan end-to-end. Hanya notifikasi yang tidak dikirim. Credential
-Telegram tidak diperlukan oleh init, doctor, analyze, plan, fix, test, review,
-draft PR, status atau resume. Ringkasan instalasi ada di
-[panduan instalasi plugin](INSTALLATION.md#4-opsional-pasang-template-telegram).
+**Telegram is entirely optional.** Without this workflow, token/chat ID, or with
+DOFORME_NOTIFY_TELEGRAM empty/false, every manual and end-to-end plugin stage remains
+available; only notifications are absent. Init, doctor, analyze, plan, fix, test,
+review, draft PR, status, and resume need no Telegram credentials. Installation
+summary: [plugin installation](INSTALLATION.md#4-optional-install-the-telegram-template).
 
-## Definisi status
+## Status definitions
 
-| Kejadian | Telegram |
+| Event | Telegram |
 | --- | --- |
-| Issue baru memiliki label bug, atau label bug ditambahkan pada issue terbuka | Bug baru; belum dinyatakan resolved |
-| Test hijau, draft PR, PR belum merge, issue closed tanpa bukti owner | Tidak mengirim klaim resolved |
-| Issue closed sebagai completed, PR merge sesuai SHA, check wajib hijau, owner approver memberi deklarasi dan bukti QA/UAT | Resolved menurut persetujuan owner, beserta PR/commit/bukti |
-| Issue dibuka kembali | Bukti lama tidak cukup untuk resolved lagi; diperlukan bukti/deklarasi baru |
+| New issue labeled bug, or bug label added to an open issue | New bug; not declared resolved |
+| Passing tests, PR draft, unmerged PR, or closed issue without owner evidence | No resolution claim |
+| Issue closed as completed, PR merged at matching SHA, required checks passed, owner approver declaration and QA/UAT evidence available | Owner-attested resolution with PR/commit/evidence |
+| Issue reopened | Old evidence is insufficient for another resolution; new evidence/declaration required |
 
-Sumber keputusan business acceptance adalah deklarasi akun GitHub yang ditunjuk
-operator, bukan inferensi AI atau status test. Workflow memverifikasi akun, PR,
-SHA, check dan referensi komentar; ia tidak membaca piksel screenshot, membuktikan
-kelengkapan seluruh requirement, atau mengautentikasi jabatan bisnis di luar
-daftar akun tersebut. Hubungan PR dengan bug serta source/AC dinyatakan owner.
-Hasil diberi label owner-attested accepted, bukan acceptance yang dibuktikan AI.
+Business acceptance comes from the operator-designated GitHub account's declaration,
+not AI inference or test status. The workflow verifies account, PR, SHA, checks,
+and comment references; it does not inspect screenshot pixels, establish complete
+requirement coverage, or authenticate business roles beyond that account list.
+The owner attests the PR-to-bug and source/AC relationship. Results are labeled
+owner-attested accepted, not AI-proven acceptance.
 
-## 1. Pasang tiga file
+## 1. Install three files
 
-Jalankan dari root repo KlikDown yang sudah menjadi checkout Git. Gunakan checkout
-doforme versi 0.25 atau lebih baru dan review file sebelum menyalinnya:
+Start at the KlikDown Git checkout root. Use doforme 0.25+ and review before copying:
 
 ```bash
 DOFORME="$HOME/doforme"
@@ -41,91 +39,90 @@ cp -i "$DOFORME/integrations/telegram-bugs.yml.example" .github/workflows/doform
 cp -i "$DOFORME/integrations/klikdown-tests.yml.example" .github/workflows/tests.yml
 ```
 
-Gunakan path baru atau gabungkan dengan file existing secara sadar; jangan
-menimpa workflow/CI milik orang lain. Repo selain KlikDown perlu mengganti command
-test sesuai proyek. CI KlikDown ini menjalankan node tests/run-node.js tanpa npm
-install dan tanpa secrets. Node tersedia pada runner yang dipilih harus sesuai
-persyaratan Node 20+ proyek. Test regresi BUG-303 tetap perlu ditambahkan dan
-didaftarkan; baseline hijau saja belum membuktikan rendering benar.
+Use new paths or deliberately merge existing files; do not overwrite someone
+else's workflow/CI. Other repositories need project-appropriate test commands.
+KlikDown CI runs node tests/run-node.js without npm install or secrets. The selected
+runner's Node must meet the project's Node 20+ requirement. BUG-303 regression tests
+still need adding and registration; a passing baseline does not prove correct rendering.
 
-Commit dan push tiga file tersebut ke default branch repo aplikasi. Template di
-repo doforme berada di luar workflow aktif, sehingga push doforme tidak mengirim
-notifikasi. File workflow issue/comment harus ada di default branch agar event
-tersebut diproses. Tidak ada checkout branch PR dalam job pemegang secret Telegram.
+Commit/push these files to the application's default branch. Templates in doforme
+are outside active workflows, so pushing doforme sends no notifications. Issue/
+comment workflows must exist on the default branch to receive those events.
+The Telegram-secret job does not check out PR branches.
 
-## 2. Isi repository secrets
+## 2. Set repository secrets
 
-GitHub → repo aplikasi → Settings → Secrets and variables → Actions → Secrets:
+GitHub → application repository → Settings → Secrets and variables → Actions → Secrets:
 
-| Secret | Nilai |
+| Secret | Value |
 | --- | --- |
-| TELEGRAM_BOT_TOKEN | Token bot milik operator dari BotFather |
-| TELEGRAM_CHAT_ID | ID chat/grup tujuan yang operator pilih |
+| TELEGRAM_BOT_TOKEN | Operator-owned bot token from BotFather |
+| TELEGRAM_CHAT_ID | Operator-selected destination chat/group ID |
 
-Untuk chat pribadi, buka percakapan dengan bot dan tekan Start. Untuk grup,
-tambahkan bot dan pastikan dapat mengirim pesan. Ambil chat ID lewat API/tools
-Telegram yang Anda tinjau; hindari menaruh token pada URL browser, screenshot,
-issue, file Git atau percakapan publik. Jangan kirim token ke coding agent/chat.
-GITHUB_TOKEN disediakan GitHub Actions; tidak perlu membuat PAT untuk workflow ini.
+For a private chat, open the bot and press Start. For a group, add the bot and
+ensure it can send. Obtain chat ID through reviewed Telegram APIs/tools; avoid
+putting tokens in browser URLs, screenshots, issues, Git files, or public conversations.
+Do not send tokens to a coding agent/chat. GitHub Actions supplies GITHUB_TOKEN;
+this workflow needs no PAT.
 
-## 3. Isi repository variables
+## 3. Set repository variables
 
-Di halaman Actions yang sama, pilih Variables:
+On the same Actions settings page, select Variables:
 
-| Variable | Contoh | Fungsi |
+| Variable | Example | Purpose |
 | --- | --- | --- |
-| DOFORME_NOTIFY_TELEGRAM | true | Opt-in pengiriman; kosong/false berarti disabled |
-| DOFORME_BUG_LABEL | bug | Nama label yang harus ada pada issue |
-| DOFORME_RESOLUTION_APPROVERS | erikgunawan | Username GitHub yang berwenang menyatakan QA/UAT diterima; pisahkan dengan baris baru atau koma |
-| DOFORME_REQUIRED_CHECKS | tests | Nama check job wajib; satu nama per baris |
+| DOFORME_NOTIFY_TELEGRAM | true | Delivery opt-in; empty/false disables it |
+| DOFORME_BUG_LABEL | bug | Required issue label |
+| DOFORME_RESOLUTION_APPROVERS | erikgunawan | GitHub usernames authorized to attest accepted QA/UAT; newline- or comma-separated |
+| DOFORME_REQUIRED_CHECKS | tests | Required check-job names; one per line |
 
-Daftar approver adalah keputusan operator mengenai authority. Kehadiran secret
-saja tidak mengaktifkan pengiriman. Pilih tujuan/akun yang benar dan tinjau
-hak baca informasi issue privat sebelum mengaktifkan. Batasi siapa yang boleh
-mengubah variables, workflow dan kode notifier sesuai aturan repo Anda.
+The approver list is the operator's authority decision. Secrets alone do not
+activate delivery. Select the right destinations/accounts and review private-issue
+information access before enabling it. Restrict changes to variables, workflows,
+and notifier code according to repository policy.
 
-## 4. Uji notifikasi bug baru
+## 4. Test new-bug notifications
 
-1. Pastikan GitHub Actions diizinkan dan file workflow ada di default branch.
-2. Buat issue latihan baru, misalnya BUG-303, dengan label bug. Atau tambahkan
-   label bug pada issue yang masih open.
-3. Periksa Actions → doforme bug Telegram dan chat tujuan.
+1. Ensure Actions is enabled and the workflow is on the default branch.
+2. Create a new practice issue, such as BUG-303, labeled bug. Alternatively add
+   bug to an open issue.
+3. Check Actions → doforme bug Telegram and the destination chat.
 
-Notifikasi memuat repo, nomor issue, judul dan URL. Isi issue tidak dieksekusi
-atau dimasukkan ke shell. PR dan komentar pada PR tidak diproses sebagai bug issue.
-Issue yang sudah ada sebelum pemasangan tidak otomatis dikirim secara retroaktif.
+Notifications contain repository, issue number, title, and URL. Issue bodies are
+not executed or interpolated into shell commands. PRs and PR comments are not
+processed as bug issues. Existing issues are not automatically sent retroactively.
 
-## 5. Fix manual atau end-to-end, kemudian QA
+## 5. Fix manually or end-to-end, then perform QA
 
-Gunakan salah satu jalur doforme seperti biasa. Setelah fix/review, commit/push
-ke branch, buat PR dan merge melalui keputusan manusia. Gunakan referensi seperti
-Refs #1 bila penutupan issue ingin dilakukan setelah QA. Nomor GitHub issue bisa
-berbeda dari kode BUG-303 pada judul.
+Use either doforme route normally. After fixing/reviewing, commit/push a branch,
+create a PR, and merge through human decisions. Use references such as Refs #1
+if issue closure should wait until QA. The GitHub issue number may differ from
+the BUG-303 code in its title.
 
-Tunggu job tests pada merge commit/default branch hijau. Owner melakukan QA/UAT
-atas merge commit yang tepat, termasuk D6/regression dan pemeriksaan browser
-KlikDown. Jangan menganggap BUG-301/302 ikut resolved. Jika ada coverage gap
-material, jangan deklarasikan accepted.
+Wait for tests on the merge commit/default branch to pass. The owner performs
+QA/UAT on that exact merge commit, including D6/regression and KlikDown browser
+checks. Do not assume BUG-301/302 are also resolved. Do not declare accepted if
+material coverage gaps remain.
 
-## 6. Catat bukti dan keputusan resolved
+## 6. Record evidence and the resolution decision
 
-Approver yang ada dalam variable menulis komentar QA/UAT pada issue tersebut:
+An approver listed in the variable writes a QA/UAT comment on the issue:
 
 ```text
-QA/UAT BUG-303 pada merge commit <FULL_40_CHARACTER_SHA>:
-- D6 dan AC pengurutan: hasil aktual ...
+QA/UAT BUG-303 on merge commit <FULL_40_CHARACTER_SHA>:
+- D6 and sorting AC: actual outcome ...
 - Regression test: ...
 - Browser/screenshot/report: ...
-- BUG-301/302 tetap di luar scope; keterbatasan ...
-Keputusan acceptance untuk scope yang disebut: accepted.
+- BUG-301/302 remain outside scope; limitations ...
+Acceptance decision for the stated scope: accepted.
 ```
 
-Sertakan SHA lengkap, bukti aktual dan keputusan yang benar; jangan menyalin
-placeholder seolah sudah diuji. Salin permalink komentar QA/UAT tersebut.
+Include complete SHA, actual evidence, and the true decision; do not copy placeholders
+as though tested. Copy that QA/UAT comment's permalink.
 
-Kemudian approver membuat **komentar baru** pada issue yang sama dengan format
-berikut (hanya fenced block ini). Ganti nomor issue/PR, SHA dan permalink dengan
-nilai aktual. Jangan mengedit komentar approval lama; buat komentar baru jika berubah.
+The approver then creates a **new comment** on the same issue with this format
+(only this fenced block). Replace issue/PR numbers, SHA, and permalink with actual
+values. Do not edit old approval comments; create a new one if something changes.
 
 ````text
 ```doforme-resolution
@@ -144,65 +141,66 @@ nilai aktual. Jangan mengedit komentar approval lama; buat komentar baru jika be
 ```
 ````
 
-Kedua komentar harus berasal dari approver, tidak diedit, setelah PR merge dan
-setelah reopen terakhir bila ada. Deklarasi menunjuk PR merged ke default branch,
-SHA persis sama, serta komentar bukti pada issue yang sama. Check wajib pada SHA
-tersebut harus completed/success dari GitHub Actions.
+Source references retain the target repository's original filenames/headings.
+Both comments must be from an approver, unedited, after merge and after the most
+recent reopen, if any. The declaration references a PR merged into the default
+branch, exactly matching SHA, and an evidence comment on the same issue. Required
+checks on that SHA must be completed/success from GitHub Actions.
 
-Tutup issue dengan alasan completed. Jika PR sudah menutup issue otomatis,
-komentar deklarasi yang baru dibuat akan memicu pemeriksaan ulang. Setelah semua
-gerbang terpenuhi, Telegram menerima status resolved menurut persetujuan owner.
+Close the issue as completed. If the PR already closed it automatically, a new
+declaration comment triggers another check. Once all gates pass, Telegram receives
+an owner-attested resolution update.
 
-Contoh isi pesan:
+Example message content, rendered in English:
 
 ```text
-✅ Bug resolved — menurut persetujuan owner
+✅ Bug resolved — owner-attested
 OWNER/REPO #1
-BUG-303 — urutan deadline terbalik
+BUG-303 — reversed deadline order
 PR: .../pull/12
 Commit: <sha>
 Approver: <username>
-QA/check wajib: passed; acceptance: owner-attested accepted
-Bukti: <permalink QA/UAT>
+QA/required checks: passed; acceptance: owner-attested accepted
+Evidence: <QA/UAT permalink>
 ```
 
-Jika issue terlanjur ditutup sebelum check selesai, gunakan Actions → doforme bug
-Telegram → Run workflow → issue_number untuk memeriksa lagi. Ini tetap tidak
-melewati bukti/approval atau mengirim ulang attempt yang sudah tercatat.
+If closure preceded completed checks, use Actions → doforme bug Telegram → Run
+workflow → issue_number to recheck. This does not bypass evidence/approval or
+resend a previously recorded attempt.
 
-## Delivery, receipt dan batasnya
+## Delivery, receipts, and limits
 
-Workflow menyimpan artifact attempt **sebelum** menghubungi Telegram, lalu helper
-memeriksa ulang state/approval/check sebelum POST. Rerun event yang sama berhenti
-jika receipt artifact masih tersimpan; resolved key berbasis closure ID sehingga
-komentar tambahan tidak mengirim resolved berulang untuk penutupan yang sama.
-Concurrency per issue mencegah dua job pengirim simultan, bukan jaminan urutan FIFO.
+The workflow persists an attempt artifact **before** contacting Telegram, then
+rechecks current state/approval/checks before POST. Repeated events stop while
+the receipt artifact exists. Resolved keys use closure IDs so additional comments
+do not repeatedly notify the same closure. Per-issue concurrency prevents two
+simultaneous send jobs; it does not guarantee FIFO order.
 
-Jika timeout/crash terjadi setelah receipt disimpan, delivery bisa belum terjadi
-atau sudah terjadi. Workflow tidak retry otomatis. Periksa chat dan artifact
-sebelum pemulihan manual. Artifact mengikuti retention repo; menghapus/expired
-receipt dapat menghilangkan deduplication. Ini bukan exactly-once delivery permanen.
-Perubahan GitHub sesudah recheck terakhir tetap dapat berlomba dengan POST;
-pesan mencatat keputusan/commit yang diverifikasi, bukan transaksi atomik lintas layanan.
+A timeout/crash after receipt storage may mean delivery happened or did not.
+There is no automatic retry. Inspect chat and artifacts before manual recovery.
+Artifacts follow repository retention; deleted/expired receipts can remove
+deduplication. This is not permanent exactly-once delivery. GitHub changes after
+the final recheck can race POST; messages record verified decisions/commits,
+not atomic transactions across services.
 
-Notifier hanya membaca metadata GitHub dan POST ke host API Telegram tetap,
-tanpa redirect/parse_mode/link previews, instalasi package, source execution,
-push, penutupan issue atau komentar bot. Raw issue body/token tidak diarsipkan.
-Workflow menjalankan helper standalone dalam Python isolated mode (-I -B),
-sehingga module shadowing dari project/PYTHONPATH tidak dimuat. Helper dari
-default branch tetap harus merupakan kode yang ditinjau operator.
-Identity/authority korporat, kebenaran semantik UAT dan kebutuhan deployment
-tetap tanggung jawab proses owner; labels/test hijau tidak menggantikannya.
+The notifier only reads GitHub metadata and POSTs to a fixed Telegram API host,
+with no redirects/parse_mode/link previews, package installs, source execution,
+push, issue closure, or bot comments. Raw issue bodies/tokens are not archived.
+The standalone helper runs in Python isolated mode (-I -B), preventing module
+shadowing from the project/PYTHONPATH. Default-branch helper code must still be
+operator-reviewed. Corporate identity/authority, semantic UAT correctness, and
+deployment requirements remain the owner's process responsibility; labels and
+passing tests do not replace them.
 
-## Status implementasi
+## Implementation status
 
-Konfigurasi/template dan unit tests tersedia, tetapi belum dipasang pada repo
-KlikDown atau dikirim ke chat nyata: repo target, token dan recipient belum
-disediakan. Pengujian memakai API/sender palsu dan tidak mengklaim live delivery.
-Notifikasi default legacy issue_intake.py tetap terpisah dan hanya new-issue;
-gunakan template ini jika membutuhkan gerbang resolved yang didokumentasikan.
+At this feature's implementation checkpoint, configuration/templates and unit
+tests existed but were not installed in KlikDown or sent to a real chat: target
+repository, token, and recipient had not been supplied. Testing used fake APIs/
+senders and claimed no live delivery. Legacy issue_intake.py notification defaults
+remain separate and new-issue-only; use this template for the documented resolution gates.
 
-Referensi resmi: [event issue/comment](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows),
+Official references: [issue/comment events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows),
 [check runs](https://docs.github.com/en/rest/checks/runs),
 [artifact metadata](https://docs.github.com/en/rest/actions/artifacts),
-dan [Telegram sendMessage](https://core.telegram.org/bots/api#sendmessage).
+and [Telegram sendMessage](https://core.telegram.org/bots/api#sendmessage).

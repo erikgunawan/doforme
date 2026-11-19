@@ -1,50 +1,50 @@
-# Contoh paket input requirement
+# Example requirement input packet
 
-Ini template, bukan requirement atau persetujuan bisnis yang sudah diverifikasi.
-Isi bagian relevan dengan data nyata; tandai yang belum diketahui secara jelas.
-Simpan paket di repo target atau berikan sebagai kutipan inline, lalu sebutkan
-paket tersebut dalam input analyze. Jangan sertakan credentials atau data pribadi.
+This is a template, not a verified requirement or business approval. Fill relevant
+sections with real data; explicitly mark unknowns. Save the packet in the target
+repository or provide inline excerpts, then reference it in analysis input. Do not
+include credentials or personal data.
 
-## Identitas dan scope
+## Identity and scope
 
-- Issue: <key/link/path issue>
-- Scope: <perilaku yang diperiksa, termasuk pengecualian>
-- Pemilik requirement: <peran atau identitas owner yang relevan>
-- Konfirmasi sumber berlaku untuk scope ini: <kutipan dan referensi konfirmasi,
-  atau unconfirmed; jangan isi seolah sudah disetujui>
+- Issue: <issue key/link/path>
+- Scope: <behavior under investigation, including exclusions>
+- Requirement owner: <relevant role or owner identity>
+- Confirmation that sources apply to this scope: <quote and confirmation reference,
+  or unconfirmed; do not present it as approved>
 
-## Sumber dokumen bisnis
+## Business document source
 
-- Origin: <URL/ID, judul, bagian>
-- Versi / updated time: <diketahui atau unknown>
-- Provenance: <ekspor snapshot atau kutipan; siapa/kapan jika diketahui>
-- Isi relevan: <teks aturan bisnis, batas, perhitungan, pengecualian>
+- Origin: <URL/ID, title, section>
+- Version / updated time: <known value or unknown>
+- Provenance: <snapshot export or excerpt; who/when if known>
+- Relevant content: <business rules, limits, calculations, exceptions>
 
-## Sumber Jira — bila relevan
+## Jira source — if relevant
 
-- Origin: <key tiket, URL, bagian atau komentar spesifik>
-- Versi / updated time: <diketahui atau unknown>
-- Isi relevan: <scope issue dan acceptance criteria yang benar-benar tertulis>
-- Klarifikasi/keputusan owner: <kutipan dan referensi atau unconfirmed>
+- Origin: <ticket key, URL, specific section or comment>
+- Version / updated time: <known value or unknown>
+- Relevant content: <issue scope and acceptance criteria actually written>
+- Owner clarification/decision: <quote and reference or unconfirmed>
 
-## Sumber Figma — bila relevan
+## Figma source — if relevant
 
-- Origin: <file URL, frame/node ID, versi bila diketahui>
-- Isi anotasi: <state, interaksi, kondisi, atau teks yang benar-benar diberikan>
-- Evidence visual: <tersedia/tidak; jangan mengklaim layout sudah diperiksa dari teks>
-- Scope yang belum terjelaskan: <state error/loading/empty, ukuran layar, dll.>
+- Origin: <file URL, frame/node ID, version if known>
+- Annotation content: <states, interactions, conditions, or text actually supplied>
+- Visual evidence: <available/unavailable; do not claim layout verification from text>
+- Unspecified scope: <error/loading/empty states, screen sizes, etc.>
 
 ## Acceptance criteria
 
-| ID | Requirement / sumber | Kondisi/input | Hasil teramati | Explicit/proposed | Referensi konfirmasi |
+| ID | Requirement / source | Conditions/input | Observable outcome | Explicit/proposed | Confirmation reference |
 | --- | --- | --- | --- | --- | --- |
-| AC1 | <aturan dan locator> | <kondisi> | <hasil> | <basis> | <referensi atau unconfirmed> |
+| AC1 | <rule and locator> | <condition> | <outcome> | <basis> | <reference or unconfirmed> |
 
-## Konflik dan pertanyaan
+## Conflicts and questions
 
-- <Pernyataan sumber A dibanding sumber B; dampak; keputusan yang dibutuhkan>
-- <Interpretasi yang masih usulan; siapa yang perlu mengonfirmasi>
+- <Source A statement versus source B; impact; required decision>
+- <Interpretation still proposed; who must confirm it>
 
-Sumber yang tidak tersedia: <mana yang material dan mengapa; opsional bila scope
-sudah ditutup sumber lain yang terkonfirmasi>. Tidak perlu mengisi sumber yang
-tidak relevan. Konfirmasi scope tidak sama dengan penerimaan hasil fix.
+Unavailable sources: <which are material and why; optional if scope is covered
+by another confirmed source>. Irrelevant source sections may be omitted.
+Scope confirmation is not acceptance of the implemented fix.

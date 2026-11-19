@@ -1,42 +1,42 @@
-# Status roadmap doforme
+# doforme roadmap status
 
-Status per 2026-11-16. Nomor versi menandai checkpoint pengembangan, bukan bukti
-bahwa semua kondisi live/produksi pada fase tersebut sudah terpenuhi. Riwayat
-faktual fase 1–16 ada di [PHASES.md](PHASES.md) dan [CHANGELOG](../CHANGELOG.md).
+Status as of 2026-11-16. Versions mark development checkpoints, not proof that all
+live/production conditions for a phase have been met. Factual phase 1–16 history
+is in [PHASES.md](PHASES.md) and [CHANGELOG](../CHANGELOG.md).
 
-| Fase | Hasil yang tersedia | Kondisi yang belum terpenuhi |
+| Phase | Available result | Outstanding conditions |
 | --- | --- | --- |
-| 17 — slash endtoend | Tiga uji Claude nyata lulus: requirement-blocked, no-execution-grant, enam tahap complete pada fixture | Bukan pilot issue nyata; run memakai policy yang diekspor dan dibekukan |
-| 18 — acceptance | Validator keputusan manusia terikat source/AC/content/checkpoint; regresi AC tertukar diperbaiki | Belum ada UAT/attestation owner nyata; identitas/authority tidak diautentikasi; sebelum commit saja |
-| 19 — pilot nyata | Checklist input, scope, pelaksanaan dan evidence disiapkan | Repo/issue/AC owner dan izin edit repo lain belum diberikan; pilot belum dijalankan |
-| 20 — sumber requirement | Snapshot ekspor lokal berhash/provenance dengan authority tetap unconfirmed | URL sumber/akun/izin belum tersedia; tidak ada konektor live Docs/Jira/Figma yang diklaim |
-| 21 — operasional | Executor POSIX terbatas, timeout/output cap/cleanup/filter env; satu probe Claude nyata lulus | Belum ada OS sandbox, CPU/memory/network isolation atau uji skala/provider luas yang tervalidasi |
-| 22 — publikasi PR | Preview GET dan adapter draft POST eksplisit dengan digest/receipt; commit handoff byte-identik diuji | Belum ada proposal/head/base yang dipilih owner atau remote PR yang dibuat/divalidasi live |
-| 23 — integrasi | Diagnosis offline dan metadata GitHub nyata: intake/analysis/Telegram belum dikonfigurasi | Event, sumber owner, secret/config/recipient/izin kirim belum tersedia; tidak diaktifkan atau dikirim |
-| 24 — kandidat rilis | Packager/verifier reproducible dari commit bersih; hash dan gate release eksplisit | Lisensi/keputusan owner, pilot/live/isolation gates belum selesai; bukan stable/v1.0 |
+| 17 — endtoend slash command | Three real Claude checks passed: requirement-blocked, no-execution-grant, and six-stage completion on a fixture | Not a real-issue pilot; runs used exported, frozen policy |
+| 18 — acceptance | Human-decision validator bound to source/AC/content/checkpoint; swapped-AC regression fixed | No real owner UAT/attestation; identity/authority is not authenticated; pre-commit only |
+| 19 — real pilot | Input, scope, execution, and evidence checklists prepared | Pilot repository/issue/owner AC and permission to edit another repository not yet supplied; pilot not run |
+| 20 — requirement sources | Local export snapshots with hashes/provenance and unconfirmed authority | Source URLs/accounts/permissions unavailable; no successful live Docs/Jira/Figma connector claimed |
+| 21 — operations | Bounded POSIX executor, timeout/output cap/cleanup/environment filtering; one real Claude probe passed | No validated OS sandbox, CPU/memory/network isolation, or broad scale/provider testing |
+| 22 — PR publication | GET preview and explicit draft POST adapter with digest/receipt; byte-identical commit handoff tested | No owner-selected proposal/head/base or live remote PR created/validated |
+| 23 — integration | Offline diagnosis and real GitHub metadata: intake/analysis/Telegram not configured | Events, owner sources, secrets/config/recipient/send authorization unavailable; nothing activated or sent |
+| 24 — release candidate | Reproducible packager/verifier from a clean commit; hashes and explicit release gates | License/owner decision, pilot/live/isolation gates outstanding; not stable/v1.0 |
 
-## Keputusan owner yang masih diperlukan
+## Outstanding owner decisions
 
-- Repo dan issue pilot nyata, sumber/AC yang berlaku, lingkungan, exact scope dan
-  izin perubahan bila memakai repo selain doforme.
-- URL dokumen/Jira/Figma dan akses yang diizinkan; snapshot tidak otomatis
-  membuktikan authority atau remote freshness.
-- Keputusan aktivasi integrasi, autentikasi model pada runner, target notifikasi
-  dan izin untuk pengujian kirim. Jangan mengirim credentials lewat issue/history.
-- Branch/proposal PR untuk publikasi yang ditinjau, bila publikasi ingin dilakukan.
-- Pilihan lisensi distribusi dan keputusan release stabil dari pemilik.
-- Backend/deployment host yang sesuai untuk isolasi dan provider/scale testing.
+- A real pilot repository and issue, applicable sources/AC, environment, exact
+  scope, and edit permission when using a repository other than doforme.
+- Document/Jira/Figma URLs and authorized access; a snapshot does not automatically
+  establish authority or remote freshness.
+- Integration activation, model authentication on the runner, notification targets,
+  and permission for send tests. Do not send credentials through issues/history.
+- A reviewed branch/PR proposal if publication is desired.
+- Distribution license selection and a stable-release decision from the owner.
+- A suitable backend/deployment host for isolation and provider/scale testing.
 
-Pekerjaan yang bergantung pada keputusan tersebut tetap pending, bukan dianggap
-selesai melalui asumsi. Tidak ada notifikasi, PR, merge, tag atau release yang
-dibuat hanya karena roadmap atau test fixture berstatus pass.
+Work dependent on those decisions remains pending rather than assumed complete.
+A passing roadmap checkpoint or fixture test does not itself create notifications,
+PRs, merges, tags, or releases.
 
-Panduan: [pilot](PILOT.md), [acceptance](ACCEPTANCE.md), [sumber](SOURCES.md),
-[operasional](OPERATIONS.md), [publikasi](PUBLISHING.md),
-[integrasi](INTEGRATION-READINESS.md), dan [kandidat rilis](RELEASE-CANDIDATE.md).
+Guides: [pilot](PILOT.md), [acceptance](ACCEPTANCE.md), [sources](SOURCES.md),
+[operations](OPERATIONS.md), [publishing](PUBLISHING.md),
+[integrations](INTEGRATION-READINESS.md), and [release candidate](RELEASE-CANDIDATE.md).
 
-Pada v0.25 ditambahkan [konfigurasi Telegram lifecycle](TELEGRAM.md) untuk repo
-target. Ia mendukung bug baru dan resolved menurut bukti/keputusan approver,
-tanpa menganggap closed/test hijau sebagai acceptance otomatis. Template tersebut
-belum dipasang atau dikirim ke chat nyata; kebutuhan operator/secret/recipient
-dan batas live-verification di atas tetap berlaku.
+Version 0.25 added [Telegram lifecycle configuration](TELEGRAM.md) for target
+repositories. It supports new-bug and owner-attested resolution notifications,
+without treating closure/passing tests as automatic acceptance. At that checkpoint,
+the template had not been installed or delivered to a real chat; the operator,
+secret, recipient, and live-verification conditions above still applied.

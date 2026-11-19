@@ -1,106 +1,110 @@
-# Dokumentasi dan history pada setiap perubahan
+# Documentation and history for every change
 
-Aturan ini berlaku untuk pengembangan repo doforme, bukan semua repo yang memakai
-plugin. File [AGENTS.md](AGENTS.md) juga meminta coding agent mengikuti alur ini.
+These rules apply to development of doforme, not every repository using the
+plugin. [AGENTS.md](AGENTS.md) also asks coding agents to follow this workflow.
 
-## Aktifkan pembaruan otomatis sekali per clone
+## Enable automatic updates once per clone
 
 ```bash
 cd /absolute/path/to/doforme
 python3 -B scripts/install_doc_hooks.py --install
 ```
 
-Installer hanya mengatur core.hooksPath lokal ke .githooks. Ia berhenti bila ada
-hooksPath lain atau hook pre-commit existing, agar konfigurasi Anda tidak tertimpa.
-Untuk hook manager yang sudah ada, tambahkan invocation berikut pada pre-commit
-yang Anda kelola, tanpa mengganti hook lain:
+The installer only sets local core.hooksPath to .githooks. It stops if another
+hooksPath or an existing pre-commit hook is present, preserving your configuration.
+For an existing hook manager, add these calls to your managed pre-commit hook
+without replacing other hooks:
 
 ```bash
 python3 -B scripts/update_docs.py --sync
 python3 -B scripts/update_docs.py --check
 ```
 
-Git tidak mengaktifkan hook dari clone secara otomatis; setiap clone kontributor
-perlu langkah setup ini. Tidak diperlukan login model atau dependency tambahan.
+Git does not enable hooks automatically when cloning; each contributor clone
+needs this setup. No model login or additional dependency is required.
 
-## Setiap perubahan
+## For each change
 
-1. Ubah implementasi dan panduan yang terdampak. Instalasi di docs/INSTALLATION.md,
-   alur pengguna di docs/USAGE.md, dan hasil pengujian di docs/PHASES.md.
-2. Stage hanya perubahan yang Anda maksud. Hook tidak men-stage source lain.
-3. Opsional: tulis ringkasan bermakna sebelum commit:
+1. Update the implementation and affected guides: installation in
+   docs/INSTALLATION.md, user workflows in docs/USAGE.md, and test evidence in
+   docs/PHASES.md.
+2. Stage only intended changes. The hook does not stage unrelated source files.
+3. Optionally provide a meaningful summary before committing:
 
 ```bash
-python3 -B scripts/update_docs.py --sync --summary "Jelaskan perubahan dan akibatnya bagi pengguna"
+python3 -B scripts/update_docs.py --sync --summary "Describe the change and its effect on users"
 ```
 
-4. Jalankan pemeriksaan, lalu commit seperti biasa:
+4. Run checks, then commit normally:
 
 ```bash
 python3 -B scripts/update_docs.py --check
 python3 -B scripts/check_plugin.py
 python3 -B -m unittest discover -s tests -q
-git commit -m "Jelaskan perubahan"
+git commit -m "Describe the change"
 ```
 
-Pre-commit otomatis memperbarui dan men-stage hanya tiga file yang dikelola:
+Pre-commit automatically updates and stages only three managed files:
 
-| File | Sumber kebenaran | Cara diperbarui |
+| File | Source of truth | Update method |
 | --- | --- | --- |
-| docs/changes.json | File yang di-stage, Git blob/mode, parent revision, tanggal Jakarta, versi plugin | Tambah entri per perubahan commit |
-| CHANGELOG.md | docs/changes.json | Render ulang riwayat yang dapat dibaca |
-| docs/REFERENCE.md | Manifest dan frontmatter command yang di-stage | Render ulang versi/command/agent/input |
+| docs/changes.json | Staged files, Git blob/mode, parent revision, Jakarta date, plugin version | Append an entry for each commit change |
+| CHANGELOG.md | docs/changes.json; optional English display translations in docs/history-translations.json | Regenerate readable history |
+| docs/REFERENCE.md | Staged manifest and command frontmatter | Regenerate version/command/agent/input reference |
 
-Jika --summary tidak diberikan, history memakai daftar file yang berubah, bukan
-menebak perilaku fitur atau mengambil commit message yang belum tersedia saat
-pre-commit. Ringkasan eksplisit tetap dipakai ketika hook menyegarkan entri yang
-sama. Review ringkasan itu bila scope berubah. Mengulang updater sebelum commit
-menyegarkan entri pending, bukan membuat duplikat.
+Without --summary, history uses the changed-file list rather than guessing feature
+behavior or using a commit message unavailable during pre-commit. Explicit summaries
+are retained when the hook refreshes the same entry. Review the summary if scope
+changes. Re-running the updater before committing refreshes the pending entry
+instead of creating duplicates.
 
-Tidak ada file generated yang perlu diedit manual. Updater menolak menimpa edit
-lokal yang belum di-stage pada file managed; review perubahan tersebut terlebih
-dahulu. Entri committed lama dipertahankan. Perubahan working tree pada source
-yang belum di-stage tidak dimasukkan ke history dan tidak ditimpa. Untuk dokumen
-naratif, pembaruan tetap tanggung jawab penulis/reviewer: generator tidak dapat
-mengetahui apakah deskripsi requirement atau instruksi baru sudah benar.
+Do not edit generated files manually. The updater refuses to overwrite unstaged
+local edits to managed files; review them first. Existing committed entries are
+preserved. Unstaged source changes are neither included in history nor overwritten.
+Narrative documentation remains the author's/reviewer's responsibility: a generator
+cannot determine whether new requirement descriptions or instructions are correct.
 
-## GitHub dan pemeriksaan anti-stale
+Historical summaries in another language may have an English display translation
+in docs/history-translations.json, keyed by full change ID. Stage that curated
+mapping like source; the generator applies it only when rendering CHANGELOG.md.
+It does not rewrite the original summaries, IDs, dates, or content bindings in
+committed docs/changes.json history. New summaries should be written in English.
 
-Workflow `.github/workflows/documentation.yml` disiapkan untuk push, pull request
-dan workflow_dispatch. Ia baru berjalan di GitHub setelah file workflow dipush
-dan Actions diizinkan pada repo. Job memakai contents:read, tidak memakai model/
-secret eksternal, tidak membuat commit bot, dan tidak memproses issue.
+## GitHub and stale-document checks
 
-Pemeriksaan memastikan generated docs sinkron, riwayat lama tidak ditulis ulang,
-dan file yang berubah antara base dan head tercakup entri history baru dengan
-Git blob/mode terkini. Dengan demikian mencentang nama file saja tidak cukup jika
-isinya berbeda. Rename dicatat sebagai delete/add. Pada push banyak commit,
-squash atau merge, coverage diperiksa untuk perubahan bersih base → head; ini
-bukan bukti bahwa setiap intermediate commit memiliki dokumentasi sempurna.
+The `.github/workflows/documentation.yml` workflow supports push, pull request,
+and workflow_dispatch. It runs on GitHub once pushed and Actions are enabled.
+The job uses contents:read, no model or external secret, no bot commits, and no
+issue processing.
+
+Checks verify generated docs are synchronized, old history is not rewritten,
+and base-to-head changes are covered by new history entries with current Git
+blob/mode identities. Listing a filename alone is insufficient if its content
+differs. Renames are recorded as delete/add. For multiple commits, squashes, or
+merges, coverage checks net base → head changes; it does not prove every intermediate
+commit had perfect documentation.
 
 ```bash
 python3 -B scripts/update_docs.py --check --base origin/master
 ```
 
-Pemeriksaan ini tidak dapat memblokir push yang sudah terjadi. Owner perlu
-menjadikan job `Documentation and history / documentation` sebagai required
-status check di aturan branch bila ingin mencegah merge saat gagal. Hook dapat
-dilewati oleh Git, sehingga CI merupakan pemeriksaan tambahan, bukan jaminan
-anti-tamper terhadap pihak yang mengubah pemeriksa/workflow itu sendiri.
+This cannot block a push that already occurred. Owners should make
+`Documentation and history / documentation` a required branch status check to
+prevent merges on failure. Git hooks can be bypassed, so CI is an additional
+check, not a tamper-proof guarantee against someone modifying the checker or workflow.
 
-Konflik history dari dua branch perlu menggabungkan entri sambil mempertahankan
-prefix committed dari base. Setelah menyelesaikan konflik kode, stage resolusi
-dan jalankan updater agar identitas konten akhir tercatat. Jangan menghapus
-riwayat lama untuk meloloskan check. CI tidak melakukan perbaikan diam-diam.
+History conflicts between branches must merge entries while preserving the base's
+committed prefix. After resolving code conflicts, stage the resolution and run
+the updater to record final content identities. Do not delete history to pass
+checks. CI does not silently repair it.
 
-## History awal dan versi
+## Initial history and versions
 
-History awal diimpor dari commit Git yang sudah ada, termasuk subject, versi
-manifest dan file yang berubah; rekonstruksi fase 0.2/0.3 tetap memiliki batas
-sebagaimana dijelaskan di docs/PHASES.md. Import tidak menciptakan klaim tes baru.
---bootstrap hanya untuk setup awal ketika docs/changes.json belum ada. Checkout
-normal tidak perlu mengulangnya. Versi tidak otomatis dinaikkan dan tag/release
-GitHub tidak dibuat oleh updater.
+Initial history is imported from existing Git commits, including subject, manifest
+version, and changed files; phase 0.2/0.3 reconstruction retains the limitations
+in docs/PHASES.md. Importing creates no new test claims. --bootstrap is only for
+initial setup when docs/changes.json does not exist; normal checkouts need not
+repeat it. The updater does not automatically bump versions or create GitHub tags/releases.
 
-Referensi upstream: [Git hooks](https://git-scm.com/docs/githooks) dan
+Upstream references: [Git hooks](https://git-scm.com/docs/githooks) and
 [workflow permissions/events](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).

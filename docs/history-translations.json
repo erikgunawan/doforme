@@ -1,0 +1,12 @@
+{
+  "506df788f7bc726877bafdddd3d073d69ab87a95fda5093e82852692fa24d724": "Simplify the README to plugin overview, installation, and usage; centralize version history in CHANGELOG",
+  "c2bc726eacf84391096cc2d9640ac47132604eb04106a43283ceff33ebf6dce9": "Complete Telegram template installation in project repositories and clarify that manual/end-to-end plugin workflows work without Telegram",
+  "d1cc92f81f6a85c1de136e5b676eb8cc5a3286ca5100caf6aeba9d8c0c7409ab": "Add the MIT license with Erik Gunawan copyright and a license link in the README",
+  "dc165026c09a847f44f17b666404be3ef0615cd0b3f0dbbf734022d615f6fc0e": "Add a local marketplace and instructions for persistent user-scope installation",
+  "a41ac13a48c214a43af2dece492c7ec4a5e2fbd7d01db4b10f947f67ed036630": "Record observed installation behavior: CLI 2.1.327 reads a local marketplace directly from its checkout",
+  "035023f19fdda06e898ba1ba6da152dfe15a3ad5bf2cdceddad6fc4bce970ed7": "Simplify the README by removing an unnecessary note about the root command",
+  "149b34b5653db1eb7d0ed90a9e53ac5c6154f7ee3a6384a8e2f020cf0be5b80b": "Explain the workflow with end-to-end and Telegram diagrams, and summarize the MIT license in the README",
+  "e5a36abf545a8dbd03aa2e4ec9a1b6aaec96e56efb3bc15a8e7d89ed758b62f0": "Add guided issue commands, setup confirmation, automatic reports, plan-bound scope, and a pausable end-to-end workflow",
+  "727ef104cf48ea1e8fecf37b07e3e3f97a112b80333a428433fe9f65d97d08a1": "Address pilot feedback: repository-level doctor, saved-run status, explicit GitHub/local selection, and guided requirement recovery",
+  "7f0d2a1c525f6af8ac475d24e8a6946a59584349df0e3d4ad3b8211be9dd2478": "Focus the README on doforme benefits and features; move installation and usage to a separate guide"
+}

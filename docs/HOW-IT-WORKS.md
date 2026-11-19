@@ -1,140 +1,133 @@
-# Bagaimana doforme bekerja
+# How doforme works
 
-doforme adalah plugin Claude Code yang mengubah laporan bug menjadi investigasi,
-rencana, perubahan terbatas, bukti pengujian, review, dan draft PR. Setiap tahap
-memiliki agent, instruksi, dan laporan sendiri. Command singkat memakai coordinator
-di sesi utama untuk setup, pertanyaan, dan pengambilan laporan per issue. Worker
-tetap terpisah; coordinator bukan investigator atau fixer. [Panduan mudah](GUIDED-USAGE.md).
-Runner end-to-end mengoordinasikan
-tahap tersebut dengan pemeriksaan hasil dan checkpoint; mode manual memberikan
-kendali handoff kepada pengguna.
+doforme is a Claude Code plugin that turns bug reports into investigations, plans,
+scoped changes, test evidence, review, and PR drafts. Each stage has its own agent,
+instructions, and report. Short commands use a main-session coordinator for setup,
+questions, and per-issue report lookup. Workers remain separate; the coordinator
+is not the investigator or fixer. See [guided usage](GUIDED-USAGE.md).
+The end-to-end runner coordinates stages through result checks and checkpoints;
+manual mode leaves handoff control to the user.
 
-## Dari mana sumber kebenarannya?
+## What is the source of truth?
 
-Issue menjelaskan masalah yang dilaporkan. Perilaku yang seharusnya ditentukan
-oleh requirement dan acceptance criteria (AC) yang dikonfirmasi berlaku untuk
-issue tersebut. Sumbernya dapat berupa dokumen bisnis, tiket Jira, desain Figma,
-atau spesifikasi di repo.
+The issue describes a reported problem. Expected behavior comes from requirements
+and acceptance criteria (AC) confirmed to apply to that issue. Sources may include
+business documents, Jira tickets, Figma designs, or repository specifications.
 
-Siapkan isi sumber beserta locator/versi dan konfirmasi scope dari pemilik
-requirement. URL saja tidak menggantikan konten sumber. Bila sumber bertentangan
-atau AC belum jelas, doforme perlu klarifikasi sebelum perbaikan dilanjutkan.
-Tidak ada aturan bahwa issue, kode existing, atau hasil model selalu menjadi
-otoritas tertinggi. Bukti visual Figma juga memerlukan pemeriksaan visual yang
-sesuai; teks atau test unit saja tidak membuktikan kecocokan tampilan.
+Provide source content, locators/versions, and requirement-owner scope confirmation.
+A URL alone does not replace content. Conflicting sources or unclear AC require
+clarification before repairs proceed. No rule makes the issue, existing code, or
+model output the ultimate authority in every case. Figma visual evidence requires
+appropriate visual inspection; text or unit tests alone do not establish visual conformity.
 
-Panduan: [setup requirement](ONBOARDING.md), [contoh input](requirement-input.example.md),
-dan [snapshot sumber](SOURCES.md). Plugin tidak otomatis mengambil seluruh
-dokumen bisnis, Jira, atau Figma hanya karena URL dicantumkan.
+See [requirement setup](ONBOARDING.md), [example inputs](requirement-input.example.md),
+and [source snapshots](SOURCES.md). Supplying a URL does not automatically fetch
+all business, Jira, or Figma documents.
 
-## Diagram alur end-to-end
+## End-to-end workflow diagram
 
 ```mermaid
 flowchart TD
-    I["Issue + source repo + requirement dan AC"] --> S["Init: inspeksi / siapkan profil repo"]
-    S --> D["Doctor: cek prasyarat lokal"]
-    D --> A["Analyze: validitas issue, evidence, hipotesis"]
-    A --> P["Plan: scope perbaikan dan pengujian per AC"]
-    P --> G{"Requirement, hasil tahap,<br/>dan izin memadai?"}
-    G -->|Ya| F["Fix: edit terbatas dan bukti regresi"]
-    G -->|Tidak| B["Berhenti: baca alasan dan lengkapi input / izin"]
-    F --> T["Test: pengujian independen terhadap AC"]
-    T --> R["Review: periksa diff, integritas, dan evidence"]
-    R --> V{"Review pass dan bukti valid?"}
-    V -->|Ya| PR["PR: siapkan draft title dan body lokal"]
-    V -->|Tidak| B
-    PR --> C["Runner complete: draft siap ditinjau"]
-    C --> H["Proses terpisah: publikasi, review manusia,<br/>CI, acceptance bisnis, dan merge"]
+    I["Issue + source repository + requirements and AC"] --> S["Init: inspect / prepare repository profile"]
+    S --> D["Doctor: check local prerequisites"]
+    D --> A["Analyze: issue validity, evidence, hypotheses"]
+    A --> P["Plan: repair scope and per-AC tests"]
+    P --> G{"Requirements, stage results,<br/>and permissions sufficient?"}
+    G -->|Yes| F["Fix: scoped edits and regression evidence"]
+    G -->|No| B["Stop: read the reason and supply missing input / permission"]
+    F --> T["Test: independent AC verification"]
+    T --> R["Review: inspect diff, integrity, and evidence"]
+    R --> V{"Review passes and evidence is valid?"}
+    V -->|Yes| PR["PR: prepare local draft title and body"]
+    V -->|No| B
+    PR --> C["Runner complete: draft ready for review"]
+    C --> H["Separate process: publication, human review,<br/>CI, business acceptance, and merge"]
 ```
 
-Init dan doctor adalah persiapan yang dijalankan pengguna; keduanya bukan tahap
-model dalam enam tahap runner. Doctor memeriksa kesiapan teknis lokal, bukan
-mengesahkan isi requirement. Setiap tahap runner juga dapat berhenti bila
-input, evidence, izin, atau hasil tahap sebelumnya tidak memenuhi kontraknya.
-Diagram tidak berarti setiap issue pasti berlanjut sampai PR.
+Init and doctor are user-run preparation, not model stages in the six-stage runner.
+Doctor checks local technical readiness, not requirement validity. Each runner
+stage can also stop if inputs, evidence, permissions, or predecessor results fail
+its contract. The diagram does not imply every issue reaches a PR.
 
-## Tugas setiap tahap
+## What each stage does
 
-| Tahap | Yang dilakukan | Hasil utama |
+| Stage | Work | Main output |
 | --- | --- | --- |
-| Analyze | Membaca issue, source, dan requirement tanpa mengedit atau menjalankan test | Validitas issue, evidence dengan lokasi sumber, hipotesis root cause, confidence, dan next steps |
-| Plan | Menyusun perbaikan berdasarkan hasil investigasi dan AC | Scope file, rencana perubahan, pengujian per AC, risiko dan blocker |
-| Fix | Mengubah file yang diizinkan serta mengamati kegagalan regresi dan hasil sesudah perbaikan | Diff dan bukti sebelum/sesudah yang terkait bug |
-| Test | Memeriksa perbaikan secara independen menggunakan command yang diizinkan | Hasil aktual pengujian, cakupan AC, dan kekurangan bukti |
-| Review | Membaca diff, laporan dan evidence serta memeriksa keterikatannya pada revisi | Verdict review dan temuan; tahap ini tidak menjalankan test |
-| PR | Menyusun judul dan deskripsi berdasarkan hasil yang telah direview | Draft lokal; tidak otomatis push, membuat PR remote, merge, atau menutup issue |
+| Analyze | Read issue, source, and requirements without edits or test execution | Issue validity, located evidence, root-cause hypotheses, confidence, next steps |
+| Plan | Plan repairs from investigation and AC | File scope, changes, per-AC tests, risks, blockers |
+| Fix | Edit authorized files and observe regression failure/post-fix results | Diff and bug-related before/after evidence |
+| Test | Independently check repairs using authorized commands | Actual test results, AC coverage, evidence gaps |
+| Review | Read diff/reports/evidence and inspect revision binding | Review verdict and findings; no test execution |
+| PR | Draft title/body from reviewed results | Local draft; no automatic push, remote PR, merge, or issue closure |
 
-Confidence pada laporan adalah tingkat keyakinan investigasi berdasarkan evidence,
-bukan persetujuan bisnis. Hipotesis tetap harus dibedakan dari root cause yang
-didukung bukti. Error environment atau dependency bukan bukti bahwa bug berhasil
-direproduksi atau diperbaiki.
+Confidence is evidence-based investigation confidence, not business approval.
+Distinguish hypotheses from root causes supported by evidence. Environment or
+dependency errors do not prove successful bug reproduction or repair.
 
-## Manual atau end-to-end
+## Manual or end-to-end
 
-**Terpandu per issue:** panggil analyze, plan, fix, test, review dan pr dengan ID
-yang sama, misalnya `/doforme:analyze BUG-301`. Host menyimpan laporan dan berhenti
-setelah tahap yang diminta. Scope hasil plan ditinjau sebelum fix.
+**Guided per issue:** invoke analyze, plan, fix, test, review, and pr with the same
+ID, such as `/doforme:analyze BUG-301`. The host saves reports and stops after the
+requested stage. Planned scope is reviewed before fixing.
 
-**Manual advanced:** panggil `/doforme:analyze`, `/doforme:plan`, `/doforme:fix`,
-`/doforme:test`, `/doforme:review`, lalu `/doforme:pr`. Setiap tahap memakai
-konteks terpisah. Teruskan laporan lengkap sebagai input tahap berikutnya;
-command manual tidak otomatis menyimpan file laporan dengan nama tertentu.
+**Advanced manual:** invoke `/doforme:analyze`, `/doforme:plan`, `/doforme:fix`,
+`/doforme:test`, `/doforme:review`, and `/doforme:pr`. Each stage uses a separate
+context. Supply complete reports as the next stage's inputs; manual commands do
+not automatically save files with prescribed report names.
 
-**End-to-end terpandu:** `/doforme:endtoend BUG-301` berjalan sampai plan, meminta
-persetujuan scope, lalu melanjutkan. Penyimpanan/input dikelola helper.
+**Guided end-to-end:** `/doforme:endtoend BUG-301` runs through planning, requests
+scope approval, then continues. The helper manages storage and inputs.
 
-**End-to-end advanced:** panggil `/doforme:endtoend` dengan input issue, profil repo, output
-baru di luar checkout, dan izin eksplisit. Runner memanggil model terpisah per
-tahap, memvalidasi handoff, dan menyimpan laporan, evidence serta checkpoint.
-Biaya dan batas eksekusi mengikuti akun model serta konfigurasi run.
+**Advanced end-to-end:** invoke `/doforme:endtoend` with issue input, repository
+profile, new output outside the checkout, and explicit grants. The runner calls
+models separately per stage, validates handoffs, and saves reports, evidence, and
+checkpoints. Costs/execution limits follow your model account and run configuration.
 
-Profil repo menyediakan default requirement, test command, dan batas run.
-Profil maupun teks issue tidak memberi izin edit atau eksekusi dengan sendirinya.
-Fix/test memerlukan persetujuan langsung atas file dan command yang tepat.
-Langkah lengkap dan contoh command ada di [panduan penggunaan](USAGE.md).
+Repository profiles supply default requirements, test commands, and run caps.
+Profiles and issue text do not grant edit/execution permission themselves. Fix/test
+need direct approval for exact files/commands. Full steps and examples are in
+[usage](USAGE.md).
 
-## Apa yang terjadi bila run berhenti?
+## What happens when a run stops?
 
-Gunakan `/doforme:status` untuk membaca hasil dan alasan berhenti tanpa memanggil
-model. Resume memerlukan input, output, izin, dan kondisi repo yang cocok dengan
-checkpoint. Tahap blocked/failed/interrupted memerlukan retry eksplisit dan
-tetap harus memenuhi gerbang yang sama.
+Use `/doforme:status` to read results and stop reasons without calling a model.
+Resume requires inputs, output, grants, and repository conditions matching the
+checkpoint. Blocked/failed/interrupted stages require explicit retry and must
+still meet the same gates.
 
-Perubahan HEAD, source, konfigurasi, atau policy dapat membuat checkpoint stale.
-Periksa perubahan parsial sebelum melanjutkan; resume bukan cara melewati
-requirement atau verdict review. Batas eksekusi dan isolasi dijelaskan di
-[panduan operasional](OPERATIONS.md).
+Changed HEAD, source, configuration, or policy can make checkpoints stale. Review
+partial changes before continuing; resume does not bypass requirements or review
+verdicts. Execution/isolation limits are in [operations](OPERATIONS.md).
 
-## Kapan bug dianggap resolved?
+## When is a bug resolved?
 
-Runner complete berarti draft memenuhi kontrak workflow dan siap ditinjau.
-Test hijau menunjukkan hasil teknis pada scope yang diuji. Keduanya tidak
-otomatis membuktikan seluruh requirement bisnis sudah diterima.
+Runner complete means the draft meets workflow contracts and is ready for review.
+Passing tests establish technical results in tested scope. Neither automatically
+establishes acceptance of every business requirement.
 
-Pemilik requirement memberi keputusan penerimaan berdasarkan AC dan bukti
-QA/UAT pada revisi yang relevan. [Validator acceptance](ACCEPTANCE.md) memeriksa
-bukti keputusan manusia yang diberikan; ia tidak memberi persetujuan bisnis
-atas nama owner. [Publikasi draft PR](PUBLISHING.md) memakai helper terpisah
-dengan preview dan izin eksplisit. Commit/push, review, merge, dan penutupan issue
-tetap mengikuti proses serta otorisasi repo project.
+The requirement owner decides acceptance against AC and QA/UAT evidence on the
+relevant revision. [Acceptance validation](ACCEPTANCE.md) checks supplied human
+decisions; it does not approve business outcomes for the owner. [Draft PR publication](PUBLISHING.md)
+uses a separate helper with preview and explicit permission. Commit/push, review,
+merge, and issue closure follow project procedures and authorization.
 
-## Di mana posisi Telegram?
+## Where does Telegram fit?
 
-Telegram adalah integrasi opsional yang dipasang di **repo project**. Workflow
-notifikasi terpisah dari runner doforme dan dapat dipakai untuk fix manual juga.
+Telegram is optional and installed in the **project repository**. Its notification
+workflow is separate from the doforme runner and also supports manual fixes.
 
 ```mermaid
 flowchart TD
-    E["Event GitHub pada repo project"] --> O{"Telegram dikonfigurasi<br/>dan opt-in aktif?"}
-    O -->|Tidak| N["Tidak mengirim; doforme tetap dapat berjalan"]
-    O -->|Ya| K{"Jenis kejadian dan bukti"}
-    K -->|"Issue bug baru / label bug ditambahkan"| NEW["Telegram: bug baru"]
-    K -->|"Issue closed completed"| CHECK{"PR merged pada SHA terkait,<br/>check wajib lulus,<br/>deklarasi approver dan bukti tersedia?"}
-    CHECK -->|Ya| DONE["Telegram: resolved menurut persetujuan owner"]
-    CHECK -->|Tidak| WAIT["Tidak mengirim klaim resolved"]
+    E["GitHub event in the project repository"] --> O{"Telegram configured<br/>and opted in?"}
+    O -->|No| N["No notification; doforme can still run"]
+    O -->|Yes| K{"Event type and evidence"}
+    K -->|"New bug issue / bug label added"| NEW["Telegram: new bug"]
+    K -->|"Issue closed completed"| CHECK{"PR merged at relevant SHA,<br/>required checks passed,<br/>approver declaration and evidence available?"}
+    CHECK -->|Yes| DONE["Telegram: owner-attested resolution"]
+    CHECK -->|No| WAIT["No resolution claim sent"]
 ```
 
-Notifikasi bug baru tidak otomatis menjalankan Claude atau memperbaiki issue.
-Notifikasi resolved mengikuti bukti dan deklarasi approver yang dikonfigurasi;
-test hijau atau penutupan issue saja tidak cukup. Detail event, konfigurasi,
-serta batas verifikasi tersedia di [panduan Telegram](TELEGRAM.md).
+A new-bug notification does not automatically run Claude or fix the issue.
+Resolution notifications follow configured approver evidence/declarations; passing
+tests or closure alone are insufficient. Events, configuration, and verification
+limits are documented in [Telegram](TELEGRAM.md).

@@ -1,116 +1,113 @@
-# Publikasi draft PR yang terkontrol
+# Controlled draft PR publication
 
-`/doforme:pr` tetap hanya menyiapkan teks lokal. Adapter terpisah ini dapat
-memeriksa proposal terhadap repo/branch GitHub yang dipilih eksplisit, lalu
-membuat **draft** PR hanya dengan flag publikasi dan digest yang sudah ditinjau
-pemanggil. Default-nya hanya GET/read-only; tidak membuat branch atau push.
+`/doforme:pr` still prepares local text only. This separate adapter checks a
+proposal against explicitly selected GitHub repository/branches, then creates a
+**draft** PR only with a publication flag and caller-reviewed digest. The default
+is GET/read-only; it does not create branches or push.
 
-Tidak ada PR nyata yang dibuat selama implementasi fitur ini. Unit test memakai
-GitHub client mock; ketersediaan akses/branch GitHub sebenarnya dan keputusan
-review owner tetap diperlukan untuk pemakaian live.
+No real PR was created during implementation of this feature. Unit tests use a
+mock GitHub client; actual GitHub access/branches and owner review decisions are
+still required for live use.
 
-## Prasyarat dan handoff commit
+## Prerequisites and commit handoff
 
-- Git, Python, `gh` yang terautentikasi untuk github.com dan repo tujuan eksplisit.
-- Checkpoint workflow complete dengan review pass, seluruh artifact/digest valid,
-  policy plugin yang sama dan konten target identik dengan snapshot yang diuji.
-- Origin target harus menunjuk repo GitHub yang sama. Input repo tidak peka
-  huruf besar/kecil; setelah GET metadata diverifikasi, adapter memakai nama
-  kanonis GitHub untuk binding, request berikutnya, receipt dan verifikasi URL.
-  Gunakan dua branch existing yang berbeda dan tidak ada PR open
-  untuk head/base tersebut.
-- Seluruh tree head remote harus identik dengan blob/mode snapshot tested,
-  head merupakan descendant dari baseline tested, serta diff base→head tidak
-  kosong dan tidak melampaui edit_paths. Symlink, submodule, tree terpotong dan
-  temporary artifact workflow belum didukung untuk publikasi.
-- Title/body harus berasal dari file lokal yang ditinjau manusia. Field closing
-  seperti Fixes #N, Closes owner/repo#N atau Resolves URL issue ditolak; gunakan
-  referensi non-closing seperti Refs #N.
+- Git, Python, authenticated `gh` for github.com, and an explicit destination repository.
+- A complete workflow checkpoint with passing review, valid artifacts/digests,
+  unchanged plugin policy, and target content identical to the tested snapshot.
+- Target origin must point to the same GitHub repository. Repository input is
+  case-insensitive; after verifying GET metadata, the adapter uses GitHub's
+  canonical name for binding, subsequent requests, receipts, and URL verification.
+  Use two distinct existing branches with no open PR for that head/base.
+- The complete remote head tree must match tested snapshot blobs/modes, head must
+  descend from the tested baseline, and the base→head diff must be nonempty and
+  within edit_paths. Publication does not yet support symlinks, submodules,
+  truncated trees, or temporary workflow artifacts.
+- Title/body must come from human-reviewed local files. Closing references such
+  as Fixes #N, Closes owner/repo#N, or Resolves issue URL are rejected; use
+  non-closing references such as Refs #N.
 
-Workflow normal mengikat baseline HEAD dan perubahan working tree. Commit/push
-patch yang diuji memang mengubah HEAD. Adapter menyediakan **handoff terpisah**:
-jika HEAD berubah, ia mensyaratkan checkout bersih, baseline tested masih ancestor,
-dan seluruh tree commit baru tepat sama dengan konten yang diuji. Proposal
-mencatat revision_transition dengan tested_revision serta current_revision.
+Normal workflows bind baseline HEAD and worktree changes. Committing/pushing the
+tested patch changes HEAD. The adapter offers a **separate handoff**: if HEAD
+changes, it requires a clean checkout, the tested baseline as an ancestor, and
+the entire new commit tree to exactly match tested content. The proposal records
+revision_transition with tested_revision and current_revision.
 
-Checkpoint/report asli tidak diedit atau direbind. `/doforme:status` dan resume
-normal tetap boleh menandai checkpoint stale karena HEAD berubah. Handoff hanya
-menyatakan commit baru memuat byte/mode yang sama; ia tidak menganggap laporan
-lama dibuat pada commit baru. Perubahan tambahan dari commit hook atau format
-otomatis yang mengubah byte diuji akan menolak handoff. File ignored/untracked
-yang ada pada snapshot tested juga harus dipertimbangkan sebelum publikasi:
-adapter menuntut tree remote lengkap cocok, bukan hanya dua file source terlihat.
+Original checkpoints/reports are not edited or rebound. Normal `/doforme:status`
+and resume may still mark the checkpoint stale because HEAD changed. Handoff
+only states that the new commit contains identical bytes/modes; it does not claim
+old reports were produced on the new commit. Extra changes from commit hooks or
+automatic formatting reject the handoff if tested bytes differ. Ignored/untracked
+files present in the tested snapshot must also be considered: the adapter requires
+a complete remote-tree match, not just two visible source files.
 
-Owner mengatur commit dan push sendiri melalui prosedur repo yang berlaku, di
-luar adapter ini. Jika ingin menjaga checkout baseline untuk audit, owner dapat
-menyiapkan commit di worktree terpisah; adapter tetap memverifikasi tree remote
-terhadap snapshot asli. Tidak ada push otomatis untuk menyelesaikan mismatch.
+Owners arrange commit/push themselves through the project's procedures, outside
+this adapter. To preserve the baseline checkout for audit, an owner may prepare
+the commit in a separate worktree; the adapter still verifies the remote tree
+against the original snapshot. It never auto-pushes to repair a mismatch.
 
-## Preview read-only
+## Read-only preview
 
-Siapkan title satu baris (maksimal 256 karakter) dan body dengan bukti/risiko yang
-ditinjau. Body proposal otomatis menyatakan penerimaan bisnis serta penyelesaian
-issue belum dievaluasi/dibuktikan; persiapan draft tidak mengesahkan bisnis.
+Prepare a one-line title (up to 256 characters) and reviewed body with evidence
+and risks. The proposal body automatically states that business acceptance and
+issue resolution are not evaluated/established; draft preparation does not approve business behavior.
 
 ```bash
 python3 -B /absolute/doforme/scripts/publish_pr.py --repo /absolute/target --workflow /absolute/run --repository owner/project --head fix-branch --base main --title-file /absolute/title.txt --body-file /absolute/body.md
 ```
 
-Periksa preview, changed_paths, head/base SHA dan revision_transition. Digest
-mengikat teks yang akan dikirim, repo/branch/commit remote serta source dan
-checkpoint. Preview menggunakan GitHub GET requests, jadi ini bukan pemeriksaan
-offline. Tidak ada file receipt atau aksi remote write yang dibuat pada preview.
-publication_ready tetap false: hasil ini belum merupakan izin publikasi,
-autentikasi review manusia, acceptance bisnis atau kesiapan merge/deploy.
+Review preview, changed_paths, head/base SHA, and revision_transition. The digest
+binds outgoing text, remote repository/branches/commits, source, and checkpoint.
+Preview uses GitHub GET requests, so it is not offline. It creates no receipt
+file or remote write. publication_ready remains false: this is not publication
+permission, authenticated human review, business acceptance, or merge/deploy readiness.
 
-## Publikasi eksplisit satu kali
+## Explicit one-time publication
 
-Hanya setelah pemanggil meninjau proposal dan memang mengotorisasi pembuatan
-draft PR, sediakan receipt **baru** dalam folder privat existing (mode 700),
-di luar target, folder workflow dan checkout plugin:
+Only after the caller reviews the proposal and authorizes draft PR creation,
+provide a **new** receipt in an existing private directory (mode 700), outside
+target, workflow folder, and plugin checkout:
 
 ```bash
 python3 -B /absolute/doforme/scripts/publish_pr.py --repo /absolute/target --workflow /absolute/run --repository owner/project --head fix-branch --base main --title-file /absolute/title.txt --body-file /absolute/body.md --publish --expected-digest COPY_REVIEWED_PREVIEW_DIGEST --receipt /absolute/private-receipts/new-attempt.json
 ```
 
-Adapter mengulang verifikasi lokal/remote dan menolak jika digest berubah. Ia
-menulis receipt eksklusif attempting serta menyinkronkannya ke disk sebelum
-POST. Seluruh payload dikirim sebagai JSON stdin ke fixed-host `gh api`; isi
-issue/body tidak diinterpolasi ke shell. Adapter menggunakan POST pulls langsung,
-bukan `gh pr create`, agar tidak memicu alur interaktif/auto-push CLI.
+The adapter repeats local/remote verification and rejects changed digests. It
+exclusively writes and syncs an attempting receipt before POST. The payload is
+sent as JSON stdin to fixed-host `gh api`; issue/body content is not interpolated
+into a shell. The adapter uses POST pulls directly rather than `gh pr create`,
+avoiding interactive or automatic-push CLI behavior.
 
-| Receipt/status | Tindakan |
+| Receipt/status | Action |
 | --- | --- |
-| draft_created | API mengonfirmasi draft pada repo dan SHA yang ditinjau; review manusia berikutnya tetap diperlukan |
-| created_needs_manual_review | API membuat PR, tetapi SHA bergerak selama request; periksa PR secara manual, jangan menganggap content binding valid |
-| uncertain | Request/response gagal atau tidak membuktikan draft yang diharapkan; PR mungkin sudah tercipta, periksa GitHub sebelum tindakan berikutnya |
-| attempting tersisa | Proses berhenti sesudah receipt dibuat; perlakukan sebagai outcome belum diketahui |
+| draft_created | API confirmed the draft on the reviewed repository/SHA; further human review is still needed |
+| created_needs_manual_review | API created a PR but SHA moved during the request; inspect it manually and do not assume valid content binding |
+| uncertain | Request/response failed or did not establish the expected draft; a PR may exist, so inspect GitHub before another action |
+| remaining attempting | Process stopped after creating the receipt; treat the outcome as unknown |
 
-Tidak ada retry otomatis, penghapusan receipt, penutupan PR atau rollback remote.
-Receipt yang sudah ada selalu menghalangi POST ulang. Ini deduplikasi per receipt,
-bukan exactly-once global bila operator memilih file baru atau menjalankan banyak
-mesin. Duplicate open-PR check juga dilakukan, tetapi branch/open-PR dapat berubah
-di antara GET dan POST. API pembuatan draft di sini tidak memiliki atomic pin
-head/base SHA; hasil response diperiksa untuk mendeteksi race dan dilaporkan
-untuk review manual, bukan disembunyikan.
+There is no automatic retry, receipt deletion, PR closure, or remote rollback.
+An existing receipt always blocks another POST. This is per-receipt deduplication,
+not global exactly-once delivery if operators choose new files or multiple machines.
+A duplicate open-PR check also runs, but branches/open PRs may change between GET
+and POST. Draft creation here has no atomic head/base SHA pin; response checks
+detect races and report them for manual review rather than hiding them.
 
-Hanya draft PR dibuat. Tidak ada merge, auto-merge, branch creation, push, komentar,
-notifikasi, issue closure atau acceptance bisnis otomatis. Exit 0 pada hasil
-created_needs_manual_review juga bukan bukti binding masih benar: consumer harus
-membaca status/content_binding. Gagal atau uncertain tidak boleh diatasi dengan
-memilih receipt baru tanpa pemeriksaan manual.
+Only draft PRs are created. There is no merge, auto-merge, branch creation, push,
+comment, notification, issue closure, or automatic business acceptance. Exit 0
+for created_needs_manual_review does not establish valid binding: consumers must
+read status/content_binding. Do not recover from failed/uncertain outcomes by
+choosing a new receipt without manual inspection.
 
-## Batas pengujian dan referensi
+## Test limits and references
 
-Tes lokal memakai commit patch yang benar-benar mengubah HEAD, membuktikan
-handoff byte-identik tanpa mengubah checkpoint/freshness runner normal. Input repo
-dengan casing berbeda diuji sampai respons POST mocked, sehingga URL kanonis
-yang sah tidak salah ditandai uncertain. Tes juga
-menguji mismatch tree remote, source baru, closing references, digest stale,
-receipt sebelum POST, uncertain delivery, deduplikasi dan race branch. Test
-checkpoint/hasil GitHub adalah sintetis; belum ada demonstrasi live publication.
+Local tests commit patches that actually change HEAD, verifying byte-identical
+handoff without modifying normal runner checkpoint/freshness. Differently cased
+repository inputs are tested through mocked POST responses so valid canonical
+URLs are not incorrectly labeled uncertain. Tests also cover remote-tree mismatch,
+new source, closing references, stale digests, receipt-before-POST, uncertain
+delivery, deduplication, and branch races. Checkpoints/GitHub results are synthetic;
+there has been no live publication demonstration.
 
-Referensi resmi: [GitHub create pull request](https://docs.github.com/en/rest/pulls/pulls#create-a-pull-request),
+Official references: [GitHub create pull request](https://docs.github.com/en/rest/pulls/pulls#create-a-pull-request),
 [branch metadata](https://docs.github.com/en/rest/branches/branches#get-a-branch),
-[Git trees](https://docs.github.com/en/rest/git/trees#get-a-tree), dan
+[Git trees](https://docs.github.com/en/rest/git/trees#get-a-tree), and
 [gh pr create behavior](https://cli.github.com/manual/gh_pr_create).
