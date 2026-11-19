@@ -462,3 +462,13 @@ loop metadata, SVG XML, and SVG text bounds were checked. The SVG was rendered
 and inspected in Chrome. Documentation/link/history checks and appropriate offline
 documentation tests are run before committing. No model calls, target-source
 changes, GitHub publication, or notification sends are part of these visual changes.
+
+## Neutral README media palette
+
+Replaced the dark blue/teal media palette with warm white, charcoal, and neutral
+gray. The active stage uses an inverse monochrome treatment; sentence-case labels,
+smaller corner radii, and removal of a redundant footer tagline reduce decoration.
+The workflow, scene timings, example-data notice, and approval boundaries remain
+unchanged. All eight animation frames and the Chrome-rendered SVG were visually
+reviewed. Text-token contrast ratios range from 6.64:1 to 15.28:1 for the used
+foreground/background pairs; this is not a full accessibility conformance claim.

@@ -47,6 +47,10 @@ live pilot evidence. [Get started](GETTING-STARTED.md) or read [how doforme work
 
 ## Maintaining these visuals
 
+The visuals use a warm paper background, charcoal text, neutral borders, and an
+inverse monochrome active-stage marker. Text labels identify stages independently
+of color. Keep this restrained palette when regenerating assets.
+
 The assets use the project's MIT license. The animation is an eight-frame looping
 GIF; the diagram is editable SVG. To regenerate them, a contributor can run
 `python3 docs/media/build_preview.py` from the plugin checkout with Pillow and

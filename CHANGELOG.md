@@ -11,6 +11,14 @@ English summary translations affect presentation only; original history records 
 
 ## 2026-11-19 — v0.27.0
 
+Restyle README workflow visuals with a neutral paper-and-charcoal palette and restrained labels
+
+Change ID: `bad7ea68c0fd`.
+
+Files: `docs/PHASES.md`, `docs/WORKFLOW-PREVIEW.md`, `docs/media/build_preview.py`, `docs/media/workflow-overview.svg`, `docs/media/workflow-preview-poster.png`, `docs/media/workflow-preview.gif`.
+
+## 2026-11-19 — v0.27.0
+
 Present doforme with an illustrated workflow animation, lifecycle diagram, and benefit-focused README
 
 Change ID: `bff15e7edf93`.

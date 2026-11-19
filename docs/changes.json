@@ -1904,6 +1904,39 @@
           "blob": "c9721cc12a049c451356468c979401027264ea18"
         }
       }
+    },
+    {
+      "id": "bad7ea68c0fd05ee056da7dfa1bd75f5413b0e681b4a732f76ab07bd454829c7",
+      "base_commit": "569f719d01bb6f6d14d81e39dc2fd21704141edb",
+      "date": "2026-11-19",
+      "version": "0.27.0",
+      "summary": "Restyle README workflow visuals with a neutral paper-and-charcoal palette and restrained labels",
+      "changes": {
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "cbd768ba05337dcf6e7cca2ff475d10527e11e12"
+        },
+        "docs/WORKFLOW-PREVIEW.md": {
+          "mode": "100644",
+          "blob": "8b7cac8d1ed23397cf081ce032a60cd8a39360e4"
+        },
+        "docs/media/build_preview.py": {
+          "mode": "100644",
+          "blob": "cdcf2795d8355ca9f1e3cd2629ebfee8a1b1abe8"
+        },
+        "docs/media/workflow-overview.svg": {
+          "mode": "100644",
+          "blob": "cc033a765312f9f2bd87d163488df3d4b3d22279"
+        },
+        "docs/media/workflow-preview-poster.png": {
+          "mode": "100644",
+          "blob": "80abc9608082797b7169fe1dc008fb5494aa3db0"
+        },
+        "docs/media/workflow-preview.gif": {
+          "mode": "100644",
+          "blob": "290cf13a8a0a2c35b48945ee68f48df5cc50312b"
+        }
+      }
     }
   ]
 }

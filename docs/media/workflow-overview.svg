@@ -1,44 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
 <title id="title">doforme: from issue to PR draft and owner-attested resolution</title>
 <desc id="desc">Issue and confirmed requirements enter six sequential stages: Analyze, Plan, Fix, Test, Review, Draft PR. Scope approval precedes Fix. Publication, human review, CI, QA/UAT, merge, and issue closure are outside the runner. Optional Telegram notifications report new bugs and owner-attested resolution.</desc>
-<rect width="1400" height="650" rx="20" fill="#0b1218"/>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#a8bbc7" stroke-width="1.5"/></marker></defs>
+<rect width="1400" height="650" fill="#faf9f6"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#5b5954" stroke-width="1.5"/></marker></defs>
 <g font-family="DejaVu Sans, Arial, sans-serif">
-<text x="48" y="61" font-size="42" fill="#f0f5f6" font-weight="700" text-anchor="start">The complete issue-to-resolution flow</text>
-<text x="48" y="105" font-size="24" fill="#a8bbc7" font-weight="400" text-anchor="start">A guided repair workflow, connected to your team’s delivery process.</text>
-<rect x="48" y="145" width="1304" height="77" rx="12" stroke="#2a3a46" stroke-width="2" fill="#13212b"/>
-<text x="72" y="176" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="start">GitHub issue or local ticket + confirmed requirements</text>
-<text x="72" y="205" font-size="21" fill="#a8bbc7" font-weight="400" text-anchor="start">You start the workflow. Optional Telegram reports new GitHub bug issues.</text>
-<path d="M250 222V285H145V290" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="48" y="270" font-size="18" fill="#60e0be" font-weight="700" text-anchor="start">INSIDE DOFORME</text>
-<text x="694" y="270" font-size="21" fill="#a8bbc7" font-weight="400" text-anchor="start">Scope approval before Fix · gates check every handoff</text>
-<path d="M242 345L264 345" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="48" y="296" width="194" height="101" rx="12" stroke="#2a3a46" stroke-width="2" fill="#13212b"/>
-<text x="145" y="335" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="middle">Analyze</text>
-<text x="145" y="373" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="middle">Investigate</text>
-<path d="M464 345L486 345" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="270" y="296" width="194" height="101" rx="12" stroke="#2a3a46" stroke-width="2" fill="#13212b"/>
-<text x="367" y="335" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="middle">Plan</text>
-<text x="367" y="373" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="middle">Define scope</text>
-<path d="M686 345L708 345" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="492" y="296" width="194" height="101" rx="12" stroke="#60e0be" stroke-width="2" fill="#13212b"/>
-<text x="589" y="335" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="middle">Fix</text>
-<text x="589" y="373" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="middle">Repair</text>
-<path d="M908 345L930 345" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="714" y="296" width="194" height="101" rx="12" stroke="#60e0be" stroke-width="2" fill="#13212b"/>
-<text x="811" y="335" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="middle">Test</text>
-<text x="811" y="373" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="middle">Verify AC</text>
-<path d="M1130 345L1152 345" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="936" y="296" width="194" height="101" rx="12" stroke="#2a3a46" stroke-width="2" fill="#13212b"/>
-<text x="1033" y="335" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="middle">Review</text>
-<text x="1033" y="373" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="middle">Check evidence</text>
-<rect x="1158" y="296" width="194" height="101" rx="12" stroke="#2a3a46" stroke-width="2" fill="#13212b"/>
-<text x="1255" y="335" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="middle">Draft PR</text>
-<text x="1255" y="373" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="middle">Prepare locally</text>
-<path d="M1255 402L1255 441" fill="none" stroke="#a8bbc7" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="48" y="454" width="1304" height="135" rx="12" stroke="#2a3a46" stroke-width="2" fill="#13212b"/>
-<text x="72" y="488" font-size="18" fill="#60e0be" font-weight="700" text-anchor="start">YOUR TEAM’S DELIVERY PROCESS</text>
-<text x="72" y="530" font-size="25" fill="#f0f5f6" font-weight="700" text-anchor="start">Publish with permission · human review · CI · QA/UAT · merge · close issue</text>
-<text x="72" y="568" font-size="23" fill="#a8bbc7" font-weight="400" text-anchor="start">Optional Telegram: resolved after merged-PR checks and owner evidence pass.</text>
-<text x="48" y="626" font-size="20" fill="#a8bbc7" font-weight="400" text-anchor="start">Runs can pause when requirements, permissions, or evidence are missing.</text>
+<text x="48" y="61" font-size="42" fill="#22211f" font-weight="700" text-anchor="start">The complete issue-to-resolution flow</text>
+<text x="48" y="105" font-size="24" fill="#5b5954" font-weight="400" text-anchor="start">A guided repair workflow, connected to your team’s delivery process.</text>
+<rect x="48" y="145" width="1304" height="77" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="72" y="176" font-size="25" fill="#22211f" font-weight="700" text-anchor="start">GitHub issue or local ticket + confirmed requirements</text>
+<text x="72" y="205" font-size="21" fill="#5b5954" font-weight="400" text-anchor="start">You start the workflow. Optional Telegram reports new GitHub bug issues.</text>
+<path d="M250 222V285H145V290" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="48" y="270" font-size="18" fill="#22211f" font-weight="700" text-anchor="start">Inside doforme</text>
+<text x="694" y="270" font-size="21" fill="#5b5954" font-weight="400" text-anchor="start">Scope approval before Fix · gates check every handoff</text>
+<path d="M242 345L264 345" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="48" y="296" width="194" height="101" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="145" y="335" font-size="25" fill="#22211f" font-weight="700" text-anchor="middle">Analyze</text>
+<text x="145" y="373" font-size="20" fill="#5b5954" font-weight="400" text-anchor="middle">Investigate</text>
+<path d="M464 345L486 345" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="270" y="296" width="194" height="101" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="367" y="335" font-size="25" fill="#22211f" font-weight="700" text-anchor="middle">Plan</text>
+<text x="367" y="373" font-size="20" fill="#5b5954" font-weight="400" text-anchor="middle">Define scope</text>
+<path d="M686 345L708 345" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="492" y="296" width="194" height="101" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="589" y="335" font-size="25" fill="#22211f" font-weight="700" text-anchor="middle">Fix</text>
+<text x="589" y="373" font-size="20" fill="#5b5954" font-weight="400" text-anchor="middle">Repair</text>
+<path d="M908 345L930 345" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="714" y="296" width="194" height="101" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="811" y="335" font-size="25" fill="#22211f" font-weight="700" text-anchor="middle">Test</text>
+<text x="811" y="373" font-size="20" fill="#5b5954" font-weight="400" text-anchor="middle">Verify AC</text>
+<path d="M1130 345L1152 345" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="936" y="296" width="194" height="101" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="1033" y="335" font-size="25" fill="#22211f" font-weight="700" text-anchor="middle">Review</text>
+<text x="1033" y="373" font-size="20" fill="#5b5954" font-weight="400" text-anchor="middle">Check evidence</text>
+<rect x="1158" y="296" width="194" height="101" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="1255" y="335" font-size="25" fill="#22211f" font-weight="700" text-anchor="middle">Draft PR</text>
+<text x="1255" y="373" font-size="20" fill="#5b5954" font-weight="400" text-anchor="middle">Prepare locally</text>
+<path d="M1255 402L1255 441" fill="none" stroke="#5b5954" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="48" y="454" width="1304" height="135" rx="6" stroke="#d4d1cb" stroke-width="2" fill="#ffffff"/>
+<text x="72" y="488" font-size="18" fill="#22211f" font-weight="700" text-anchor="start">Your team’s delivery process</text>
+<text x="72" y="530" font-size="25" fill="#22211f" font-weight="700" text-anchor="start">Publish with permission · human review · CI · QA/UAT · merge · close issue</text>
+<text x="72" y="568" font-size="23" fill="#5b5954" font-weight="400" text-anchor="start">Optional Telegram: resolved after merged-PR checks and owner evidence pass.</text>
+<text x="48" y="626" font-size="20" fill="#5b5954" font-weight="400" text-anchor="start">Runs can pause when requirements, permissions, or evidence are missing.</text>
 </g></svg>
