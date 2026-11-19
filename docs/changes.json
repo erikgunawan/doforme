@@ -1757,6 +1757,27 @@
           "blob": "dc777ba271098727d828e47663751769408910ba"
         }
       }
+    },
+    {
+      "id": "7f0d2a1c525f6af8ac475d24e8a6946a59584349df0e3d4ad3b8211be9dd2478",
+      "base_commit": "9372e5b9a8628ca63488762d3bad0ad5a528bf57",
+      "date": "2026-11-19",
+      "version": "0.27.0",
+      "summary": "Fokuskan README pada manfaat dan fitur doforme, pindahkan instalasi serta penggunaan ke panduan terpisah",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "ea7a86c5983590d233890c76cf5efa659c734054"
+        },
+        "docs/GETTING-STARTED.md": {
+          "mode": "100644",
+          "blob": "8f149c13aed0ba7ac2b3a3686da5eb136ae886a3"
+        },
+        "docs/GUIDED-USAGE.md": {
+          "mode": "100644",
+          "blob": "8f9f5dd6d2013a8113d80f01f8580343adcc60f7"
+        }
+      }
     }
   ]
 }

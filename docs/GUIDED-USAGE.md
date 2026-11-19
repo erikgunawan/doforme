@@ -1,5 +1,7 @@
 # doforme dengan command singkat
 
+Baru mulai? Ikuti [instalasi dan penggunaan pertama](GETTING-STARTED.md).
+
 Anda memilih issue dan menyetujui keputusan yang relevan. Plugin menangani
 pencarian tiket, setup, input internal, penyimpanan laporan, dan handoff tahap.
 Mulai sesi Claude Code baru setelah memperbarui plugin.

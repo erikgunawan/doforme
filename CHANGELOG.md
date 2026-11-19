@@ -9,6 +9,14 @@ Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHAS
 
 ## 2026-11-19 — v0.27.0
 
+Fokuskan README pada manfaat dan fitur doforme, pindahkan instalasi serta penggunaan ke panduan terpisah
+
+Change ID: `7f0d2a1c525f`.
+
+File: `README.md`, `docs/GETTING-STARTED.md`, `docs/GUIDED-USAGE.md`.
+
+## 2026-11-19 — v0.27.0
+
 Perbaiki feedback pilot: doctor repo-level, status dari run tersimpan, pemilihan GitHub/Lokal eksplisit, dan pemulihan requirement terpandu
 
 Change ID: `727ef104cf48`.

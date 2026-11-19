@@ -1,111 +1,64 @@
 # doforme
 
-Plugin Claude Code untuk menyelidiki bug, menyusun rencana berdasarkan requirement,
-memperbaiki source dalam scope yang disetujui, menguji hasil, melakukan review,
-dan menyiapkan draft PR. Bisa dijalankan per tahap atau end-to-end.
+**Dari laporan bug ke draft PR, lengkap dengan bukti di setiap langkah.**
 
-Mulai dengan command singkat. doforme memandu setup, menemukan tiket, menyimpan
-laporan per issue, dan meminta konfirmasi hanya untuk keputusan yang diperlukan.
+doforme adalah plugin Claude Code yang membantu tim menyelidiki bug, merencanakan
+perbaikan, mengubah kode dalam scope yang disetujui, dan memverifikasi hasilnya.
+Satu alur kerja menghubungkan issue, requirement, pengujian, dan review—dengan
+keputusan penting tetap di tangan Anda.
 
-[Cara kerja dan diagram alur](docs/HOW-IT-WORKS.md) ·
-[Panduan penggunaan mudah](docs/GUIDED-USAGE.md) · [CHANGELOG](CHANGELOG.md)
+[Panduan instalasi dan penggunaan](docs/GETTING-STARTED.md) ·
+[Cara kerja dan diagram alur](docs/HOW-IT-WORKS.md)
 
-## Instalasi
+## Fitur
 
-Prasyarat: Git, Python 3.9+, dan Claude Code dengan akses model aktif. Runner
-memakai lingkungan POSIX. Install sekali untuk seluruh project di komputer ini:
+### Mulai dengan percakapan, bukan prompt panjang
 
-```bash
-git clone https://github.com/erikgunawan/doforme.git "$HOME/doforme"
-claude plugin marketplace add "$HOME/doforme"
-claude plugin install doforme@doforme-marketplace --scope user
-```
+Setup terpandu menemukan sumber requirement dan kandidat test di repo, lalu
+membantu Anda meninjau AC dan konfigurasi melalui pertanyaan singkat. Tidak perlu
+merangkai input JSON atau menyalin laporan antar-tahap pada mode terpandu.
 
-Buka sesi baru dari repo project:
+### Kerjakan issue dari GitHub atau tiket lokal
 
-```bash
-cd /absolute/path/to/project
-claude
-```
+Pemilihan issue mengutamakan GitHub saat repo memiliki GitHub origin. Setiap tiket
+menampilkan sumbernya dengan jelas. Tiket lokal tersedia untuk lab dan alur offline.
 
-Untuk update checkout yang bersih:
+### Investigasi dengan evidence yang bisa ditelusuri
 
-```bash
-git -C "$HOME/doforme" pull --ff-only
-claude plugin update doforme@doforme-marketplace --scope user
-```
+Analisis memisahkan fakta, dugaan pelapor, dan hipotesis penyebab. Laporan memuat
+validitas issue, lokasi evidence, tingkat keyakinan, serta langkah berikutnya.
+Investigasi awal membaca source tanpa mengubah kode atau menjalankan test.
 
-Buka ulang sesi Claude setelah update. Detail dan pemecahan masalah tersedia di
-[panduan instalasi](docs/INSTALLATION.md).
+### Perbaikan berpijak pada requirement bisnis
 
-## Cara pakai
+Gunakan spesifikasi repo, dokumen bisnis, atau ekspor requirement Jira/Figma
+sebagai acuan yang dikonfirmasi berlaku. AC menghubungkan perilaku yang diharapkan
+dengan rencana perbaikan dan bukti pengujiannya. Jika ada ambiguitas, doforme
+memandu konfirmasi sebelum melanjutkan.
 
-Setup terpandu, tanpa harus menulis prompt panjang:
+### Enam tahap, satu alur yang terhubung
 
-```text
-/doforme:init
-```
+Analyze → Plan → Fix → Test → Review → Draft PR. Peran spesialis menangani setiap
+tahap, dengan pemeriksaan hasil sebelum diteruskan ke tahap berikutnya. Jalankan per tahap untuk meninjau
+setiap keputusan, atau gunakan end-to-end dengan persetujuan scope setelah plan.
 
-doforme menemukan sumber requirement dan kandidat test, lalu menunjukkan usulan
-konfigurasi. Tinjau AC dan jawab pertanyaan singkat sebelum menyimpan. Commit
-konfigurasi yang telah disetujui sebelum memulai run dengan baseline bersih.
+### Kontrol perubahan sebelum kode disentuh
 
-Jalankan tahap demi tahap berdasarkan identitas issue:
+Lihat file yang akan diubah, perintah pengujian, dan artefak sementara sebelum memberi
+persetujuan. Pengujian independen dan review memeriksa hasil terhadap scope serta
+evidence. Draft PR merangkum pekerjaan untuk ditinjau sebelum publikasi.
 
-```text
-/doforme:analyze BUG-301
-/doforme:plan BUG-301
-/doforme:fix BUG-301
-/doforme:test BUG-301
-/doforme:review BUG-301
-/doforme:pr BUG-301
-```
+### Laporan tersimpan, progres mudah dilihat
 
-Atau gunakan alur end-to-end:
+Laporan dan checkpoint disimpan otomatis per issue di luar checkout. Periksa
+kesiapan repo, lihat run yang tersimpan, dan lanjutkan tahap tanpa kehilangan
+konteks. Run baru mempertahankan laporan sebelumnya untuk ditinjau kembali.
 
-```text
-/doforme:endtoend BUG-301
-```
+### Notifikasi Telegram untuk lifecycle bug
 
-Tanpa ID, pemilihan issue mengutamakan GitHub origin dan menampilkan label sumber
-GitHub/Lokal. ID lokal mencari satu tiket di docs/bugs. Issue GitHub bisa dipilih dengan `#3`
-atau URL issue pada remote origin repo; akses GitHub CLI diperlukan. Tanpa
-argumen, doforme membantu memilih issue. Laporan disimpan di lokasi privat di
-luar checkout; Anda tidak perlu menyalin laporan atau membuat input JSON.
+Integrasi opsional pada repo project mengirim notifikasi bug baru dan resolved
+menurut persetujuan owner. Bukti PR merge, check wajib, dan keputusan QA/UAT
+menghubungkan notifikasi resolved dengan perubahan yang relevan.
 
-Sebelum fix, doforme menampilkan file yang akan diubah, command test, serta
-artefak sementara, lalu meminta persetujuan. End-to-end dapat berhenti setelah
-plan untuk meminta persetujuan tersebut. Prasyarat yang kurang dijelaskan dengan
-langkah berikutnya; doforme tidak melewati gate agar run terlihat berhasil.
-
-```text
-/doforme:doctor
-/doforme:status
-/doforme:status BUG-301
-```
-
-Doctor memeriksa repo tanpa meminta tiket. Status tanpa ID menawarkan run yang
-sudah tersimpan; status per issue memeriksa run tersebut. Jika requirement belum
-dikonfirmasi, doforme memandu pertanyaan AC dan preview konfigurasi dalam chat.
-
-Untuk memulai ulang issue yang sama, minta run baru dengan `--new`. Laporan run
-lama dipertahankan. Mode advanced dengan input/path dan izin eksplisit tetap
-tersedia di [panduan lengkap](docs/USAGE.md) dan [referensi command](docs/REFERENCE.md).
-
-Requirement dan AC menentukan perilaku yang diharapkan. Test hijau dan workflow
-complete berarti hasil teknis pada scope yang diuji; penerimaan bisnis tetap
-memerlukan keputusan pemilik requirement. PR yang dihasilkan adalah draft lokal.
-Publikasi, merge, serta penutupan issue mengikuti izin dan proses project.
-
-### Opsional: Telegram
-
-Telegram bukan prasyarat plugin. Untuk notifikasi bug baru dan resolved, pasang
-[template di repo project](docs/INSTALLATION.md#4-opsional-pasang-template-telegram)
-dan ikuti [panduan Telegram](docs/TELEGRAM.md). Notifikasi issue baru tidak otomatis
-menjalankan doforme. Resolved memerlukan bukti dan deklarasi owner yang berlaku.
-
-## Lisensi
-
-[MIT](LICENSE), copyright 2026 Erik Gunawan. Penggunaan, modifikasi, dan distribusi,
-termasuk komersial, diizinkan dengan menyertakan pemberitahuan copyright dan
-lisensi. Software disediakan tanpa jaminan.
+[Mulai menggunakan doforme](docs/GETTING-STARTED.md) ·
+[Riwayat perubahan](CHANGELOG.md) · [Lisensi MIT](LICENSE)
