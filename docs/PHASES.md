@@ -442,3 +442,23 @@ project-source edits, or notification sends were required for this translation.
 
 Packaged skill text changes also change the policy digest; existing workflow
 checkpoints may require a new run even though command contracts are unchanged.
+
+## README workflow visuals
+
+The README now leads with an outcome-focused introduction, an embedded eight-frame
+20.1-second GIF, benefit-oriented feature copy, and an editable SVG showing the
+complete issue-to-resolution lifecycle. The illustration distinguishes the six
+runner stages/local PR draft from the team's publication, review, CI, QA/UAT,
+merge, closure, and optional owner-attested Telegram resolution process.
+
+Assets use example data and are labeled as workflow illustrations. They do not
+claim a live Claude recording, successful KlikDown repair, or business acceptance.
+A separate preview page documents the storyboard and a future real-demo checklist.
+The optional Pillow/font-based media generator lives under docs/media; it adds
+no plugin runtime dependencies or execution capabilities.
+
+Every GIF frame was decoded and visually inspected. GIF dimensions, duration,
+loop metadata, SVG XML, and SVG text bounds were checked. The SVG was rendered
+and inspected in Chrome. Documentation/link/history checks and appropriate offline
+documentation tests are run before committing. No model calls, target-source
+changes, GitHub publication, or notification sends are part of these visual changes.

@@ -1,63 +1,46 @@
 # doforme
 
-**From bug report to PR draft, with evidence at every step.**
+**Turn a bug report into a fix your team can review.**
 
-doforme is a Claude Code plugin that helps teams investigate bugs, plan repairs,
-change code within approved scope, and verify the results. One workflow connects
-issues, requirements, testing, and review—with important decisions in your hands.
+A Claude Code plugin that connects issue investigation, business requirements,
+scoped repairs, independent testing, and review—through to a local PR draft.
+Bring the issue. Review the plan. Approve the scope. Keep the evidence.
 
-[Installation and usage](docs/GETTING-STARTED.md) ·
-[How it works and workflow diagrams](docs/HOW-IT-WORKS.md)
+[Get started](docs/GETTING-STARTED.md) · [Explore the workflow](docs/HOW-IT-WORKS.md) · [MIT license](LICENSE)
 
-## Features
+[![Animated illustration of doforme moving from issue selection through analysis, plan approval, repair, testing, review, and a PR draft](docs/media/workflow-preview.gif)](docs/WORKFLOW-PREVIEW.md)
 
-### Start a conversation, skip the long prompts
+*An illustrated walkthrough with example data. Your approval connects the plan to
+code changes; your team's delivery process takes the draft through acceptance.*
 
-Guided setup discovers requirement sources and candidate tests in your repository,
-then helps you review acceptance criteria and configuration through short questions.
-In guided mode, you do not need to assemble input JSON or copy reports between stages.
+## What you get
 
-### Work with GitHub issues or local tickets
+| Capability | Why it helps |
+| --- | --- |
+| **Guided setup and short commands** | Start from an issue ID or URL. Doforme handles setup questions, internal inputs, and report handoffs. |
+| **Evidence before edits** | Investigate issue validity, trace symptoms to source, and separate root-cause hypotheses from facts. |
+| **Requirements that shape the repair** | Connect confirmed business rules and AC to the plan and test coverage. Use repository specs or supplied business/Jira/Figma exports. |
+| **A scope you can approve** | Review exact files and test commands before the fixer changes code. Clarify ambiguous requirements in the same conversation. |
+| **Independent testing and review** | Separate stages inspect behavior, the diff, and evidence before producing a reviewable PR draft. |
+| **Progress that stays with the issue** | Saved reports and checkpoints make results, blockers, and next steps visible. New runs preserve previous reports. |
+| **GitHub and local ticket support** | GitHub-first selection clearly labels each source. Local tickets support labs and offline work. |
+| **Optional Telegram updates** | Notify your team about new bugs and owner-attested resolution through a separate project integration. |
 
-Issue selection prioritizes GitHub when the repository has a GitHub origin.
-Every ticket clearly identifies its source. Local tickets support labs and offline workflows.
+## See how end-to-end connects
 
-### Investigate with traceable evidence
+![Complete doforme workflow: issue and confirmed requirements, six gated stages, then the team's publication, review, CI, QA/UAT, merge, and closure process](docs/media/workflow-overview.svg)
 
-Analysis separates facts, reporter assumptions, and root-cause hypotheses. Reports
-include issue validity, evidence locations, confidence, and next steps. Initial
-investigation reads source without changing code or running tests.
+The runner prepares a local PR draft. Your team controls publication, review, and
+business acceptance. Telegram resolution updates require the relevant merged PR,
+required checks, and owner evidence.
 
-### Ground fixes in business requirements
+## Work at your pace
 
-Use repository specifications, business documents, or exported Jira/Figma
-requirements as confirmed references. Acceptance criteria connect expected behavior
-to the repair plan and test evidence. When intent is ambiguous, doforme guides
-confirmation before proceeding.
+**Review each stage.** Investigate first, inspect the plan, then continue through
+fix, test, review, and draft preparation using the same issue identity.
 
-### Six stages, one connected workflow
+**Run end-to-end.** Let the coordinator connect the stages, pause for scope
+approval after planning, and surface missing requirements or evidence when needed.
 
-Analyze → Plan → Fix → Test → Review → Draft PR. Specialized roles handle each
-stage, with results checked before the next handoff. Run stages individually to
-review each decision, or use end-to-end execution with scope approval after planning.
-
-### Review the scope before code changes
-
-See the files to be changed, test commands, and temporary artifacts before approving
-them. Independent testing and review check results against scope and evidence.
-The PR draft summarizes the work for review before publication.
-
-### Saved reports, visible progress
-
-Reports and checkpoints are saved automatically per issue outside the checkout.
-Check repository readiness, inspect saved runs, and continue stages without losing
-context. New runs preserve earlier reports for later review.
-
-### Telegram notifications for the bug lifecycle
-
-An optional integration in the project repository sends new-bug notifications and
-owner-attested resolution updates. Merged-PR evidence, required checks, and QA/UAT
-decisions connect resolution notifications to the relevant changes.
-
-[Get started with doforme](docs/GETTING-STARTED.md) ·
-[Change history](CHANGELOG.md) · [MIT license](LICENSE)
+[Install and try your first issue](docs/GETTING-STARTED.md) ·
+[Watch the illustrated workflow](docs/WORKFLOW-PREVIEW.md) · [Change history](CHANGELOG.md)

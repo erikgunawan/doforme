@@ -1867,6 +1867,43 @@
           "blob": "51e4137ae1a2696072e8db53c59780988de69c6f"
         }
       }
+    },
+    {
+      "id": "bff15e7edf935500d5536cabb29b78279a795366d4ed0c86cc3ae900c91f0d5e",
+      "base_commit": "4cf40b142172bbb3557006fb3fb58a8540b061d4",
+      "date": "2026-11-19",
+      "version": "0.27.0",
+      "summary": "Present doforme with an illustrated workflow animation, lifecycle diagram, and benefit-focused README",
+      "changes": {
+        "README.md": {
+          "mode": "100644",
+          "blob": "3552c1ed92fb5f03656cb690b740bc608ad06c43"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "fa22c69bccf72fa649759e003ecc75d39e8b670d"
+        },
+        "docs/WORKFLOW-PREVIEW.md": {
+          "mode": "100644",
+          "blob": "78d0f46a8a61b4a922fc07a70e17740ab4858c9e"
+        },
+        "docs/media/build_preview.py": {
+          "mode": "100644",
+          "blob": "b20ca87da032f1b00c415178f45ff7c252a2cb3d"
+        },
+        "docs/media/workflow-overview.svg": {
+          "mode": "100644",
+          "blob": "39ca2dc1d7943afaca7fc1226f7de60677adbc63"
+        },
+        "docs/media/workflow-preview-poster.png": {
+          "mode": "100644",
+          "blob": "f5a2bebc516747a97fa2590ca64477654f637e08"
+        },
+        "docs/media/workflow-preview.gif": {
+          "mode": "100644",
+          "blob": "c9721cc12a049c451356468c979401027264ea18"
+        }
+      }
     }
   ]
 }
