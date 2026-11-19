@@ -34,8 +34,19 @@ menjelaskan file yang menghalangi; ia tidak melakukan commit, reset, atau stash.
 /doforme:analyze BUG-301
 ```
 
+Tanpa ID, doforme menawarkan issue GitHub terlebih dahulu bila remote origin
+mengarah ke GitHub. Pilihan selalu diberi label sumber, misalnya **GitHub #3**
+atau **Lokal — BUG-301**. Jika akses GitHub gagal, Anda memilih apakah ingin
+memperbaiki akses, memasukkan URL, atau memakai tiket lokal; tidak ada fallback
+lokal diam-diam. Daftar GitHub dibatasi satu halaman awal, sehingga issue yang
+tidak tampil masih dapat dipilih melalui nomor/URL tepatnya.
+
 ID lokal harus cocok dengan satu file di docs/bugs. Anda juga bisa memilih
 `#3`, URL GitHub issue dari origin repo ini, atau satu file tiket di docs/bugs.
+Pemilihan lokal bukan pemetaan otomatis ke GitHub issue. BUG-301 lokal bisa
+berbeda dari GitHub #301; gunakan identitas GitHub yang benar untuk lifecycle
+issue GitHub dan notifikasi Telegram.
+
 Untuk #number/URL, helper hanya membaca metadata GitHub melalui gh; ia tidak
 membuat issue, komentar, atau pesan Telegram. Tanpa argumen, doforme menawarkan
 pilihan atau meminta identitas issue.
@@ -85,7 +96,42 @@ scope hasil plan sebelum melanjutkan fix → test → review → draft PR. Bukti
 kurang atau requirement yang belum jelas dapat menghentikan run lebih awal.
 Ini bukan satu persetujuan umum untuk semua file, test, atau publikasi.
 
-## 5. Status, retry, dan run baru
+## 5. Doctor dan status tanpa memilih tiket
+
+```text
+/doforme:doctor
+/doforme:status
+```
+
+Doctor memeriksa Git root, worktree, profil, requirement yang masih berupa draft,
+dan kandidat test pada repo. Ia tidak meminta tiket sebagai prasyarat, menjalankan
+test, atau menyatakan AC telah disetujui. Pemeriksaan issue-specific dengan input
+lengkap tetap tersedia melalui mode advanced --input.
+
+Status tanpa ID menampilkan run doforme yang sudah tersimpan pada checkout ini,
+bukan seluruh tiket yang ditemukan. Jika belum ada run, ia menjelaskan keadaan
+tersebut dan menawarkan analisis pertama. Pemilihan run akan memeriksa freshness;
+keberadaan nama run dalam daftar saja bukan bukti run masih valid.
+
+## 6. Jika analisis terhenti karena requirement
+
+Doforme mempertahankan temuan teknis lalu bertanya secara spesifik, misalnya:
+
+> Untuk BUG-301, apakah D3 berlaku dan jumlah task harus konsisten pada list,
+> pengguna, filter, serta data yang sama?
+
+Anda dapat menyetujui, mengoreksi, atau menyatakan belum tahu. Anda tidak diminta
+menulis ulang requirement atau prompt panjang. Fakta teknis seperti enum status,
+pemetaan seed, dan pemanggil fungsi diperiksa dari source, bukan ditebak atau
+dimintakan sebagai keputusan bisnis.
+
+Jika dikonfirmasi, plugin memandu preview perubahan konfigurasi dan persetujuan
+menyimpannya di percakapan yang sama. Test command tetap ditinjau; persetujuan AC
+bukan izin eksekusi atau acceptance hasil fix. Setelah konfigurasi berubah,
+analisis lama dipertahankan dan perlu run baru dari baseline bersih. Plugin tidak
+melakukan pull/commit/push untuk menyiapkan baseline secara otomatis.
+
+## 7. Status per issue, retry, dan run baru
 
 ```text
 /doforme:status BUG-301

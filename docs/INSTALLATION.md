@@ -81,6 +81,9 @@ Hasil awal: inspeksi repo dan pertanyaan singkat tentang konfigurasi yang diusul
 Default init kini terpandu; ia tidak menulis sebelum persetujuan proposal. Untuk
 inspeksi helper lama tanpa percakapan setup, gunakan `/doforme:init --inspect`.
 Lanjutkan dengan [panduan command singkat](GUIDED-USAGE.md).
+`/doforme:doctor` memeriksa kesiapan repo tanpa memilih tiket; `/doforme:status`
+menampilkan run tersimpan. Pilihan issue mengutamakan GitHub origin dan selalu
+menampilkan sumber GitHub/Lokal.
 
 ## 3. Setup terpandu atau draft advanced
 

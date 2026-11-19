@@ -1,5 +1,5 @@
 ---
-description: Show saved issue progress and the next step
+description: List saved runs or show progress and the next step for one issue
 argument-hint: [issue ID, #number, GitHub issue URL; advanced inputs also supported]
 disable-model-invocation: true
 allowed-tools: Read, Glob, Grep, AskUserQuestion

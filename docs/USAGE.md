@@ -2,7 +2,9 @@
 
 Untuk penggunaan sehari-hari, ikuti [mode terpandu dengan command singkat](GUIDED-USAGE.md):
 `/doforme:init`, `/doforme:analyze BUG-301`, lalu `/doforme:fix BUG-301` setelah plan.
-Mode ini menyimpan laporan otomatis dan memandu persetujuan scope.
+Mode ini menyimpan laporan otomatis dan memandu persetujuan scope. Doctor
+tanpa input bersifat repo-level; status tanpa ID menampilkan run tersimpan.
+Pemilihan tiket mengutamakan GitHub origin dengan label sumber eksplisit.
 
 Bagian di bawah menjelaskan **mode advanced** dengan laporan/input/path eksplisit.
 Pada mode manual advanced, laporan dikembalikan dalam chat dan tidak otomatis

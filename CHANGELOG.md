@@ -7,6 +7,14 @@ dari file yang di-stage; ringkasan otomatis tidak menyimpulkan perilaku fitur.
 Versi yang sama dapat memuat beberapa perubahan dan bukan berarti release/tag.
 Hasil pengujian dan batas kemampuan dicatat terpisah di [riwayat fase](docs/PHASES.md).
 
+## 2026-11-19 — v0.27.0
+
+Perbaiki feedback pilot: doctor repo-level, status dari run tersimpan, pemilihan GitHub/Lokal eksplisit, dan pemulihan requirement terpandu
+
+Change ID: `727ef104cf48`.
+
+File: `.claude-plugin/plugin.json`, `README.md`, `commands/doctor.md`, `commands/init.md`, `commands/status.md`, `docs/GUIDED-USAGE.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/USAGE.md`, `scripts/guided_workflow.py`, `skills/guided-workflow/SKILL.md`, `tests/test_guided_workflow.py`.
+
 ## 2026-11-19 — v0.26.0
 
 Tambahkan pengalaman terpandu: command per issue, setup dengan konfirmasi, laporan otomatis, scope hasil plan, dan end-to-end yang dapat dijeda

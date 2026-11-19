@@ -46,6 +46,77 @@ class GuidedTests(unittest.TestCase):
         p = G.scope(self.repo, self.issue, data, root=self.root)
         return G.scope(self.repo, self.issue, data, p['digest'], self.root)
 
+    def test_doctor_needs_no_ticket_network_or_writes(self):
+        before = G.snapshot(self.repo)
+        with patch.object(G, 'issue_source', side_effect=AssertionError('must not select ticket')):
+            result = G.repo_doctor(self.repo)
+        self.assertEqual(result['scope'], 'repository_only')
+        self.assertFalse(result['issue_required'])
+        self.assertEqual(G.snapshot(self.repo), before)
+        self.assertFalse((self.repo / '.doforme').exists())
+        self.assertTrue(any(x['check'] == 'profile' for x in result['findings']))
+
+    def test_doctor_finds_draft_and_empty_test_commands_without_approving_ac(self):
+        data = {'requirements_text': 'UNCONFIRMED DRAFT', 'test_commands': []}
+        p = G.setup(self.repo, data); G.setup(self.repo, data, p['digest'])
+        result = G.repo_doctor(self.repo)
+        self.assertEqual({x['check'] for x in result['findings']}, {'worktree', 'requirements', 'test_commands'})
+        self.assertEqual(result['requirements_authority'], 'not_evaluated')
+        self.assertEqual(result['execution'], 'not_run')
+
+    def test_issue_discovery_prefers_origin_github_and_excludes_pull_requests(self):
+        payload = [{'number': 3, 'title': 'BUG-301 reported'},
+                   {'number': 4, 'title': 'A pull request', 'pull_request': {}}]
+        response = subprocess.CompletedProcess([], 0, json.dumps(payload), '')
+        with patch.object(G, 'github_repo', return_value='owner/project'), patch.object(G.subprocess, 'run', return_value=response) as call:
+            result = G.list_issues(self.repo)
+        self.assertEqual(result['source'], 'github')
+        self.assertEqual(result['issues'][0]['selector'], '#3')
+        self.assertIn('GitHub #3', result['issues'][0]['label'])
+        self.assertEqual(len(result['issues']), 1)
+        self.assertEqual(call.call_args.args[0], ['gh', 'api', '--hostname', 'github.com',
+                                                'repos/owner/project/issues?state=open&per_page=30'])
+
+    def test_github_failure_never_silently_uses_local_ticket(self):
+        response = subprocess.CompletedProcess([], 1, '', 'do not expose credentials')
+        with patch.object(G, 'github_repo', return_value='owner/project'), patch.object(G.subprocess, 'run', return_value=response):
+            result = G.list_issues(self.repo)
+        self.assertEqual(result['status'], 'github_unavailable')
+        self.assertEqual(result['source'], 'github')
+        self.assertEqual(result['issues'], [])
+        self.assertNotIn('credentials', str(result))
+
+    def test_explicit_local_discovery_does_not_contact_github_or_list_templates(self):
+        (self.repo / 'docs/bugs/TEMPLATE.md').write_text('# Ticket template')
+        with patch.object(G, 'github_repo', side_effect=AssertionError('no network')):
+            result = G.list_issues(self.repo, 'local')
+        self.assertEqual(result['source'], 'local')
+        self.assertEqual(len(result['issues']), 1)
+        self.assertTrue(result['issues'][0]['label'].startswith('Lokal — '))
+        self.assertEqual(result['issues'][0]['selector'], 'docs/bugs/BUG-301-example.md')
+
+    def test_missing_github_cli_offers_explicit_source_choice(self):
+        with patch.object(G, 'github_repo', return_value='owner/project'), patch.object(G.subprocess, 'run', side_effect=FileNotFoundError()):
+            self.assertEqual(G.list_issues(self.repo)['status'], 'github_unavailable')
+
+    def test_pr_only_page_does_not_claim_there_are_no_issues_in_repository(self):
+        response = subprocess.CompletedProcess([], 0, json.dumps([{'number': n + 1, 'pull_request': {}} for n in range(30)]), '')
+        with patch.object(G, 'github_repo', return_value='owner/project'), patch.object(G.subprocess, 'run', return_value=response):
+            result = G.list_issues(self.repo)
+        self.assertEqual(result['status'], 'no_issues_in_page')
+        self.assertTrue(result['more_items_possible'])
+
+    def test_status_lists_saved_runs_not_unstarted_ticket_files(self):
+        self.assertEqual(G.list_sessions(self.repo, self.root)['status'], 'no_saved_sessions')
+        self.assertFalse(self.root.exists())
+        first = self.prepare()
+        (self.repo / 'docs/bugs/BUG-302-other.md').write_text('not started')
+        with patch.object(G, 'issue_source', side_effect=AssertionError('must not fetch remote issue')):
+            result = G.list_sessions(self.repo, self.root)
+        self.assertEqual(len(result['sessions']), 1)
+        self.assertEqual(result['sessions'][0]['folder'], first['folder'])
+        self.assertEqual(result['sessions'][0]['freshness'], 'not_checked_until_selected')
+
     def test_proposal_duplicate_fields_are_rejected(self):
         with self.assertRaisesRegex(ValueError, 'Duplicate proposal'):
             G.proposal_json('{"edit_paths": [], "edit_paths": ["source.py"]}')

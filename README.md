@@ -67,7 +67,8 @@ Atau gunakan alur end-to-end:
 /doforme:endtoend BUG-301
 ```
 
-ID lokal mencari satu tiket di docs/bugs. Issue GitHub bisa dipilih dengan `#3`
+Tanpa ID, pemilihan issue mengutamakan GitHub origin dan menampilkan label sumber
+GitHub/Lokal. ID lokal mencari satu tiket di docs/bugs. Issue GitHub bisa dipilih dengan `#3`
 atau URL issue pada remote origin repo; akses GitHub CLI diperlukan. Tanpa
 argumen, doforme membantu memilih issue. Laporan disimpan di lokasi privat di
 luar checkout; Anda tidak perlu menyalin laporan atau membuat input JSON.
@@ -78,8 +79,14 @@ plan untuk meminta persetujuan tersebut. Prasyarat yang kurang dijelaskan dengan
 langkah berikutnya; doforme tidak melewati gate agar run terlihat berhasil.
 
 ```text
+/doforme:doctor
+/doforme:status
 /doforme:status BUG-301
 ```
+
+Doctor memeriksa repo tanpa meminta tiket. Status tanpa ID menawarkan run yang
+sudah tersimpan; status per issue memeriksa run tersebut. Jika requirement belum
+dikonfirmasi, doforme memandu pertanyaan AC dan preview konfigurasi dalam chat.
 
 Untuk memulai ulang issue yang sama, minta run baru dengan `--new`. Laporan run
 lama dipertahankan. Mode advanced dengan input/path dan izin eksplisit tetap

@@ -1,6 +1,6 @@
 ---
-description: Check readiness and guide missing setup
-argument-hint: [issue ID, #number, GitHub issue URL; advanced inputs also supported]
+description: Check repository readiness without selecting an issue
+argument-hint: [advanced --input arguments for issue-specific preflight]
 disable-model-invocation: true
 allowed-tools: Read, Glob, Grep, AskUserQuestion
 ---

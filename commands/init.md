@@ -1,6 +1,6 @@
 ---
 description: Guided repository setup with reviewed requirements and test discovery
-argument-hint: [issue ID, #number, GitHub issue URL; advanced inputs also supported]
+argument-hint: [guided setup; --inspect or --write for advanced helpers]
 disable-model-invocation: true
 allowed-tools: Read, Glob, Grep, AskUserQuestion
 ---

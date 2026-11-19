@@ -118,6 +118,125 @@ def discover(repo):
             'created_paths': [], 'execution': 'not_run'}
 
 
+def repo_doctor(repo):
+    """Repository checks need no selected ticket or network/model execution."""
+    report = discover(repo)
+    info = report['onboarding']
+    findings = []
+    if not info['worktree_clean']:
+        findings.append({'check': 'worktree', 'message': 'Review uncommitted files before a clean-tree run'})
+    if info['profile_status'] != 'structurally_valid':
+        findings.append({'check': 'profile', 'message': 'Use guided init to prepare or review the repository profile'})
+    else:
+        profile = read_json(safe_path(repo, PROFILE_PATH))
+        if not profile.get('requirements'):
+            findings.append({'check': 'requirements', 'message': 'Choose actual requirement sources in guided setup'})
+        for name in profile.get('requirements', []):
+            text = checked_text(safe_path(repo, name))
+            if not text.strip() or 'UNCONFIRMED DRAFT' in text:
+                findings.append({'check': 'requirements', 'path': name,
+                                 'message': 'This source is an empty or unconfirmed draft; confirm applicable AC in guided setup'})
+        if not profile.get('test_commands'):
+            findings.append({'check': 'test_commands',
+                             'message': 'Review the candidate test runner before proposing a command'})
+    return {'status': 'repository_checked', 'repository': str(repo),
+            'scope': 'repository_only', 'issue_required': False,
+            'worktree_clean': info['worktree_clean'], 'profile_status': info['profile_status'],
+            'findings': findings, 'test_candidates': report['test_candidates'],
+            'requirements_authority': 'not_evaluated', 'execution': 'not_run',
+            'created_paths': [], 'next_action': '/doforme:init' if findings else 'Choose an issue to analyze'}
+
+
+def display_title(text):
+    return ' '.join(''.join(c for c in str(text) if c >= ' ' and c != '\x7f').split())[:200]
+
+
+def list_issues(repo, source='auto'):
+    """Choose a visible issue source. A failed GitHub read never silently changes it."""
+    if source not in ('auto', 'github', 'local'):
+        raise ValueError('Choose github or local issue discovery')
+    origin = None
+    if source != 'local':
+        try:
+            origin = github_repo(repo)
+        except (ValueError, subprocess.SubprocessError):
+            if source == 'github':
+                return {'status': 'github_unavailable', 'source': 'github', 'issues': [],
+                        'next_action': 'Supply a GitHub origin or explicitly choose local tickets'}
+    if origin:
+        try:
+            response = subprocess.run(['gh', 'api', '--hostname', 'github.com',
+                                       'repos/' + origin + '/issues?state=open&per_page=30'],
+                                      capture_output=True, text=True, timeout=20)
+            unavailable = response.returncode or len(response.stdout) > 2_000_000
+        except (OSError, subprocess.TimeoutExpired):
+            unavailable = True
+        if unavailable:
+            return {'status': 'github_unavailable', 'source': 'github', 'repository': origin, 'issues': [],
+                    'next_action': 'Check gh access or explicitly choose local tickets; no local fallback was selected'}
+        data = json.loads(response.stdout)
+        if not isinstance(data, list):
+            raise ValueError('Unexpected GitHub issue list')
+        issues = []
+        for item in data:
+            if not isinstance(item, dict) or 'pull_request' in item:
+                continue
+            number = item.get('number')
+            if type(number) is not int or number < 1:
+                raise ValueError('Invalid GitHub issue number')
+            title = display_title(item.get('title', ''))
+            issues.append({'selector': '#' + str(number), 'source': 'github',
+                           'label': 'GitHub #' + str(number) + ' — ' + title,
+                           'url': 'https://github.com/' + origin + '/issues/' + str(number),
+                           'untrusted': True})
+        status = 'issues_found' if issues else 'no_issues_in_page' if data else 'no_open_issues'
+        return {'status': status, 'source': 'github',
+                'repository': origin, 'issues': issues, 'limit': 30, 'more_items_possible': len(data) == 30,
+                'execution': 'not_run',
+                'next_action': 'Choose a GitHub issue, supply its URL, or explicitly choose local tickets'}
+    issues = []
+    for name in discover(repo)['issue_candidates']:
+        path = safe_path(repo, name)
+        if path.stem.upper() == 'TEMPLATE':
+            continue
+        lines = checked_text(path).splitlines()
+        title = next((line.lstrip('# ').strip() for line in lines if line.startswith('# ')), path.stem)
+        issues.append({'selector': name, 'source': 'local', 'label': 'Lokal — ' + display_title(title),
+                       'path': name, 'untrusted': True})
+    return {'status': 'issues_found' if issues else 'no_local_issues', 'source': 'local',
+            'issues': issues, 'execution': 'not_run',
+            'next_action': 'Choose a local ticket; local tickets are not automatically linked to GitHub issues'}
+
+
+def list_sessions(repo, root=None):
+    """List saved run identities without requesting an issue or contacting GitHub."""
+    base = storage(repo, root)
+    sessions = []
+    for active_path in sorted(base.glob('*/active.json'))[:100]:
+        no_symlinks(active_path)
+        active = read_json(active_path)
+        if set(active) != {'session'} or not re.fullmatch(r'session-[1-9][0-9]{0,5}', str(active['session'])):
+            raise ValueError('Invalid active session pointer')
+        folder = active_path.parent / active['session']
+        no_symlinks(folder)
+        saved = read_json(folder / 'session.json')
+        content = dict(saved)
+        expected = content.pop('digest', None)
+        if digest(content) != expected or saved.get('repository') != str(repo) or saved.get('folder') != str(folder):
+            raise ValueError('Saved session identity/content changed')
+        identity = saved['config']['issue_ref']
+        kind = 'github' if identity.startswith('https://github.com/') else 'local'
+        lines = saved['config']['issue_text'].splitlines()
+        title = display_title(lines[0].lstrip('# ')) if lines else display_title(identity)
+        prefix = 'GitHub #' + identity.rsplit('/', 1)[-1] if kind == 'github' else 'Lokal'
+        sessions.append({'selector': identity, 'source': kind, 'folder': str(folder),
+                         'label': prefix + ' — ' + title,
+                         'freshness': 'not_checked_until_selected'})
+    return {'status': 'saved_sessions' if sessions else 'no_saved_sessions', 'sessions': sessions,
+            'execution': 'not_run', 'created_paths': [],
+            'next_action': 'Choose a saved run' if sessions else 'No saved run yet; offer issue selection for analysis'}
+
+
 def fingerprints(repo, requirements):
     return {name: hashlib.sha256(checked_text(safe_path(repo, name)).encode()).hexdigest()
             for name in requirements}
@@ -380,7 +499,7 @@ def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('inspect', 'setup', 'prepare', 'show', 'scope', 'run'))
+    parser.add_argument('action', choices=('inspect', 'doctor', 'issues', 'sessions', 'setup', 'prepare', 'show', 'scope', 'run'))
     parser.add_argument('--repo', required=True)
     parser.add_argument('--issue')
     parser.add_argument('--data-json')
@@ -389,6 +508,7 @@ def main():
     parser.add_argument('--storage')
     parser.add_argument('--retry', action='store_true')
     parser.add_argument('--new', action='store_true')
+    parser.add_argument('--source', choices=('auto', 'github', 'local'), default='auto')
     args = parser.parse_args()
     try:
         repo = repository_root(args.repo)
@@ -397,6 +517,12 @@ def main():
         data = proposal_json(args.data_json) if args.data_json else {}
         if args.action == 'inspect':
             result = discover(repo)
+        elif args.action == 'doctor':
+            result = repo_doctor(repo)
+        elif args.action == 'issues':
+            result = list_issues(repo, args.source)
+        elif args.action == 'sessions':
+            result = list_sessions(repo, args.storage)
         elif args.action == 'setup':
             result = setup(repo, data, args.confirm)
         else:

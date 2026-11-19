@@ -380,3 +380,46 @@ published or durable acceptance artifact).
 The complete multi-turn interactive approval flow and six-stage real KlikDown
 fix remain for the user pilot. Synthetic executors establish host control flow
 only, not model quality, browser QA, owner acceptance or a completed KlikDown pilot.
+
+
+## Guided pilot feedback — v0.27.0
+
+Repository-level doctor no longer depends on ticket selection. Status discovery
+lists actual saved sessions without fetching GitHub; freshness is checked only
+when a run is selected. Issue selection defaults to GitHub when origin identifies
+a GitHub repo, labels every source, excludes PRs/templates, and offers an explicit
+local choice if GitHub access fails. The bounded first page is not claimed to be
+an exhaustive repository issue list.
+
+The coordinator now has an explicit requirement-blocker recovery path: retain
+technical findings, ask scoped applicability/AC questions, distinguish source
+research from owner decisions, and preview config changes in the same conversation.
+Confirmation is not inferred from source consistency, empty committed templates,
+or old session grants. Changed requirements still require fresh analysis; no
+report verdict rewriting, Git mutation, or acceptance claim is introduced.
+
+Validation: 286 offline tests passed, including repository-only doctor, draft
+and empty-command detection, GitHub-first selection, fixed-host GET arguments,
+explicit local discovery, no silent fallback on gh failure, PR/template filtering,
+bounded-list completeness disclosure, and saved-run-only status discovery.
+CLI 2.1.327 plugin validation passed with the existing listing-icon warning.
+
+Three real Claude Code smoke calls on a disposable repo passed: doctor invoked
+the repository doctor helper without issue selection; empty status invoked saved
+session discovery and explained that no run existed; issue-less analyze used
+GitHub origin and displayed actual GitHub issue number/title with an explicit
+local/offline option. No source, Git HEAD, configuration, or messages changed.
+Evidence: /tmp/doforme-guided-feedback-live-20261119/summary.json (temporary).
+
+A fourth live coordinator test used an explicitly synthetic, blocked analysis
+checkpoint, not a real model investigation. It read the report and asked a
+specific D3/AC applicability question, preserving source and checkpoint. The first
+attempt used a shell cat shortcut and failed the strict helper-trace assertion;
+instructions were tightened rather than relaxing the assertion. The fresh rerun
+passed using approved helper/file tools. Evidence:
+/tmp/doforme-requirement-recovery-live-20261119-v2/summary.json (temporary).
+Total reported cost including the rejected trace: $0.3729788.
+
+These tests do not establish complete multi-turn owner-confirmation/config-save
+acceptance, browser correctness, or a successful real KlikDown fix. The existing
+pilot must still supply confirmed requirement scope and actual test/QA evidence.

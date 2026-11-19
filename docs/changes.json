@@ -1700,6 +1700,63 @@
           "blob": "22cc52219200fb3945f7d2dbf2f508e9f8e191ec"
         }
       }
+    },
+    {
+      "id": "727ef104cf48ea1e8fecf37b07e3e3f97a112b80333a428433fe9f65d97d08a1",
+      "base_commit": "66660335d767aea7585280da55878f86c46d4c57",
+      "date": "2026-11-19",
+      "version": "0.27.0",
+      "summary": "Perbaiki feedback pilot: doctor repo-level, status dari run tersimpan, pemilihan GitHub/Lokal eksplisit, dan pemulihan requirement terpandu",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "c538e20f03eb47617a5c9c7d1d3df79c674495d4"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "97a117aa656cd12c33c7bc40c0b46ad2a9ebee04"
+        },
+        "commands/doctor.md": {
+          "mode": "100644",
+          "blob": "5e66587a2a9da739289a1ae1c3af6f7574b10522"
+        },
+        "commands/init.md": {
+          "mode": "100644",
+          "blob": "0356e952b659ff105d58305c57a7d4edf5eb3eec"
+        },
+        "commands/status.md": {
+          "mode": "100644",
+          "blob": "ea97bc4de553bafce5405c21cf4ac1ea3b5e5948"
+        },
+        "docs/GUIDED-USAGE.md": {
+          "mode": "100644",
+          "blob": "6e7824659d3ec9229803ec2d76ed3cb433caf582"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "c951dbad051057ab0874005c1c209ddc3b67f543"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "712b0230c6dc4c10efb2374471d77ce7b37b77a9"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "79e3d08c763bb50ca568cb6d85538daf8124ba39"
+        },
+        "scripts/guided_workflow.py": {
+          "mode": "100644",
+          "blob": "255bd25be7a572808ad86d1a1453c49394bdf2a5"
+        },
+        "skills/guided-workflow/SKILL.md": {
+          "mode": "100644",
+          "blob": "7581bf46f2001ae1409c157e0db418b053f11e42"
+        },
+        "tests/test_guided_workflow.py": {
+          "mode": "100644",
+          "blob": "dc777ba271098727d828e47663751769408910ba"
+        }
+      }
     }
   ]
 }
