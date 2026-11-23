@@ -14,7 +14,7 @@ from antigravity_runtime import runtime_identity
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=('init', 'setup', 'doctor', 'status', 'issues', 'prepare', 'analyze', 'plan'))
+    p.add_argument('action', choices=('init', 'setup', 'doctor', 'status', 'issues', 'prepare', 'scope', *G.ORDER, 'endtoend'))
     p.add_argument('--repo', required=True)
     p.add_argument('--issue')
     p.add_argument('--data-json')
@@ -43,20 +43,21 @@ def main():
                 result['runtime'] = runtime_identity()
             except (ValueError, OSError) as error:
                 result['findings'].append({'check': 'antigravity', 'message': str(error)})
-            result['supported_stages'] = ['analyze', 'plan']
+            result['supported_stages'] = list(G.ORDER)
         elif a.action == 'status':
             result = G.show(repo, a.issue, a.storage) if a.issue else G.list_sessions(repo, a.storage)
         elif a.action == 'issues':
             result = G.list_issues(repo, a.source)
-        elif a.action == 'prepare':
+        elif a.action in ('prepare', 'scope'):
             if not a.issue:
                 raise ValueError('Choose an explicit issue before preparing analysis')
             if a.data_json and len(a.data_json) > 150000:
                 raise ValueError('Preparation JSON exceeds size limit')
             data = G.proposal_json(a.data_json or '{}')
-            if any(data.get(key) for key in ('edit_paths', 'test_commands', 'artifact_paths')):
-                raise ValueError('Antigravity preparation cannot request edits, tests or artifacts')
-            result = G.prepare(repo, a.issue, data, a.confirm, a.storage, a.new)
+            if a.action == 'scope':
+                result = G.scope(repo, a.issue, data, a.confirm, a.storage)
+            else:
+                result = G.prepare(repo, a.issue, data, a.confirm, a.storage, a.new)
         else:
             if not a.issue:
                 raise ValueError('Choose an explicit issue before analysis/planning')

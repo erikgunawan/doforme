@@ -1,4 +1,4 @@
-"""Build a native read-only Antigravity package outside the source checkout."""
+"""Build the native Antigravity package outside the source checkout."""
 import argparse
 import json
 from pathlib import Path
@@ -21,7 +21,7 @@ def build(output):
     tracked = subprocess.check_output([*SAFE_GIT_PREFIX, 'ls-files', '-z'], cwd=ROOT,
                                       env=git_environment(), text=True).split('\0')
     for name in sorted(set(filter(None, tracked))):
-        if not any(name.startswith(folder + '/') for folder in ('commands', 'agents', 'skills', 'scripts', 'integrations/antigravity')):
+        if not any(name.startswith(folder + '/') for folder in ('commands', 'agents', 'skills', 'scripts', 'integrations')):
             continue
         path = safe_path(ROOT, name)
         if not path.is_file():
@@ -40,14 +40,14 @@ def build(output):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
         relative = path.relative_to(ROOT / 'integrations/antigravity') if path.is_relative_to(ROOT / 'integrations/antigravity') else None
-        if relative is not None and (relative.parts[0] in ('agents', 'skills', 'scripts', 'references') or str(relative) == 'hooks.json'):
+        if relative is not None and (relative.parts[0] in ('agents', 'skills', 'scripts', 'references') or str(relative) in ('hooks.json', 'mcp_config.json')):
             native_target = output / relative
             native_target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, native_target)
     version = json.loads((ROOT / '.claude-plugin/plugin.json').read_text())['version']
     manifest = {'$schema': 'https://antigravity.google/schemas/v1/plugin.json',
                 'name': 'doforme', 'displayName': 'doforme', 'version': version,
-                'description': 'Experimental read-only bug analysis and planning grounded in requirements and evidence.',
+                'description': 'Guided bug investigation, scoped repairs, independent validation and local PR drafts grounded in requirements.',
                 'author': {'name': 'Erik Gunawan'}, 'license': 'MIT',
                 'repository': 'https://github.com/erikgunawan/doforme'}
     (output / 'plugin.json').write_text(json.dumps(manifest, indent=2) + '\n')
@@ -56,7 +56,7 @@ def build(output):
     for name in ('USAGE', 'PHASES'):
         guide = guide.replace('](' + name + '.md)', '](https://github.com/erikgunawan/doforme/blob/master/docs/' + name + '.md)')
     (output / 'README.md').write_text(guide)
-    return {'package': str(output), 'supported_stages': ['analyze', 'plan'],
+    return {'package': str(output), 'supported_stages': ['analyze', 'plan', 'fix', 'test', 'review', 'pr'],
             'publication': 'none', 'installation': 'not_run'}
 
 

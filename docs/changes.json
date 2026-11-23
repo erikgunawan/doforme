@@ -2197,6 +2197,131 @@
           "blob": "b36c5f8ffd034b3c81b4a48442951b4dea312064"
         }
       }
+    },
+    {
+      "id": "3a218b34e2c58486cb71eb908107f737172a164432fe96de0a771282c773f1d6",
+      "base_commit": "be4f0428437aeab69d310830247359646a3c9ecf",
+      "date": "2026-11-23",
+      "version": "0.30.0",
+      "summary": "Enable the six-stage Antigravity workflow with scoped edits and broker-backed validation evidence",
+      "changes": {
+        ".claude-plugin/marketplace.json": {
+          "mode": "100644",
+          "blob": "274c543281139ea4ea8faadc5965dc4e3326fa43"
+        },
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "731e61f325f9dc2c3eff801b967b4e58bd97f7b8"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "8f7ab359f026e41dcf7fd416205ba84b00f71d36"
+        },
+        "docs/ANTIGRAVITY.md": {
+          "mode": "100644",
+          "blob": "0a3de48c5338c903891660e3e57f7c2825948d03"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "27b9ccbea2036a13fa9bd4b307de2c1439159dd6"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "e64001aebdf23da1c6b82f42ae715b31dfc6090b"
+        },
+        "docs/ROADMAP.md": {
+          "mode": "100644",
+          "blob": "6e86e05e365c8d8e693f11384b7bf7a3f9a57405"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "2157990e85e46c69a3c07a42e189e55e492b62f9"
+        },
+        "integrations/antigravity/agents/doforme-fixer.md": {
+          "mode": "100644",
+          "blob": "3dc951f4332ccabaff5805f5a5c338b53684cf44"
+        },
+        "integrations/antigravity/agents/doforme-inspector.md": {
+          "mode": "100644",
+          "blob": "f681bf28cb6ef9bd5fadab89c97e28115c4e713b"
+        },
+        "integrations/antigravity/agents/doforme-tester.md": {
+          "mode": "100644",
+          "blob": "3448acf8460967132193ae4e61e5b503e5e92c16"
+        },
+        "integrations/antigravity/mcp_config.json": {
+          "mode": "100644",
+          "blob": "4ac26be56e1b4cf8ad2dc8a44620aabbd7786446"
+        },
+        "integrations/antigravity/references/coordinator.md": {
+          "mode": "100644",
+          "blob": "e06a8bb3c76c85ee057986cb309b54f8a499bb20"
+        },
+        "integrations/antigravity/scripts/antigravity_guard.py": {
+          "mode": "100644",
+          "blob": "be94a849ae147c7a5ff2d4e4de942529d1e8b1ee"
+        },
+        "integrations/antigravity/scripts/antigravity_validation.py": {
+          "mode": "100644",
+          "blob": "577c7277ea942469244e7b50d038ee711a32d0b3"
+        },
+        "integrations/antigravity/scripts/antigravity_workflow.py": {
+          "mode": "100644",
+          "blob": "2184e205ff73cfa5d22526cd78808270ddbc5fd1"
+        },
+        "integrations/antigravity/skills/endtoend/SKILL.md": {
+          "mode": "100644",
+          "blob": "f8adfe3b7b4090c8e9a220e85397d91af35faba1"
+        },
+        "integrations/antigravity/skills/fix/SKILL.md": {
+          "mode": "100644",
+          "blob": "bcaa7be80080d4b39ed1266eaff6330b5550b0df"
+        },
+        "integrations/antigravity/skills/pr/SKILL.md": {
+          "mode": "100644",
+          "blob": "7a67dce6600107fdd58072d9b1432046ccfca132"
+        },
+        "integrations/antigravity/skills/review/SKILL.md": {
+          "mode": "100644",
+          "blob": "3f0b8e66b1b4735588af5ffd20b268bb45297583"
+        },
+        "integrations/antigravity/skills/test/SKILL.md": {
+          "mode": "100644",
+          "blob": "72125db81996765859e1cb189df5d362a1b2b1bc"
+        },
+        "scripts/antigravity_commands.py": {
+          "mode": "100644",
+          "blob": "735ccb9cd1a3a6d660524d8b0d29b4add4c593b9"
+        },
+        "scripts/antigravity_runtime.py": {
+          "mode": "100644",
+          "blob": "3e47de407c43f08756306bbd992ab95234b7749f"
+        },
+        "scripts/build_antigravity.py": {
+          "mode": "100644",
+          "blob": "7802012e58d03e935641125e2ac6f024d5fbbcc8"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "83cc8ee9b5ec096a952e3c320a04a8d9cf28cf0b"
+        },
+        "scripts/guided_workflow.py": {
+          "mode": "100644",
+          "blob": "cdf29070c6b3859852754f841725a391e0971acd"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "f07cba541f41eaea7b100829cfa6cc5c77ac849f"
+        },
+        "tests/test_antigravity.py": {
+          "mode": "100644",
+          "blob": "ff4267d7cda6af9e5a454501bc2ed7bb4bff1f70"
+        },
+        "tests/test_antigravity_execution.py": {
+          "mode": "100644",
+          "blob": "bfe0be8abfdcdb9682ab970552575ec5e9965b28"
+        }
+      }
     }
   ]
 }

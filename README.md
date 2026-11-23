@@ -12,7 +12,7 @@ Bring the issue. Review the plan. Approve the scope. Keep the evidence.
 | Runtime | Available workflow |
 | --- | --- |
 | **Claude Code** | Guided setup, investigation, planning, scoped fixes, testing, review, and a local PR draft. |
-| **Antigravity CLI — preview** | Guided setup, repository doctor, saved status, read-only investigation, and planning. |
+| **Antigravity CLI — preview** | Guided setup, investigation, planning, scoped fixes, testing, review, and a local PR draft. |
 
 [![Animated illustration of doforme moving from issue selection through analysis, plan approval, repair, testing, review, and a PR draft](docs/media/workflow-preview.gif)](docs/WORKFLOW-PREVIEW.md)
 
@@ -24,7 +24,7 @@ code changes; your team's delivery process takes the draft through acceptance.*
 | Capability | Why it helps |
 | --- | --- |
 | **Guided setup and short commands** | Start from an issue ID or URL. Doforme handles setup questions, internal inputs, and report handoffs. |
-| **Antigravity CLI preview** | Reuse requirement-grounded analysis and planning with a native read-only package. |
+| **Antigravity CLI preview** | Run the same staged workflow through a native package with scoped edits and recorded command results. |
 | **Evidence before edits** | Investigate issue validity, trace symptoms to source, and separate root-cause hypotheses from facts. |
 | **Requirements that shape the repair** | Connect confirmed business rules and AC to the plan and test coverage. Use repository specs or supplied business/Jira/Figma exports. |
 | **A scope you can approve** | Review exact files and test commands before the fixer changes code. Clarify ambiguous requirements in the same conversation. |
@@ -37,13 +37,13 @@ code changes; your team's delivery process takes the draft through acceptance.*
 
 ![Complete doforme workflow: issue and confirmed requirements, six gated stages, then the team's publication, review, CI, QA/UAT, merge, and closure process](docs/media/workflow-overview.svg)
 
-The full Claude Code workflow prepares a local PR draft. Your team controls publication, review, and
+The runner prepares a local PR draft. Your team controls publication, review, and
 business acceptance. Telegram resolution updates require the relevant merged PR,
 required checks, and owner evidence.
 
 ## Work at your pace
 
-In Claude Code, choose how far to take each issue:
+Choose how far to take each issue in either runtime:
 
 **Review each stage.** Investigate first, inspect the plan, then continue through
 fix, test, review, and draft preparation using the same issue identity.

@@ -84,11 +84,26 @@ def check_antigravity(root):
                   'inheritMcp: false', 'inheritCustomizations: true'):
         if field not in front.splitlines():
             raise ValueError('Antigravity worker must preserve its reviewed capabilities and guard inheritance')
+    for name in ('doforme-fixer', 'doforme-tester', 'doforme-inspector'):
+        front = (native / 'agents' / (name + '.md')).read_text().split('\n---\n', 1)[0]
+        expected_tools = ['view_file', 'grep_search', 'find_by_name', 'list_dir']
+        if name == 'doforme-fixer':
+            expected_tools += ['write_to_file', 'replace_file_content', 'multi_replace_file_content']
+        if re.findall(r'^  - (.+)$', front, re.M) != expected_tools:
+            raise ValueError('Antigravity stage worker capabilities widened')
+        for field in ('name: ' + name, 'mainAgent: true', 'subagent: false',
+                      'commandExecutionPolicy: off', 'inheritMcp: true', 'inheritCustomizations: true'):
+            if field not in front.splitlines():
+                raise ValueError('Native stage worker lost its reviewed execution boundary')
+    expected_mcp = {'mcpServers': {'validation': {'command': 'python3',
+                    'args': ['-B', '${PLUGIN_ROOT}/scripts/antigravity_validation.py']}}}
+    if json.loads((native / 'mcp_config.json').read_text()) != expected_mcp:
+        raise ValueError('Native command broker must remain local and fixed')
     hooks = json.loads((native / 'hooks.json').read_text())
     if hooks != {'doforme-worker-read-boundary': {'PreToolUse': [{'matcher': '*', 'hooks': [
             {'type': 'command', 'command': 'python3 -B ./scripts/antigravity_guard.py', 'timeout': 10}]}]}}:
         raise ValueError('Antigravity pre-execution guard must cover every tool')
-    expected = {'init', 'doctor', 'status', 'analyze', 'plan'}
+    expected = {'init', 'doctor', 'status', 'analyze', 'plan', 'fix', 'test', 'review', 'pr', 'endtoend'}
     entries = list((native / 'skills').glob('*/SKILL.md'))
     if {p.parent.name for p in entries} != expected:
         raise ValueError('Antigravity preview must expose exactly the reviewed entry skills')

@@ -35,7 +35,7 @@ applicability/AC question, then use the same setup preview/confirmation here. Do
 send the user away with a long prompt. Changed sources make old sessions stale;
 offer an explicit new analysis once the owner prepares a clean baseline.
 
-## Saved reports and read-only stages
+## Saved reports and stages
 
 Doctor needs no issue. Status without an issue lists saved sessions. Neither
 runs a model. For status with an issue use `--issue <selector>`.
@@ -64,8 +64,37 @@ next steps using the saved report. Static reasoning is not a reproduction. Busin
 acceptance and resolution remain unestablished. Missing confirmed requirements need an owner decision. Use the guided setup flow
 below to save the actual confirmation and source excerpts; never invent approval.
 
-Init, doctor, status, analyze and plan are supported here. Fix, test, review, PR and
-end-to-end are unavailable. Do not route them to Claude automatically. Use the
-plugin namespace once: `/doforme:doctor`, `/doforme:status`, `/doforme:analyze`,
-and `/doforme:plan`. Preserve these names in helper suggestions. Never claim that importing the
-Claude plugin enables this runtime.
+## Scoped fix, independent test and remaining stages
+
+All ten public commands are available: init, doctor, status, analyze, plan, fix,
+test, review, pr and endtoend. Invoke a stage using its action name on the helper;
+endtoend uses the same name. Always obtain a preview without --confirm first.
+
+For fix/test/review/pr without prerequisites, explain the returned needs_step and
+offer the next command; never silently run all earlier stages. Respect blocked,
+failed, stale and partial-edit states. Explicit retry needs review/consent. Read
+saved reports; do not infer success from a status alone or rewrite a verdict.
+
+Before fix, read the complete fresh plan and relevant source/test files. Derive
+exact edit_paths, reviewed test_commands and artifact_paths. Use `scope --repo
+<target> --issue <selector> --data-json <proposal>` to preview. Display those exact
+files and commands and publication none, then ask for approval. On a direct yes,
+repeat scope with its current digest. Only then preview and confirm fix. Stored
+configuration and grants do not replace consent in this conversation. Reconfirm
+mutation scope on a new conversation and whenever the proposal changes.
+
+End-to-end starts with a read-only preparation (no edit/test scope). It runs
+Analyze → Plan and pauses. Review the plan, obtain exact scope approval using the
+same scope flow, then preview/confirm endtoend again to run Fix → Test → Review →
+PR draft. No extra broad permission, fallback runtime, Git operation or notification
+is authorized. A blocker stops the sequence. One issue per session.
+
+Workers use a scoped command broker and actual exit-status receipts. Never run
+repository programs or call that broker directly from this coordinator; only the
+helper invokes gated workers. The fixer must observe a failing regression before
+changing implementation, then a passing result; Test is independent. Review cannot
+rerun tests or edit source. PR produces a local draft only. Explain coverage gaps,
+missing browser/UAT evidence and business decisions without claiming resolved.
+
+Commands use the namespace once: `/doforme:analyze`, `/doforme:fix`, etc. No automatic
+push, PR publication, merge, issue closure or Telegram activation/send occurs.

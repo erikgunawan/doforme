@@ -8,7 +8,7 @@
     {
       "name": "doforme",
       "source": "./",
-      "description": "Bug investigation and planning for Claude Code and Antigravity CLI, with evidence-backed fixes and PR drafts in Claude Code."
+      "description": "Evidence-backed bug investigation, scoped fixes, testing and PR drafts for Claude Code and Antigravity CLI."
     }
   ]
 }

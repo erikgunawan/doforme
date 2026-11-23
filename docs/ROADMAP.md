@@ -1,6 +1,18 @@
 # doforme roadmap status
 
-## Runtime preview update — 2026-11-23
+## Runtime command parity — v0.30.0
+
+Antigravity now exposes the same ten public commands and six-stage graph as
+Claude Code, including guided init, scoped fix/test, review, local PR preparation
+and end-to-end with a plan/scope pause. A local broker records actual exit codes
+and the guard enforces per-stage file/tool boundaries. A real synthetic six-stage
+run completed on CLI 1.5.15; [PHASES.md](PHASES.md) records its exact tested policy
+and later denial-latch hardening. This is command/workflow parity, not identical
+provider cost controls, legacy manual-report syntax or production isolation.
+Real KlikDown acceptance, live source connectors and deployment gates remain open.
+See [ANTIGRAVITY.md](ANTIGRAVITY.md) for installation and operating limits.
+
+## Earlier runtime preview — 2026-11-23
 
 Version 0.28 adds a separately built native Antigravity CLI preview for doctor,
 saved status, read-only analysis and planning. It reuses the graph/checkpoint

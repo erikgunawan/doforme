@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "validation": {
+      "command": "python3",
+      "args": ["-B", "${PLUGIN_ROOT}/scripts/antigravity_validation.py"]
+    }
+  }
+}

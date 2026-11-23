@@ -425,8 +425,6 @@ def scope(repo, issue, data, confirm=None, root=None):
 def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None, runtime='claude'):
     if runtime not in ('claude', 'antigravity'):
         raise ValueError('Unsupported runtime')
-    if runtime == 'antigravity' and stage not in ('analyze', 'plan'):
-        raise ValueError('Antigravity supports read-only analyze/plan only')
     if stage not in (*ORDER, 'endtoend'):
         raise ValueError('Unknown stage')
     _, base_folder = locator(repo, issue, root)

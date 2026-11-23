@@ -9,6 +9,14 @@ Test evidence and limitations are recorded separately in [phase history](docs/PH
 
 English summary translations affect presentation only; original history records remain unchanged.
 
+## 2026-11-23 — v0.30.0
+
+Enable the six-stage Antigravity workflow with scoped edits and broker-backed validation evidence
+
+Change ID: `3a218b34e2c5`.
+
+Files: `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`, `README.md`, `docs/ANTIGRAVITY.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/ROADMAP.md`, `docs/USAGE.md`, `integrations/antigravity/agents/doforme-fixer.md`, `integrations/antigravity/agents/doforme-inspector.md`, `integrations/antigravity/agents/doforme-tester.md`, `integrations/antigravity/mcp_config.json`, `integrations/antigravity/references/coordinator.md`, `integrations/antigravity/scripts/antigravity_guard.py`, `integrations/antigravity/scripts/antigravity_validation.py`, `integrations/antigravity/scripts/antigravity_workflow.py`, `integrations/antigravity/skills/endtoend/SKILL.md`, `integrations/antigravity/skills/fix/SKILL.md`, `integrations/antigravity/skills/pr/SKILL.md`, `integrations/antigravity/skills/review/SKILL.md`, `integrations/antigravity/skills/test/SKILL.md`, `scripts/antigravity_commands.py`, `scripts/antigravity_runtime.py`, `scripts/build_antigravity.py`, `scripts/check_plugin.py`, `scripts/guided_workflow.py`, `scripts/run_workflow.py`, `tests/test_antigravity.py`, `tests/test_antigravity_execution.py`.
+
 ## 2026-11-23 — v0.29.0
 
 Add guided Antigravity init and confirmed two-file repository setup

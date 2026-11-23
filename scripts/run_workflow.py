@@ -102,7 +102,7 @@ def advance_reason(stage, result):
     return None
 
 
-def audit_calls(repo, rows, stage, config):
+def audit_calls(repo, rows, stage, config, runtime='claude'):
     readonly = [('git', *shlex.split(item)) for item in GIT_INSPECTIONS]
     for row in rows:
         for item in row.get('message', {}).get('content', []):
@@ -136,7 +136,11 @@ def audit_calls(repo, rows, stage, config):
                 path = data.get('file_path') or data.get('path')
                 if path:
                     resolved = (repo / path).resolve()
-                    if not (resolved.is_relative_to(repo) or resolved.is_relative_to(PLUGIN / 'skills')):
+                    native_metadata = False
+                    if runtime == 'antigravity' and name == 'Read' and stage in ('fix', 'test', 'review', 'pr'):
+                        from antigravity_runtime import broker_schema_path
+                        native_metadata = resolved == broker_schema_path()
+                    if not (resolved.is_relative_to(repo) or resolved.is_relative_to(PLUGIN / 'skills') or native_metadata):
                         raise ValueError('Read/search outside target or plugin skills')
                     if resolved.is_relative_to(repo):
                         relative = str(resolved.relative_to(repo))
@@ -297,10 +301,7 @@ def compact(state, fresh=None):
             'requires_manual_recovery': state.get('requires_manual_recovery', False),
             'publication_ready': False, 'business_acceptance': 'not_evaluated', 'resolution_status': 'not_established', 'remote_actions': 'none'}
     if state.get('runtime', {}).get('name') == 'antigravity':
-        summary['supported_stages'] = ['analyze', 'plan']
-        summary['runtime_limit_reached'] = summary['next_stage'] not in (None, 'analyze', 'plan')
-        if summary['runtime_limit_reached']:
-            summary['next_action'] = 'Read-only runtime limit reached; fix is not supported in this Antigravity preview'
+        summary['supported_stages'] = list(ORDER)
     return summary
 
 
@@ -328,8 +329,8 @@ def checkpoint_results_checked(store, state, revision):
                 raise ValueError('Antigravity audit trace missing')
             rows = store.result(record['filename'], record['digest'])
             from antigravity_runtime import check_normalized_trace
-            check_normalized_trace(rows)
-            audit_calls(Path(state['repository']), rows, stage, json.loads(store.read_text('input.json')))
+            check_normalized_trace(rows, stage, json.loads(store.read_text('input.json')), state['repository'])
+            audit_calls(Path(state['repository']), rows, stage, json.loads(store.read_text('input.json')), runtime='antigravity')
         if json.loads(store.read_text(stage + '.json')) != actual or store.read_text(stage + '.md') != actual['report']:
             raise ValueError('Displayed report differs from verified checkpoint artifact')
         if stage in ('fix', 'test') and actual['status'] == 'complete':
@@ -360,8 +361,6 @@ def status_checkpoint(repo, output):
 def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None, resume=False, retry=False, stop_after=None, runtime='claude'):
     if runtime == 'antigravity':
         from antigravity_runtime import AntigravityExecutor, runtime_identity
-        if stop_after not in ('analyze', 'plan') or allow_fix or allow_execution:
-            raise ValueError('Antigravity supports read-only analyze/plan only; choose an explicit stopping stage')
         runtime_info = runtime_identity()
         executor = executor or AntigravityExecutor()
     elif runtime == 'claude':
@@ -447,7 +446,10 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                 result = envelope_checked(stage, result, revision)
                 if state['policy_digest'] != policy_digest():
                     raise ValueError('Plugin policy changed during stage')
-                audit_calls(repo, trace, stage, config)
+                if runtime == 'antigravity':
+                    from antigravity_runtime import check_normalized_trace
+                    check_normalized_trace(trace, stage, config, repo)
+                audit_calls(repo, trace, stage, config, runtime=runtime)
                 evidence = validation_checked(trace, stage, config) if result['status'] == 'complete' else []
                 after = snapshot(repo)
                 allowed = set(config['artifact_paths']) | (set(config['edit_paths']) if stage == 'fix' else set()) if stage in ('fix', 'test') else set()
@@ -466,8 +468,6 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                     result['report'] += manifest
                 filename, content_digest = store.artifact(stage, attempt, result)
                 if runtime == 'antigravity':
-                    from antigravity_runtime import check_normalized_trace
-                    check_normalized_trace(trace)
                     trace_name = stage + '-' + str(attempt) + '.runtime-trace.json'
                     write_json(store.root / 'history' / trace_name, trace)
                     state.setdefault('runtime_traces', {})[stage] = {'filename': trace_name, 'digest': digest(trace)}
