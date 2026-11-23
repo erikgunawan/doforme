@@ -9,6 +9,14 @@ Test evidence and limitations are recorded separately in [phase history](docs/PH
 
 English summary translations affect presentation only; original history records remain unchanged.
 
+## 2026-11-23 — v0.28.1
+
+Fix duplicated Antigravity command prefixes with plugin-scoped short skill names
+
+Change ID: `4ee95187cd3f`.
+
+Files: `.claude-plugin/plugin.json`, `docs/ANTIGRAVITY.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/USAGE.md`, `integrations/antigravity/skills/analyze/SKILL.md`, `integrations/antigravity/skills/doctor/SKILL.md`, `integrations/antigravity/skills/doforme-analyze/SKILL.md`, `integrations/antigravity/skills/doforme-doctor/SKILL.md`, `integrations/antigravity/skills/doforme-plan/SKILL.md`, `integrations/antigravity/skills/doforme-status/SKILL.md`, `integrations/antigravity/skills/plan/SKILL.md`, `integrations/antigravity/skills/status/SKILL.md`, `scripts/check_plugin.py`, `tests/test_antigravity.py`.
+
 ## 2026-11-23 — v0.28.0
 
 Position doforme for Claude Code and Antigravity CLI with clear runtime support

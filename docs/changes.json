@@ -2063,6 +2063,63 @@
           "blob": "cd0eb17570e0a9a24905d8ddce68eb83acb879bd"
         }
       }
+    },
+    {
+      "id": "4ee95187cd3f457bc75f1dbe603e4792a55f2cc7f18719464fc2525d7628d1b5",
+      "base_commit": "ae2e9fb37788734f8fba44bef28543778d48d3fa",
+      "date": "2026-11-23",
+      "version": "0.28.1",
+      "summary": "Fix duplicated Antigravity command prefixes with plugin-scoped short skill names",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "0fca2d2e260121be559a05ece2a75f18025ff8ba"
+        },
+        "docs/ANTIGRAVITY.md": {
+          "mode": "100644",
+          "blob": "4d4f8bd4454ac5ea99229c27a3b9dbf93af01599"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "046ca9d073e97bd737120a6906954ecf24e92294"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "8c79fe9e15fdd2f3198538b816d67d7f443a6629"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "7c8a4ed136afbc3f3a97bce4ad25398261294d73"
+        },
+        "integrations/antigravity/skills/analyze/SKILL.md": {
+          "mode": "100644",
+          "blob": "714575d74cd3958e68f8c299bff1aa9859148700"
+        },
+        "integrations/antigravity/skills/doctor/SKILL.md": {
+          "mode": "100644",
+          "blob": "b19591350acc62add65dad9d0aa606698cbdfa2a"
+        },
+        "integrations/antigravity/skills/doforme-analyze/SKILL.md": null,
+        "integrations/antigravity/skills/doforme-doctor/SKILL.md": null,
+        "integrations/antigravity/skills/doforme-plan/SKILL.md": null,
+        "integrations/antigravity/skills/doforme-status/SKILL.md": null,
+        "integrations/antigravity/skills/plan/SKILL.md": {
+          "mode": "100644",
+          "blob": "f12f99c15c4ecff7cefb35212066ebe20e5df2dd"
+        },
+        "integrations/antigravity/skills/status/SKILL.md": {
+          "mode": "100644",
+          "blob": "83664153cd0ea52b35ba6268bbb4865c91b1942e"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "b12aaaa543a2356539b1bb6fbba9c3553a67a2b4"
+        },
+        "tests/test_antigravity.py": {
+          "mode": "100644",
+          "blob": "da52124e1dd8ad8a070b4bcb39658c5b2f11cba4"
+        }
+      }
     }
   ]
 }
