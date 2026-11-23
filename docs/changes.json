@@ -2034,6 +2034,35 @@
           "blob": "3e618d10030ddf697fc338bbba3be3a2388d7435"
         }
       }
+    },
+    {
+      "id": "e4dc850523c8a312951a8e4768a86bcda8890677e5f9d2fe6e2097925aa1df41",
+      "base_commit": "acdcba70101ff37c2c49fd65d4322fc0bded71f6",
+      "date": "2026-11-23",
+      "version": "0.28.0",
+      "summary": "Position doforme for Claude Code and Antigravity CLI with clear runtime support",
+      "changes": {
+        ".claude-plugin/marketplace.json": {
+          "mode": "100644",
+          "blob": "12d276ccab6ff82c7fe5c6c7b264ddd1b52f6ef2"
+        },
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "f0cdff679dc2e26a28e25c545cf90d51a23acf62"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "7a7cb66d8d1be061be85b92ab30f9797bfaba947"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "0d38af315d1b7167c7c5f16ca8660c5161561e79"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "cd0eb17570e0a9a24905d8ddce68eb83acb879bd"
+        }
+      }
     }
   ]
 }

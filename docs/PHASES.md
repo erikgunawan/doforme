@@ -529,3 +529,14 @@ this provider and are disclosed before execution. Existing user customizations
 can participate; these controls are not OS isolation. No complete conversational
 multi-turn approval pilot, real KlikDown repair, business acceptance, fix/test/PR
 support, Telegram send, push or remote release is claimed by this phase.
+
+## Multi-runtime product description
+
+Updated the README introduction and plugin/catalog descriptions to present
+doforme for Claude Code and Antigravity CLI. An early runtime table distinguishes
+the full Claude workflow from the read-only Antigravity preview, and the full-flow
+illustrations and end-to-end options are explicitly attributed to Claude Code.
+The installation overview uses the same positioning. The GitHub About description
+was updated at the owner's request; this does not publish local source commits.
+All 18 documentation tests and plugin structure/capability checks passed. No
+runtime behavior, target source, model execution or notification changed.

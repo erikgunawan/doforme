@@ -2,15 +2,21 @@
 
 **Turn a bug report into a fix your team can review.**
 
-A Claude Code plugin that connects issue investigation, business requirements,
-scoped repairs, independent testing, and review—through to a local PR draft.
+A bug-resolution plugin for **Claude Code and Antigravity CLI**. Connect issues
+and business requirements to evidence-backed analysis, reviewable plans, and
+scoped repairs.
 Bring the issue. Review the plan. Approve the scope. Keep the evidence.
 
 [Get started](docs/GETTING-STARTED.md) · [Explore the workflow](docs/HOW-IT-WORKS.md) · [Antigravity preview](docs/ANTIGRAVITY.md) · [MIT license](LICENSE)
 
+| Runtime | Available workflow |
+| --- | --- |
+| **Claude Code** | Guided setup, investigation, planning, scoped fixes, testing, review, and a local PR draft. |
+| **Antigravity CLI — preview** | Repository doctor, saved status, read-only investigation, and planning. |
+
 [![Animated illustration of doforme moving from issue selection through analysis, plan approval, repair, testing, review, and a PR draft](docs/media/workflow-preview.gif)](docs/WORKFLOW-PREVIEW.md)
 
-*An illustrated walkthrough with example data. Your approval connects the plan to
+*The full Claude Code workflow, illustrated with example data. Your approval connects the plan to
 code changes; your team's delivery process takes the draft through acceptance.*
 
 ## What you get
@@ -31,11 +37,13 @@ code changes; your team's delivery process takes the draft through acceptance.*
 
 ![Complete doforme workflow: issue and confirmed requirements, six gated stages, then the team's publication, review, CI, QA/UAT, merge, and closure process](docs/media/workflow-overview.svg)
 
-The runner prepares a local PR draft. Your team controls publication, review, and
+The full Claude Code workflow prepares a local PR draft. Your team controls publication, review, and
 business acceptance. Telegram resolution updates require the relevant merged PR,
 required checks, and owner evidence.
 
 ## Work at your pace
+
+In Claude Code, choose how far to take each issue:
 
 **Review each stage.** Investigate first, inspect the plan, then continue through
 fix, test, review, and draft preparation using the same issue identity.

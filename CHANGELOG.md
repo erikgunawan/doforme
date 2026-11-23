@@ -11,6 +11,14 @@ English summary translations affect presentation only; original history records 
 
 ## 2026-11-23 — v0.28.0
 
+Position doforme for Claude Code and Antigravity CLI with clear runtime support
+
+Change ID: `e4dc850523c8`.
+
+Files: `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`, `README.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`.
+
+## 2026-11-23 — v0.28.0
+
 Add experimental Antigravity CLI support for guarded read-only analysis and planning
 
 Change ID: `da85fc9631af`.

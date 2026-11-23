@@ -4,8 +4,9 @@ For the experimental Antigravity CLI package, follow [Antigravity installation](
 It supports doctor, status, analysis and planning only. The instructions below
 install the full Claude Code workflow.
 
-doforme is a Claude Code plugin. A local marketplace supports persistent user-scope
-installation from a GitHub checkout. Local use does not require GitHub Actions,
+doforme provides packages for Claude Code and Antigravity CLI. For Claude Code,
+a local marketplace supports persistent user-scope installation from a GitHub checkout.
+Local use does not require GitHub Actions,
 Jira, Figma, or Telegram.
 
 ## Prerequisites
