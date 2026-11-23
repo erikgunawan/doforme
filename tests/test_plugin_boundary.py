@@ -26,6 +26,17 @@ class BoundaryTests(unittest.TestCase):
     def test_current_plugin(self):
         CHECKER.check(self.root)
 
+    def test_antigravity_cannot_add_shell_to_worker(self):
+        self.replace('integrations/antigravity/agents/doforme-reader.md', '  - list_dir', '  - run_command')
+        with self.assertRaisesRegex(ValueError, 'read/search-only'):
+            CHECKER.check(self.root)
+
+    def test_antigravity_cannot_skip_guard_or_disable_its_inheritance(self):
+        self.replace('integrations/antigravity/agents/doforme-reader.md',
+                     'inheritCustomizations: true', 'inheritCustomizations: false')
+        with self.assertRaisesRegex(ValueError, 'guard inheritance'):
+            CHECKER.check(self.root)
+
     def test_shell_capability_rejected(self):
         self.replace("agents/investigator.md", "Read, Glob, Grep", "Read, Glob, Grep, Bash")
         with self.assertRaisesRegex(ValueError, "only Read"):

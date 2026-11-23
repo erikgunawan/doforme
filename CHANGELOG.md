@@ -9,6 +9,22 @@ Test evidence and limitations are recorded separately in [phase history](docs/PH
 
 English summary translations affect presentation only; original history records remain unchanged.
 
+## 2026-11-23 — v0.28.0
+
+Position doforme for Claude Code and Antigravity CLI with clear runtime support
+
+Change ID: `e4dc850523c8`.
+
+Files: `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`, `README.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`.
+
+## 2026-11-23 — v0.28.0
+
+Add experimental Antigravity CLI support for guarded read-only analysis and planning
+
+Change ID: `da85fc9631af`.
+
+Files: `.claude-plugin/plugin.json`, `README.md`, `docs/ANTIGRAVITY.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/ROADMAP.md`, `docs/USAGE.md`, `integrations/antigravity/agents/doforme-reader.md`, `integrations/antigravity/hooks.json`, `integrations/antigravity/scripts/antigravity_guard.py`, `integrations/antigravity/scripts/antigravity_workflow.py`, `integrations/antigravity/skills/doforme-analyze/SKILL.md`, `integrations/antigravity/skills/doforme-doctor/SKILL.md`, `integrations/antigravity/skills/doforme-plan/SKILL.md`, `integrations/antigravity/skills/doforme-status/SKILL.md`, `scripts/antigravity_runtime.py`, `scripts/build_antigravity.py`, `scripts/check_plugin.py`, `scripts/guided_workflow.py`, `scripts/run_workflow.py`, `tests/test_antigravity.py`, `tests/test_plugin_boundary.py`.
+
 ## 2026-11-19 — v0.27.0
 
 Restyle README workflow visuals with a neutral paper-and-charcoal palette and restrained labels

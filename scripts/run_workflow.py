@@ -273,7 +273,7 @@ def graph_checked(graph=None):
 
 def policy_digest():
     values = {}
-    for folder in ('commands', 'agents', 'skills', 'scripts'):
+    for folder in ('commands', 'agents', 'skills', 'scripts', 'integrations'):
         for path in sorted((PLUGIN / folder).rglob('*')):
             if path.is_file() and '__pycache__' not in path.parts:
                 values[str(path.relative_to(PLUGIN))] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -289,12 +289,19 @@ def compact(state, fresh=None):
             fresh = False
     completed_gate_block = any(result['status'] == 'complete' and advance_reason(stage, result)
                                for stage, result in state['results'].items())
-    return {'status': state['status'], 'repository': state['repository'], 'revision': state['revision'],
+    summary = {'status': state['status'], 'repository': state['repository'], 'revision': state['revision'],
+            'runtime': state.get('runtime', {'name': 'claude', 'adapter_version': 1}),
             'stages': {key: value['status'] for key, value in state['results'].items()},
             'next_stage': None if completed_gate_block else next((stage for stage in ORDER if state['results'].get(stage, {}).get('status') != 'complete'), None),
             'fresh': fresh, 'reason': state.get('reason'), 'partial_changed_paths': state.get('partial_changed_paths', []),
             'requires_manual_recovery': state.get('requires_manual_recovery', False),
             'publication_ready': False, 'business_acceptance': 'not_evaluated', 'resolution_status': 'not_established', 'remote_actions': 'none'}
+    if state.get('runtime', {}).get('name') == 'antigravity':
+        summary['supported_stages'] = ['analyze', 'plan']
+        summary['runtime_limit_reached'] = summary['next_stage'] not in (None, 'analyze', 'plan')
+        if summary['runtime_limit_reached']:
+            summary['next_action'] = 'Read-only runtime limit reached; fix is not supported in this Antigravity preview'
+    return summary
 
 
 def checkpoint_results_checked(store, state, revision):
@@ -315,6 +322,14 @@ def checkpoint_results_checked(store, state, revision):
         if actual != results[stage]:
             raise ValueError('Checkpoint result changed')
         envelope_checked(stage, actual, revision)
+        if state.get('runtime', {}).get('name') == 'antigravity':
+            record = state.get('runtime_traces', {}).get(stage)
+            if not record:
+                raise ValueError('Antigravity audit trace missing')
+            rows = store.result(record['filename'], record['digest'])
+            from antigravity_runtime import check_normalized_trace
+            check_normalized_trace(rows)
+            audit_calls(Path(state['repository']), rows, stage, json.loads(store.read_text('input.json')))
         if json.loads(store.read_text(stage + '.json')) != actual or store.read_text(stage + '.md') != actual['report']:
             raise ValueError('Displayed report differs from verified checkpoint artifact')
         if stage in ('fix', 'test') and actual['status'] == 'complete':
@@ -333,10 +348,26 @@ def status_checkpoint(repo, output):
         raise ValueError('Checkpoint belongs to another repository')
     checkpoint_results_checked(store, state, state['revision'])
     fresh = state.get('workspace') == snapshot(repo) and state.get('revision') == git(repo, 'rev-parse', 'HEAD') and state.get('policy_digest') == policy_digest()
+    if state.get('runtime', {}).get('name') == 'antigravity':
+        from antigravity_runtime import runtime_identity
+        try:
+            fresh = fresh and state['runtime'] == runtime_identity()
+        except (ValueError, OSError):
+            fresh = False
     return compact(state, fresh)
 
 
-def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None, resume=False, retry=False, stop_after=None):
+def pipeline(repo, config, output, allow_fix=False, allow_execution=False, executor=None, resume=False, retry=False, stop_after=None, runtime='claude'):
+    if runtime == 'antigravity':
+        from antigravity_runtime import AntigravityExecutor, runtime_identity
+        if stop_after not in ('analyze', 'plan') or allow_fix or allow_execution:
+            raise ValueError('Antigravity supports read-only analyze/plan only; choose an explicit stopping stage')
+        runtime_info = runtime_identity()
+        executor = executor or AntigravityExecutor()
+    elif runtime == 'claude':
+        runtime_info = {'name': 'claude', 'adapter_version': 1}
+    else:
+        raise ValueError('Unsupported runtime')
     if stop_after is not None and stop_after not in ORDER:
         raise ValueError('Unknown stopping stage')
     repo, output = Path(repo).resolve(), Path(output).absolute()
@@ -356,6 +387,8 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
             state = store.load()
             if state.get('repository') != str(repo) or state.get('revision') != revision:
                 raise ValueError('Stale repository/revision checkpoint')
+            if state.get('runtime', {'name': 'claude', 'adapter_version': 1}) != runtime_info:
+                raise ValueError('Runtime or runtime policy changed; start a new run')
             if state.get('config_digest') != digest(config) or state.get('policy_digest') != policy_digest() or state.get('grants') != grants:
                 raise ValueError('Config, plugin policy, or direct authorization changed; start a new run')
             if state.get('workspace') != snapshot(repo):
@@ -366,7 +399,7 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
             if state['status'] == 'complete' or (state['status'] in ('blocked', 'failed', 'running') and not retry):
                 return state
         else:
-            state = {'state_version': 1, 'repository': str(repo), 'revision': revision,
+            state = {'state_version': 1, 'repository': str(repo), 'revision': revision, 'runtime': runtime_info,
                      'config_digest': digest(config), 'policy_digest': policy_digest(), 'grants': grants,
                      'workspace': snapshot(repo), 'artifact_index': {}, 'validation_artifacts': {}, 'attempt_counts': {}, 'results': {},
                      'status': 'running', 'remote_actions': 'none', 'business_acceptance': 'not_evaluated',
@@ -432,6 +465,12 @@ def pipeline(repo, config, output, allow_fix=False, allow_execution=False, execu
                             manifest += '| ' + path + ' | ' + record['git_blob_sha1'] + ' | ' + record['git_blob_sha1'] + ' |\n'
                     result['report'] += manifest
                 filename, content_digest = store.artifact(stage, attempt, result)
+                if runtime == 'antigravity':
+                    from antigravity_runtime import check_normalized_trace
+                    check_normalized_trace(trace)
+                    trace_name = stage + '-' + str(attempt) + '.runtime-trace.json'
+                    write_json(store.root / 'history' / trace_name, trace)
+                    state.setdefault('runtime_traces', {})[stage] = {'filename': trace_name, 'digest': digest(trace)}
                 if evidence:
                     evidence_name = stage + '-' + str(attempt) + '.validation.json'
                     write_json(store.root / 'history' / evidence_name, evidence)
@@ -480,6 +519,8 @@ def main():
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--retry', action='store_true')
     parser.add_argument('--status', action='store_true')
+    parser.add_argument('--runtime', choices=('claude', 'antigravity'), default='claude')
+    parser.add_argument('--stop-after', choices=ORDER)
     args = parser.parse_args()
     def interrupted(signum, frame):
         raise KeyboardInterrupt
@@ -503,9 +544,9 @@ def main():
             raise ValueError('--retry requires --resume')
         from repo_profile import load
         effective = load(args.repo, args.input, args.profile, allow_existing_artifacts=args.resume)
-        result = pipeline(args.repo, effective, args.output, args.allow_fix, args.allow_execution, resume=args.resume, retry=args.retry)
+        result = pipeline(args.repo, effective, args.output, args.allow_fix, args.allow_execution, resume=args.resume, retry=args.retry, stop_after=args.stop_after, runtime=args.runtime)
         print(json.dumps(compact(result), indent=2))
-        return 0 if result['status'] == 'complete' else 1
+        return 0 if result['status'] == 'complete' or (args.stop_after and result['status'] == 'paused') else 1
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(str(error), file=sys.stderr)
         return 2

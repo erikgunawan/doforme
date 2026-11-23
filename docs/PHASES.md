@@ -472,3 +472,71 @@ The workflow, scene timings, example-data notice, and approval boundaries remain
 unchanged. All eight animation frames and the Chrome-rendered SVG were visually
 reviewed. Text-token contrast ratios range from 6.64:1 to 15.28:1 for the used
 foreground/background pairs; this is not a full accessibility conformance claim.
+
+## Antigravity read-only preview — v0.28.0 (2026-11-23)
+
+Added a native export with four explicit skills (doctor/status/analyze/plan), a
+worker and a worker-scoped PreToolUse guard. The shared graph/checkpoint engine
+selects an explicit adapter; Antigravity rejects stages beyond plan and edit/test
+grants. Checkpoints bind runtime/CLI/installed-policy identities and retain hashed
+raw events, normalized reads and guard receipts. Missing/stale installed guard code,
+missing audit coverage, unexpected tools and ambiguous results fail closed.
+The native entry point writes only private session/report state, not target setup
+or source files. No automatic Claude fallback, Git mutation or publication is added.
+
+The exporter includes tracked source paths from current working-tree bytes,
+excludes untracked files and rejects protected/symlink paths and overwrites. It is
+a development preview build, not a clean-commit release attestation. Source methods
+remain shared; generated package copies are outside Git. The final package was
+built and installed locally; other installed plugins were not replaced.
+
+Validation: all 312 offline tests passed (21 focused adapter/export/guard tests,
+plus native capability-boundary regressions). Native CLI 1.5.14 strict validation
+passed with four skills, one agent and one hook, zero errors/warnings, and only an
+informational generic-icon note. Packaged doctor and empty status ran on the
+fixture without model execution or target changes. A real one-read model smoke
+produced one parsed JSON object and a matching pre-execution receipt.
+Claude plugin validation also passed with its existing listing-icon warning.
+A real host-only guided preparation/preview check disclosed the unenforced dollar
+and turn limits, rejected plan-before-analysis, and preserved fixture contents;
+it did not call a model or test the whole conversational approval exchange.
+
+A real model analyze-to-plan fixture run completed both stages, paused at plan,
+and retained nine allowed guard receipts per stage. Analysis returned valid_bug;
+requirements were explicitly synthetic and confirmed by the fixture author.
+Target contents and HEAD stayed unchanged. Its immutable tested policy digest was
+11512b85ef012127e5dffa3de74d02f0a95977dab35da01ceece1faa451cb2c3;
+private temporary evidence is /tmp/doforme-agy-live-dev1/evidence-summary.json.
+A separate real negative probe attempted to read a dummy file outside the fixture:
+one guard denial was recorded, the host rejected the stage, and the dummy sentinel
+was absent from captured output. Evidence is in that directory's negative-evidence.json.
+The final requested-stop exit code, runtime-limit messaging and tracked-export
+hardening were covered by offline regressions after the full fixture model run;
+that earlier run is not relabeled as a fresh checkpoint of the changed plugin.
+
+Unsuccessful development probes are not counted as passes: two initial 90-second
+stage calls timed out without source changes; a tool smoke correctly failed when
+customization inheritance disabled the guard; schema-flag probes yielded repeated
+response objects with no structured_output. The final adapter keeps customization
+inheritance for the guard, parses a single terminal JSON object strictly, and
+rejects duplicate/ambiguous output. CLI init reports a platform-wide tool catalog,
+not an effective allowlist; observed read_file(Path) events are normalized, and
+pre-execution receipts establish actual guarded calls instead of trusting that catalog.
+
+Limits: POSIX only; reviewed CLI range >=1.5.14,<1.6.0, with actual observations on
+1.5.14. The host enforces time/output caps; dollar/turn limits are not enforced in
+this provider and are disclosed before execution. Existing user customizations
+can participate; these controls are not OS isolation. No complete conversational
+multi-turn approval pilot, real KlikDown repair, business acceptance, fix/test/PR
+support, Telegram send, push or remote release is claimed by this phase.
+
+## Multi-runtime product description
+
+Updated the README introduction and plugin/catalog descriptions to present
+doforme for Claude Code and Antigravity CLI. An early runtime table distinguishes
+the full Claude workflow from the read-only Antigravity preview, and the full-flow
+illustrations and end-to-end options are explicitly attributed to Claude Code.
+The installation overview uses the same positioning. The GitHub About description
+was updated at the owner's request; this does not publish local source commits.
+All 18 documentation tests and plugin structure/capability checks passed. No
+runtime behavior, target source, model execution or notification changed.

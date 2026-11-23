@@ -1,6 +1,6 @@
 {
   "name": "doforme-marketplace",
-  "description": "Install the doforme Claude Code plugin from this repository.",
+  "description": "Requirement-grounded bug investigation, planning, and resolution workflows.",
   "owner": {
     "name": "Erik Gunawan"
   },
@@ -8,7 +8,7 @@
     {
       "name": "doforme",
       "source": "./",
-      "description": "Evidence-based bug investigation and requirement-grounded resolution workflows."
+      "description": "Bug investigation and planning for Claude Code and Antigravity CLI, with evidence-backed fixes and PR drafts in Claude Code."
     }
   ]
 }
