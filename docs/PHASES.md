@@ -540,3 +540,21 @@ The installation overview uses the same positioning. The GitHub About descriptio
 was updated at the owner's request; this does not publish local source commits.
 All 18 documentation tests and plugin structure/capability checks passed. No
 runtime behavior, target source, model execution or notification changed.
+
+## Antigravity command namespace correction — v0.28.1
+
+Renamed native entry skill directories/frontmatter to analyze, doctor, plan and
+status. Antigravity supplies the doforme: namespace, so including doforme- in
+each skill name caused duplicated command prefixes. Coordinator instructions and
+installation/usage examples now consistently use /doforme:analyze and its peers.
+Package checks enforce the short names, and the export regression checks the
+composed command namespace. Worker permissions and graph dependencies are unchanged.
+
+Validation: 21 adapter/export tests, 25 capability-boundary tests and 18
+documentation tests passed. Plugin checks and native strict validation passed
+(informational generic-icon note only). The native package was rebuilt and the
+local installation replaced. An actual `agy -p /skills` metadata query exited
+successfully and listed doforme:analyze, doforme:doctor, doforme:plan and
+doforme:status, with no doubled prefix. No model, target source or remote
+publication was involved. Restart an existing CLI session after reinstalling to
+refresh its cached command list. This does not revalidate old policy-bound runs.

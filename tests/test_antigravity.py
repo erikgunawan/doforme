@@ -233,6 +233,11 @@ class AntigravityTests(unittest.TestCase):
         output = self.base / 'bundle'
         B.build(output)
         self.assertEqual(len(list((output / 'skills').glob('*/SKILL.md'))), 4)
+        manifest = json.loads((output / 'plugin.json').read_text())
+        from check_plugin import frontmatter
+        names = {frontmatter(p)['name'] for p in (output / 'skills').glob('*/SKILL.md')}
+        self.assertEqual({manifest['name'] + ':' + name for name in names},
+                         {'doforme:doctor', 'doforme:status', 'doforme:analyze', 'doforme:plan'})
         self.assertEqual([p.name for p in (output / 'agents').glob('*.md')], ['doforme-reader.md'])
         self.assertFalse((output / 'commands').exists())
         self.assertEqual((output / 'engine/scripts/run_workflow.py').read_bytes(), (ROOT / 'scripts/run_workflow.py').read_bytes())

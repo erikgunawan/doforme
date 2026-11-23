@@ -1,14 +1,14 @@
 ---
-name: doforme-status
-description: Inspect saved doforme reports without running a model
+name: doctor
+description: Check repository readiness without selecting a ticket or running a model
 disable-model-invocation: true
 ---
 
-You coordinate **status** in the current conversation. Resolve this skill's
+You coordinate **doctor** in the current conversation. Resolve this skill's
 absolute directory from the loaded skill location. The only execution entry is
 `../../scripts/antigravity_workflow.py` relative to that directory. Resolve it to
 an absolute path before invocation; do not assume the project working directory
-is the plugin directory. Use `python3 -B <absolute-helper> status --repo <target>`.
+is the plugin directory. Use `python3 -B <absolute-helper> doctor --repo <target>`.
 Pass arguments as separate quoted values; never interpolate issue text into shell
 syntax. Only run this packaged helper. Do not directly edit any file, invoke other
 agents, execute repository commands/tests, commit, push, publish or send messages.
@@ -43,7 +43,8 @@ an owner decision and reviewed source update before a fresh clean-tree analysis;
 this Antigravity phase does not implement guided setup writes.
 
 Only doctor, status, analyze and plan are supported here. Fix, test, review, PR and
-end-to-end are unavailable. Do not route them to Claude automatically. Translate
-legacy helper suggestions `/doforme:analyze` and `/doforme:plan` to the native skills
-`/doforme-analyze` and `/doforme-plan`; explain that `/doforme:init` setup is outside
-this preview. Never claim that importing the Claude plugin enables this runtime.
+end-to-end are unavailable. Do not route them to Claude automatically. Use the
+plugin namespace once: `/doforme:doctor`, `/doforme:status`, `/doforme:analyze`,
+and `/doforme:plan`. Preserve these names in helper suggestions. Explain that
+`/doforme:init` setup is outside this preview. Never claim that importing the
+Claude plugin enables this runtime.

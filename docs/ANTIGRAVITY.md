@@ -26,7 +26,10 @@ agy plugin validate --strict /tmp/doforme-antigravity-preview
 agy plugin install /tmp/doforme-antigravity-preview
 ```
 
-Start a fresh `agy` session in your project. Check `/skills` and `/agents` to
+Start a fresh `agy` session in your project. Native skill names are `doctor`,
+`status`, `analyze` and `plan`; Antigravity supplies the `doforme:` plugin namespace
+once. After upgrading from 0.28.0, rebuild/reinstall the package and restart the
+session to clear the old prefixed skill names. Check `/skills` and `/agents` to
 confirm the four skills and `doforme-reader` are loaded. Do not install the
 original GitHub URL or import the Claude package as a substitute for this build:
 conversion alone does not select the audited Antigravity adapter. Rebuild and
@@ -40,10 +43,10 @@ are maintained once; exported copies are build artifacts, not another codebase.
 ## Use
 
 ```text
-/doforme-doctor
-/doforme-status
-/doforme-analyze #3
-/doforme-plan #3
+/doforme:doctor
+/doforme:status
+/doforme:analyze #3
+/doforme:plan #3
 ```
 
 Select the actual GitHub issue number/URL, or explicitly choose a local bug ID.
