@@ -1,9 +1,9 @@
 # Antigravity CLI preview
 
-This experimental adapter supports **doctor, saved status, analyze and plan**.
+This experimental adapter supports **guided init, doctor, saved status, analyze and plan**.
 Claude Code remains the full workflow runtime. Antigravity cannot fix, run tests,
-review a fix, prepare a PR or run end-to-end in this release. Guided repository
-setup writes are not exposed by the Antigravity package.
+review a fix, prepare a PR or run end-to-end in this release. Guided init previews and saves only the reviewed repository profile and requirement
+notes; it does not authorize source edits or test execution.
 
 ## Install
 
@@ -27,10 +27,10 @@ agy plugin install /tmp/doforme-antigravity-preview
 ```
 
 Start a fresh `agy` session in your project. Native skill names are `doctor`,
-`status`, `analyze` and `plan`; Antigravity supplies the `doforme:` plugin namespace
+`status`, `analyze` and `plan`, plus `init`; Antigravity supplies the `doforme:` plugin namespace
 once. After upgrading from 0.28.0, rebuild/reinstall the package and restart the
 session to clear the old prefixed skill names. Check `/skills` and `/agents` to
-confirm the four skills and `doforme-reader` are loaded. Do not install the
+confirm the five skills and `doforme-reader` are loaded. Do not install the
 original GitHub URL or import the Claude package as a substitute for this build:
 conversion alone does not select the audited Antigravity adapter. Rebuild and
 reinstall after updating doforme. Marketplace publication is not implemented.
@@ -43,6 +43,7 @@ are maintained once; exported copies are build artifacts, not another codebase.
 ## Use
 
 ```text
+/doforme:init
 /doforme:doctor
 /doforme:status
 /doforme:analyze #3
@@ -52,8 +53,10 @@ are maintained once; exported copies are build artifacts, not another codebase.
 Select the actual GitHub issue number/URL, or explicitly choose a local bug ID.
 They are separate identities. The coordinator previews preparation and execution
 before requesting confirmation. Preparation only saves private session inputs.
-No project source/configuration is written. Supply existing, reviewed requirement
-files; owner applicability/AC must be established in those sources. Empty drafts
+No application source is written. Guided init can save two reviewed setup files
+after an explicit preview/confirmation; review and commit those files before a
+clean-tree analysis. Explicit `init --write` creates unconfirmed drafts only.
+Supply existing, reviewed requirement files; owner applicability/AC must be established in those sources. Empty drafts
 and unresolved business decisions block planning. No direct test command is run.
 
 Status lists saved runs without fetching issues. Doctor checks the repository and

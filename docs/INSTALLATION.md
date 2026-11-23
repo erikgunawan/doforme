@@ -1,7 +1,7 @@
 # Installing doforme
 
 For the experimental Antigravity CLI package, follow [Antigravity installation](ANTIGRAVITY.md).
-It supports `/doforme:doctor`, `/doforme:status`, `/doforme:analyze` and
+It supports `/doforme:init`, `/doforme:doctor`, `/doforme:status`, `/doforme:analyze` and
 `/doforme:plan` only. Rebuild/reinstall the native package after upgrading, then
 start a fresh Antigravity session. The instructions below
 install the full Claude Code workflow.

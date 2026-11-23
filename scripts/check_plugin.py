@@ -88,10 +88,10 @@ def check_antigravity(root):
     if hooks != {'doforme-worker-read-boundary': {'PreToolUse': [{'matcher': '*', 'hooks': [
             {'type': 'command', 'command': 'python3 -B ./scripts/antigravity_guard.py', 'timeout': 10}]}]}}:
         raise ValueError('Antigravity pre-execution guard must cover every tool')
-    expected = {'doctor', 'status', 'analyze', 'plan'}
+    expected = {'init', 'doctor', 'status', 'analyze', 'plan'}
     entries = list((native / 'skills').glob('*/SKILL.md'))
     if {p.parent.name for p in entries} != expected:
-        raise ValueError('Antigravity preview must expose exactly four entry skills')
+        raise ValueError('Antigravity preview must expose exactly the reviewed entry skills')
     for path in entries:
         fields = frontmatter(path)
         if fields.get('name') != path.parent.name or fields.get('disable-model-invocation') != 'true':

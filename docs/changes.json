@@ -2120,6 +2120,83 @@
           "blob": "da52124e1dd8ad8a070b4bcb39658c5b2f11cba4"
         }
       }
+    },
+    {
+      "id": "7eff6bec22be0508254a7e673c34da1eadd27505dc69a3628372069a06a6baa6",
+      "base_commit": "2eed5177e42850404151d8e62ab5395d9dcd0eb2",
+      "date": "2026-11-23",
+      "version": "0.29.0",
+      "summary": "Add guided Antigravity init and confirmed two-file repository setup",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "c0bcae17b48755e3b9873f7d635541e078716e9e"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "155d856f54471556b2c23f5842f314b18582381a"
+        },
+        "docs/ANTIGRAVITY.md": {
+          "mode": "100644",
+          "blob": "a4eb6cca4540ffe173a0b7a92e4dba43e007acf6"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "8b800c6bf4f81b5a0f609fb2d6ab10f561905ae1"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "4d54f8ddf01695c1b5be0538841a755ceaac487a"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "ff9ba098da1653ee224e61fa963edc333be96b53"
+        },
+        "integrations/antigravity/references/coordinator.md": {
+          "mode": "100644",
+          "blob": "00980dfb46c24b925fecc367eb14227e1fc617c5"
+        },
+        "integrations/antigravity/scripts/antigravity_workflow.py": {
+          "mode": "100644",
+          "blob": "cca40bd003033c8207c34ac07f9a040aee40999b"
+        },
+        "integrations/antigravity/skills/analyze/SKILL.md": {
+          "mode": "100644",
+          "blob": "47bd1eebca6fe711a8ddde3be3c41f778a1f9951"
+        },
+        "integrations/antigravity/skills/doctor/SKILL.md": {
+          "mode": "100644",
+          "blob": "bbab7568810004aaf95321e892e24579e8d5f908"
+        },
+        "integrations/antigravity/skills/init/SKILL.md": {
+          "mode": "100644",
+          "blob": "6e215c308c41f7b69fd3c74e32e4a277f863e781"
+        },
+        "integrations/antigravity/skills/plan/SKILL.md": {
+          "mode": "100644",
+          "blob": "488ee824ba685d9011fd1781d0b9a6fceeae958e"
+        },
+        "integrations/antigravity/skills/status/SKILL.md": {
+          "mode": "100644",
+          "blob": "a7d5466cbd0e23aef61dd3d9e6b8c694e9b2481b"
+        },
+        "scripts/build_antigravity.py": {
+          "mode": "100644",
+          "blob": "54c5ca904de58e51e9b1c80ac975d68976119781"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "77b19f3a8c4bb6af0b00738f772e819c39a16cc1"
+        },
+        "tests/test_antigravity.py": {
+          "mode": "100644",
+          "blob": "75bbcb3b5f2aef7a2065398637bb08bae474360f"
+        },
+        "tests/test_antigravity_onboarding.py": {
+          "mode": "100644",
+          "blob": "b36c5f8ffd034b3c81b4a48442951b4dea312064"
+        }
+      }
     }
   ]
 }

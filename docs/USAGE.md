@@ -1,7 +1,7 @@
 # Using doforme
 
-[Antigravity CLI preview](ANTIGRAVITY.md) has separate native skills for doctor,
-status, analyze and plan, invoked as `/doforme:doctor`, `/doforme:status`,
+[Antigravity CLI preview](ANTIGRAVITY.md) has separate native skills for guided init, doctor,
+status, analyze and plan, invoked as `/doforme:init`, `/doforme:doctor`, `/doforme:status`,
 `/doforme:analyze` and `/doforme:plan`. Fix and end-to-end remain unavailable in that runtime;
 the commands below describe Claude Code.
 

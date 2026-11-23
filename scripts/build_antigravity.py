@@ -40,7 +40,7 @@ def build(output):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
         relative = path.relative_to(ROOT / 'integrations/antigravity') if path.is_relative_to(ROOT / 'integrations/antigravity') else None
-        if relative is not None and (relative.parts[0] in ('agents', 'skills', 'scripts') or str(relative) == 'hooks.json'):
+        if relative is not None and (relative.parts[0] in ('agents', 'skills', 'scripts', 'references') or str(relative) == 'hooks.json'):
             native_target = output / relative
             native_target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, native_target)

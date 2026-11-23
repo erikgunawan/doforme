@@ -1,6 +1,6 @@
 {
   "name": "doforme",
-  "version": "0.28.1",
+  "version": "0.29.0",
   "description": "Bug investigation and planning for Claude Code and Antigravity CLI, with evidence-backed fixes and PR drafts in Claude Code.",
   "author": {
     "name": "Erik Gunawan"

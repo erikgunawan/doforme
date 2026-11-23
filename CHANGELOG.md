@@ -9,6 +9,14 @@ Test evidence and limitations are recorded separately in [phase history](docs/PH
 
 English summary translations affect presentation only; original history records remain unchanged.
 
+## 2026-11-23 — v0.29.0
+
+Add guided Antigravity init and confirmed two-file repository setup
+
+Change ID: `7eff6bec22be`.
+
+Files: `.claude-plugin/plugin.json`, `README.md`, `docs/ANTIGRAVITY.md`, `docs/INSTALLATION.md`, `docs/PHASES.md`, `docs/USAGE.md`, `integrations/antigravity/references/coordinator.md`, `integrations/antigravity/scripts/antigravity_workflow.py`, `integrations/antigravity/skills/analyze/SKILL.md`, `integrations/antigravity/skills/doctor/SKILL.md`, `integrations/antigravity/skills/init/SKILL.md`, `integrations/antigravity/skills/plan/SKILL.md`, `integrations/antigravity/skills/status/SKILL.md`, `scripts/build_antigravity.py`, `scripts/check_plugin.py`, `tests/test_antigravity.py`, `tests/test_antigravity_onboarding.py`.
+
 ## 2026-11-23 — v0.28.1
 
 Fix duplicated Antigravity command prefixes with plugin-scoped short skill names

@@ -12,7 +12,7 @@ Bring the issue. Review the plan. Approve the scope. Keep the evidence.
 | Runtime | Available workflow |
 | --- | --- |
 | **Claude Code** | Guided setup, investigation, planning, scoped fixes, testing, review, and a local PR draft. |
-| **Antigravity CLI — preview** | Repository doctor, saved status, read-only investigation, and planning. |
+| **Antigravity CLI — preview** | Guided setup, repository doctor, saved status, read-only investigation, and planning. |
 
 [![Animated illustration of doforme moving from issue selection through analysis, plan approval, repair, testing, review, and a PR draft](docs/media/workflow-preview.gif)](docs/WORKFLOW-PREVIEW.md)
 

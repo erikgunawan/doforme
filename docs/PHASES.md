@@ -558,3 +558,17 @@ successfully and listed doforme:analyze, doforme:doctor, doforme:plan and
 doforme:status, with no doubled prefix. No model, target source or remote
 publication was involved. Restart an existing CLI session after reinstalling to
 refresh its cached command list. This does not revalidate old policy-bound runs.
+
+## Antigravity guided setup — v0.29.0
+
+Added the native init command, shared coordinator instructions, inspection/draft
+compatibility and the existing digest-confirmed setup flow. The coordinator can
+collect real source applicability/AC confirmations and reviewed test defaults,
+preview the two configuration writes and save them only after explicit approval.
+It does not directly edit files, commit setup, execute tests or grant fix scope.
+Doctor now reports the shared setup/test-readiness gaps instead of suppressing
+them. Four packaged-entry regressions cover inspection, immutable drafts, exact
+setup confirmation, two-file-only changes and invalid flag combinations. The
+25 focused native tests and native strict package validation passed with five
+skills, one worker and one hook. No model or real target source was changed.
+This checkpoint adds setup; fix/test and the remaining stages are the next phase.
