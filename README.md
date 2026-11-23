@@ -6,7 +6,7 @@ A Claude Code plugin that connects issue investigation, business requirements,
 scoped repairs, independent testing, and review—through to a local PR draft.
 Bring the issue. Review the plan. Approve the scope. Keep the evidence.
 
-[Get started](docs/GETTING-STARTED.md) · [Explore the workflow](docs/HOW-IT-WORKS.md) · [MIT license](LICENSE)
+[Get started](docs/GETTING-STARTED.md) · [Explore the workflow](docs/HOW-IT-WORKS.md) · [Antigravity preview](docs/ANTIGRAVITY.md) · [MIT license](LICENSE)
 
 [![Animated illustration of doforme moving from issue selection through analysis, plan approval, repair, testing, review, and a PR draft](docs/media/workflow-preview.gif)](docs/WORKFLOW-PREVIEW.md)
 
@@ -18,6 +18,7 @@ code changes; your team's delivery process takes the draft through acceptance.*
 | Capability | Why it helps |
 | --- | --- |
 | **Guided setup and short commands** | Start from an issue ID or URL. Doforme handles setup questions, internal inputs, and report handoffs. |
+| **Antigravity CLI preview** | Reuse requirement-grounded analysis and planning with a native read-only package. |
 | **Evidence before edits** | Investigate issue validity, trace symptoms to source, and separate root-cause hypotheses from facts. |
 | **Requirements that shape the repair** | Connect confirmed business rules and AC to the plan and test coverage. Use repository specs or supplied business/Jira/Figma exports. |
 | **A scope you can approve** | Review exact files and test commands before the fixer changes code. Clarify ambiguous requirements in the same conversation. |

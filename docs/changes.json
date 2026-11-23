@@ -1937,6 +1937,103 @@
           "blob": "290cf13a8a0a2c35b48945ee68f48df5cc50312b"
         }
       }
+    },
+    {
+      "id": "da85fc9631af7dea97c4192dfcebf01f06687063cd1aabe60f9cab9fd1f737a6",
+      "base_commit": "7b771daf21485554f9cdc90b7432b201e114e4a0",
+      "date": "2026-11-23",
+      "version": "0.28.0",
+      "summary": "Add experimental Antigravity CLI support for guarded read-only analysis and planning",
+      "changes": {
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "blob": "6c91d77d8abdd003bb2911439099c0dd17f2330b"
+        },
+        "README.md": {
+          "mode": "100644",
+          "blob": "08416c483316a9bde04cf176d4cef935b235e433"
+        },
+        "docs/ANTIGRAVITY.md": {
+          "mode": "100644",
+          "blob": "79788cfba7abcc20a6ecf1d504dc7cdb6bc8572b"
+        },
+        "docs/INSTALLATION.md": {
+          "mode": "100644",
+          "blob": "34b4cfd11843f1dd85063f895ea4184e3a61c587"
+        },
+        "docs/PHASES.md": {
+          "mode": "100644",
+          "blob": "43a3690b041973c482b7c251af8b893d13bcba45"
+        },
+        "docs/ROADMAP.md": {
+          "mode": "100644",
+          "blob": "812ae4fd5c234de5a6a1b30016037ce1e9d1de73"
+        },
+        "docs/USAGE.md": {
+          "mode": "100644",
+          "blob": "d43940ded7cef2bf35df5d21d6eb958c7902ac96"
+        },
+        "integrations/antigravity/agents/doforme-reader.md": {
+          "mode": "100644",
+          "blob": "8e4173fa95ea86be5be8ef4b46dd132b2005854d"
+        },
+        "integrations/antigravity/hooks.json": {
+          "mode": "100644",
+          "blob": "977386153a323f46477db76490b0102dcfe60424"
+        },
+        "integrations/antigravity/scripts/antigravity_guard.py": {
+          "mode": "100644",
+          "blob": "79b981173dd34918f295864ef6533f7f757a48f0"
+        },
+        "integrations/antigravity/scripts/antigravity_workflow.py": {
+          "mode": "100644",
+          "blob": "30183fe370195e2f979003142d3ba89fa170d9ed"
+        },
+        "integrations/antigravity/skills/doforme-analyze/SKILL.md": {
+          "mode": "100644",
+          "blob": "e8af2b7022a883a0d603af4eeae4be0a478b6271"
+        },
+        "integrations/antigravity/skills/doforme-doctor/SKILL.md": {
+          "mode": "100644",
+          "blob": "9ec256d1694245362038b71893b210c2386ebb09"
+        },
+        "integrations/antigravity/skills/doforme-plan/SKILL.md": {
+          "mode": "100644",
+          "blob": "7595b138b9c881709a73f67094ffab13120064ea"
+        },
+        "integrations/antigravity/skills/doforme-status/SKILL.md": {
+          "mode": "100644",
+          "blob": "dc9eec80fe02aa319a256537fb357f245c503506"
+        },
+        "scripts/antigravity_runtime.py": {
+          "mode": "100644",
+          "blob": "f1a80b7c9b22e917339ffecc8c2415139c50fd90"
+        },
+        "scripts/build_antigravity.py": {
+          "mode": "100644",
+          "blob": "f3eff45b6b385cdae6ba9682617ac9b6179d3c59"
+        },
+        "scripts/check_plugin.py": {
+          "mode": "100644",
+          "blob": "650106caa04d06f270ed789c64e985db1886424e"
+        },
+        "scripts/guided_workflow.py": {
+          "mode": "100644",
+          "blob": "5148a138d3d49c82ed9d347fe42f237b05195d98"
+        },
+        "scripts/run_workflow.py": {
+          "mode": "100644",
+          "blob": "aa035fe7804801e2697f03c51ce61ea596e60546"
+        },
+        "tests/test_antigravity.py": {
+          "mode": "100644",
+          "blob": "e5741b84a099c2afa218a2e906da1638203b8c1f"
+        },
+        "tests/test_plugin_boundary.py": {
+          "mode": "100644",
+          "blob": "3e618d10030ddf697fc338bbba3be3a2388d7435"
+        }
+      }
     }
   ]
 }

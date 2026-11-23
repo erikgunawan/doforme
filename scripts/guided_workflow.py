@@ -422,7 +422,11 @@ def scope(repo, issue, data, confirm=None, root=None):
             'next_action': '/doforme:fix ' + issue}
 
 
-def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None):
+def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None, runtime='claude'):
+    if runtime not in ('claude', 'antigravity'):
+        raise ValueError('Unsupported runtime')
+    if runtime == 'antigravity' and stage not in ('analyze', 'plan'):
+        raise ValueError('Antigravity supports read-only analyze/plan only')
     if stage not in (*ORDER, 'endtoend'):
         raise ValueError('Unknown stage')
     _, base_folder = locator(repo, issue, root)
@@ -434,6 +438,8 @@ def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None)
     state = None
     if output.exists():
         state = Checkpoints(output, resume=True).load()
+        if state.get('runtime', {}).get('name', 'claude') != runtime:
+            raise ValueError('This session uses another runtime; prepare an explicit new session')
         # This verifies workspace, revision, policy, and report/evidence digests.
         current = status_checkpoint(repo, output)
         if not current.get('fresh'):
@@ -467,6 +473,11 @@ def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None)
                 'model_calls': 'up to six' if stage == 'endtoend' else 'one',
                 'stop_after': 'plan' if read_only_first else None if stage == 'endtoend' else stage,
                 'publication': 'none', 'business_acceptance': 'not_evaluated'}
+    if runtime == 'antigravity':
+        from antigravity_runtime import runtime_identity
+        proposal['runtime'] = runtime_identity()
+        proposal['runtime_limits'] = {'timeout_seconds': config['timeout_seconds'],
+                                      'max_turns': 'not_enforced', 'max_budget_usd': 'not_enforced'}
     proposal['digest'] = digest(proposal)
     if confirm is None:
         return proposal
@@ -491,7 +502,7 @@ def run(repo, issue, stage, confirm=None, root=None, retry=False, executor=None)
     result = pipeline(repo, config, output, allow_fix=proposal['allow_fix'],
                       allow_execution=proposal['allow_execution'], executor=executor,
                       resume=state is not None, retry=retry,
-                      stop_after=proposal['stop_after'])
+                      stop_after=proposal['stop_after'], runtime=runtime)
     return {'status': result['status'], 'summary': compact(result),
             'reports': {name: str(output / (name + '.md')) for name in result['results']},
             'folder': str(folder)}

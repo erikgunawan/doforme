@@ -1,5 +1,17 @@
 # doforme roadmap status
 
+## Runtime preview update — 2026-11-23
+
+Version 0.28 adds a separately built native Antigravity CLI preview for doctor,
+saved status, read-only analysis and planning. It reuses the graph/checkpoint
+engine with a provider adapter, pre-tool read boundary, retained audit evidence
+and runtime-bound resume checks. Fix/testing/publication remain unavailable in
+that runtime. See [ANTIGRAVITY.md](ANTIGRAVITY.md) for installation and limits,
+and [PHASES.md](PHASES.md) for actual fixture-model observations. This does not
+complete the outstanding real KlikDown pilot or business acceptance gates.
+
+## Earlier phase baseline
+
 Status as of 2026-11-16. Versions mark development checkpoints, not proof that all
 live/production conditions for a phase have been met. Factual phase 1–16 history
 is in [PHASES.md](PHASES.md) and [CHANGELOG](../CHANGELOG.md).

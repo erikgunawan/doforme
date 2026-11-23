@@ -1,0 +1,16 @@
+{
+  "doforme-worker-read-boundary": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -B ./scripts/antigravity_guard.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

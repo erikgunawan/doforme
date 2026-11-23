@@ -74,8 +74,33 @@ def check_graph(graph):
             raise ValueError("Requirement-aware v2 result contracts and declared stage contracts are required")
 
 
+def check_antigravity(root):
+    native = Path(root) / 'integrations/antigravity'
+    agent = (native / 'agents/doforme-reader.md').read_text()
+    front = agent.split('\n---\n', 1)[0]
+    if re.findall(r'^  - (.+)$', front, re.M) != ['view_file', 'grep_search', 'find_by_name', 'list_dir']:
+        raise ValueError('Antigravity worker must remain read/search-only')
+    for field in ('mainAgent: true', 'subagent: false', 'commandExecutionPolicy: off',
+                  'inheritMcp: false', 'inheritCustomizations: true'):
+        if field not in front.splitlines():
+            raise ValueError('Antigravity worker must preserve its reviewed capabilities and guard inheritance')
+    hooks = json.loads((native / 'hooks.json').read_text())
+    if hooks != {'doforme-worker-read-boundary': {'PreToolUse': [{'matcher': '*', 'hooks': [
+            {'type': 'command', 'command': 'python3 -B ./scripts/antigravity_guard.py', 'timeout': 10}]}]}}:
+        raise ValueError('Antigravity pre-execution guard must cover every tool')
+    expected = {'doforme-' + name for name in ('doctor', 'status', 'analyze', 'plan')}
+    entries = list((native / 'skills').glob('*/SKILL.md'))
+    if {p.parent.name for p in entries} != expected:
+        raise ValueError('Antigravity preview must expose exactly four entry skills')
+    for path in entries:
+        fields = frontmatter(path)
+        if fields.get('name') != path.parent.name or fields.get('disable-model-invocation') != 'true':
+            raise ValueError('Antigravity entry must remain explicit and correctly named')
+
+
 def check(root):
     root = Path(root).resolve()
+    check_antigravity(root)
     guide = frontmatter(root / 'skills/guided-workflow/SKILL.md')
     if guide != {'name': 'guided-workflow',
                  'description': 'Conversational setup, issue selection, saved reports, and concrete scope approvals',
