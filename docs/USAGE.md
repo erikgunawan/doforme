@@ -1,9 +1,10 @@
 # Using doforme
 
-[Antigravity CLI preview](ANTIGRAVITY.md) has separate native skills for doctor,
-status, analyze and plan, invoked as `/doforme:doctor`, `/doforme:status`,
-`/doforme:analyze` and `/doforme:plan`. Fix and end-to-end remain unavailable in that runtime;
-the commands below describe Claude Code.
+[Antigravity CLI](ANTIGRAVITY.md) supports the same ten public command names and
+gated workflow through its native package. Guided usage is shared; runtime-specific
+installation, command receipts and unenforced cost/turn limits are in that guide.
+The advanced manual-report examples below describe Claude Code; native advanced
+execution uses the shared host with `--runtime antigravity`.
 
 For everyday use, follow [guided short commands](GUIDED-USAGE.md): `/doforme:init`,
 `/doforme:analyze BUG-301`, then `/doforme:fix BUG-301` after planning. That mode

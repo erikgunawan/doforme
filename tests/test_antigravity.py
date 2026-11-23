@@ -128,11 +128,12 @@ class AntigravityTests(unittest.TestCase):
         receipts = self.base / 'receipts'; receipts.mkdir()
         env['DOFORME_AGY_GUARD'] = json.dumps({'repo': str(self.repo), 'skills': str(ROOT / 'skills'), 'receipts': str(receipts)})
         for name, args, expected in [('read_file', {'Path': str(self.repo / 'source.py')}, 'allow'),
-                                      ('run_command', {'CommandLine': 'echo unsafe'}, 'deny')]:
+                                      ('run_command', {'CommandLine': 'echo unsafe'}, 'deny'),
+                                      ('read_file', {'Path': str(self.repo / 'source.py')}, 'deny')]:
             result = subprocess.run([sys.executable, '-B', str(helper)], input=json.dumps({
                 'stepIdx': 1, 'toolCall': {'name': name, 'args': args}}), text=True, capture_output=True, env=env, check=True)
             self.assertEqual(json.loads(result.stdout)['decision'], expected)
-        self.assertEqual(len(list(receipts.glob('*.json'))), 2)
+        self.assertEqual(len(list(receipts.glob('*.json'))), 3)
 
     def test_executor_uses_native_schema_denies_and_no_other_provider_auth(self):
         expected, _ = self.executor('analyze', self.repo, '', self.config)
@@ -141,7 +142,7 @@ class AntigravityTests(unittest.TestCase):
         execution = ExecutionResult(0, stdout, '', len(stdout))
         def observed_process(*args, **kwargs):
             policy = json.loads(kwargs['env']['DOFORME_AGY_GUARD'])
-            Path(policy['receipts'], 'observed.json').write_text(json.dumps(audited(rows)[0]['guard_receipts'][0]))
+            Path(policy['receipts'], 'guard-observed.json').write_text(json.dumps(audited(rows)[0]['guard_receipts'][0]))
             return execution
         with patch.object(A, 'run_process', side_effect=observed_process) as process, patch.dict(
                 os.environ, {'ANTHROPIC_API_KEY': 'sentinel'}):
@@ -172,13 +173,14 @@ class AntigravityTests(unittest.TestCase):
         with patch.object(A, 'run_process', return_value=ExecutionResult(0, '1.5.14\n', '', 7)), patch.object(A, 'installation_identity', return_value='fixture'):
             self.assertEqual(A.runtime_identity()['cli_version'], '1.5.14')
 
-    def test_pipeline_refuses_later_stages_and_grants_before_execution(self):
-        for flags in ({}, {'stop_after': 'fix'}, {'stop_after': 'plan', 'allow_fix': True},
-                      {'stop_after': 'analyze', 'allow_execution': True}):
-            with self.subTest(flags=flags), self.assertRaisesRegex(ValueError, 'read-only'):
-                W.pipeline(self.repo, self.config, self.base / 'out', runtime='antigravity', executor=self.executor, **flags)
-        self.assertFalse(self.calls)
-        self.assertFalse((self.base / 'out').exists())
+    def test_full_runtime_still_requires_the_shared_execution_grant(self):
+        def native(stage, repo, prompt, config):
+            result, _ = self.executor(stage, repo, prompt, config)
+            return result, audited(events(repo / 'source.py', result))
+        with patch.object(A, 'runtime_identity', return_value={'name': 'antigravity', 'adapter_version': 2}):
+            state = W.pipeline(self.repo, self.config, self.base / 'out', runtime='antigravity', executor=native)
+        self.assertEqual((state['status'], state['stopped_stage']), ('blocked', 'fix'))
+        self.assertEqual(self.calls, ['analyze', 'plan'])
 
     def test_runtime_binding_and_persisted_raw_audit(self):
         def native(stage, repo, prompt, config):
@@ -191,7 +193,7 @@ class AntigravityTests(unittest.TestCase):
             state = W.pipeline(self.repo, self.config, out, executor=native, runtime='antigravity', stop_after='plan')
             self.assertEqual(state['status'], 'paused')
             self.assertEqual(list(state['results']), ['analyze', 'plan'])
-            self.assertTrue(W.compact(state)['runtime_limit_reached'])
+            self.assertEqual(W.compact(state)['supported_stages'], list(W.ORDER))
             self.assertTrue(W.status_checkpoint(self.repo, out)['fresh'])
             with self.assertRaisesRegex(ValueError, 'Runtime'):
                 W.pipeline(self.repo, self.config, out, executor=self.executor, resume=True)
@@ -223,24 +225,29 @@ class AntigravityTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             A.installation_identity(install, {'guard.py': source})
 
-    def test_guided_rejects_mutation_runtime_before_session_creation(self):
+    def test_guided_missing_prerequisites_never_create_mutation_grants(self):
+        (self.repo / 'docs/bugs').mkdir(parents=True)
+        (self.repo / 'docs/bugs/BUG-1-fixture.md').write_text('Synthetic issue')
         for stage in ('fix', 'test', 'review', 'pr', 'endtoend'):
-            with self.assertRaisesRegex(ValueError, 'read-only'):
-                G.run(self.repo, 'BUG-1', stage, root=self.base / 'state', runtime='antigravity')
+            result = G.run(self.repo, 'BUG-1', stage, root=self.base / 'state', runtime='antigravity')
+            self.assertEqual(result['status'], 'needs_step')
         self.assertFalse((self.base / 'state').exists())
 
     def test_package_hides_claude_components_and_preserves_engine(self):
         output = self.base / 'bundle'
         B.build(output)
-        self.assertEqual(len(list((output / 'skills').glob('*/SKILL.md'))), 4)
+        self.assertEqual(len(list((output / 'skills').glob('*/SKILL.md'))), 10)
         manifest = json.loads((output / 'plugin.json').read_text())
         from check_plugin import frontmatter
         names = {frontmatter(p)['name'] for p in (output / 'skills').glob('*/SKILL.md')}
         self.assertEqual({manifest['name'] + ':' + name for name in names},
-                         {'doforme:doctor', 'doforme:status', 'doforme:analyze', 'doforme:plan'})
-        self.assertEqual([p.name for p in (output / 'agents').glob('*.md')], ['doforme-reader.md'])
+                         {'doforme:' + name for name in ('init', 'doctor', 'status', 'analyze', 'plan', 'fix', 'test', 'review', 'pr', 'endtoend')})
+        self.assertEqual({p.stem for p in (output / 'agents').glob('*.md')}, set(A.STAGE_AGENTS.values()))
         self.assertFalse((output / 'commands').exists())
         self.assertEqual((output / 'engine/scripts/run_workflow.py').read_bytes(), (ROOT / 'scripts/run_workflow.py').read_bytes())
+        original_policy = W.policy_digest()
+        with patch.object(W, 'PLUGIN', output / 'engine'):
+            self.assertEqual(W.policy_digest(), original_policy)
         self.assertNotIn('CLAUDE_PLUGIN_ROOT', ''.join(p.read_text() for p in (output / 'skills').rglob('*.md')))
         with self.assertRaises(ValueError):
             B.build(output)

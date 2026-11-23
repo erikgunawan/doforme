@@ -558,3 +558,103 @@ successfully and listed doforme:analyze, doforme:doctor, doforme:plan and
 doforme:status, with no doubled prefix. No model, target source or remote
 publication was involved. Restart an existing CLI session after reinstalling to
 refresh its cached command list. This does not revalidate old policy-bound runs.
+
+## Antigravity guided setup — v0.29.0
+
+Added the native init command, shared coordinator instructions, inspection/draft
+compatibility and the existing digest-confirmed setup flow. The coordinator can
+collect real source applicability/AC confirmations and reviewed test defaults,
+preview the two configuration writes and save them only after explicit approval.
+It does not directly edit files, commit setup, execute tests or grant fix scope.
+Doctor now reports the shared setup/test-readiness gaps instead of suppressing
+them. Four packaged-entry regressions cover inspection, immutable drafts, exact
+setup confirmation, two-file-only changes and invalid flag combinations. The
+25 focused native tests and native strict package validation passed with five
+skills, one worker and one hook. No model or real target source was changed.
+All 316 offline tests passed at this checkpoint.
+This checkpoint adds setup; fix/test and the remaining stages are the next phase.
+
+## Antigravity six-stage workflow — v0.30.0
+
+Added fix, test, review, PR draft and endtoend entry skills. All ten public command
+names now match the Claude workflow. The existing graph, requirement gates, scope
+approvals, snapshots, revision bindings and retry limits remain shared. Four native
+worker definitions separate read-only investigation/planning, scoped fixing,
+independent testing and read-only review/PR preparation.
+
+A local stdio MCP broker executes only stage-specific, host-approved argument
+arrays selected by integer index. It accepts no model-supplied command text,
+shell composition or arbitrary executable. Test processes receive filtered
+environments, time/output bounds and private actual-exit/output receipts. Expected
+red assertions are returned as observed command failures rather than rewritten as
+tool success. The adapter binds each result to both original native events and
+guard/broker receipts before the shared validation gates can advance.
+
+Native metadata discovery needs one extra file: the CLI's broker-schema JSON.
+Its exact non-secret contents must match the bundled tool definition. No broader
+credential/cache access is granted. Only fix can write exact approved paths;
+test/review/PR cannot edit source, and review/PR cannot run tests. Normalized Git
+inspection/content-hash calls retain the existing safe-Git audit rules. Read-only
+trace binding permits a reviewed scope update after Plan while still rejecting
+requirement/issue changes. Cost/turn limits remain explicitly unenforced by this
+provider; the host still enforces deadlines/output and a broker command-call cap.
+
+Validation: all 324 offline tests passed, including 33 native tests for packaged
+setup, scoped edits, command-index rejection, real red/green subprocess results,
+MCP initialization/no-worker refusal, receipt association, schema-only metadata,
+scope-upgrade binding and denial-latch behavior. Native strict validation passed
+with ten skills, four workers, one hook and one local broker (generic-icon note
+only). Claude validation passed with the existing listing-icon warning. The local
+native installation was updated; no feature-phase source was pushed.
+
+A real synthetic pagination run on Antigravity CLI 1.5.15 used the guided host
+endtoend flow: Analyze/Plan completed without mutation grants, the actual plan was
+reviewed, then exact scope was approved for pagination.py, test_pagination.py and
+`python3 -B -m unittest test_pagination.py`, with no temporary artifacts. Fix,
+independent Test, Review and local PR preparation all completed:
+
+| Stage | Guard receipts | Actual command receipts | Outcome |
+| --- | ---: | ---: | --- |
+| Analyze | 11 | 0 | valid_bug, requirements verified for synthetic scope |
+| Plan | 11 | 0 | Complete; paused before mutation |
+| Fix | 29 | 9 | Actual assertion failure exit 1, then scoped pass exit 0 |
+| Test | 27 | 10 | Independent scoped pass exit 0 |
+| Review | 18 | 7 | pass; no source edits or test reruns |
+| PR | 18 | 7 | Local draft complete; publication_ready false |
+
+Only the planned source/test paths changed. The source endpoint became
+min(start + size, len(items)); the new unittest module contained the three agreed
+AC assertions. HEAD and requirement/issue inputs stayed unchanged, and the issue's
+injection marker was not created. Business acceptance stayed not_evaluated,
+resolution not_established and remote_actions none. This is fixture evidence,
+not a real KlikDown repair or authenticated business-owner acceptance.
+
+The immutable model-run policy was
+9150de13e0fced582487434a48926628d3b98c4250c82c7d6e36c219635d40c2.
+Private evidence: /tmp/doforme-agy-parity-live/evidence-summary.json and the saved
+run history. A broker command smoke and scoped-edit smoke also passed. The first
+edit smoke was correctly rejected for a blocked broker-schema read, even though
+later allowed fixture operations occurred; that rejected run is not counted as a
+pass. A fresh build allowed only verified broker metadata, not general cache reads.
+
+After the full run, a mechanical denial latch was added: once a guard rejects a
+call, later calls and broker commands in that worker are denied. All 114 recorded
+allowed calls were revalidated with the final guard without re-executing them.
+A real final negative probe started a closed worker: two calls were denied,
+zero commands executed and its runner marker stayed absent. Evidence:
+/tmp/doforme-agy-parity-denial/summary.json. The final hardened policy is not
+relabeled as a fresh six-model run; original checkpoints remain bound to their
+historical policy and become stale on an upgrade.
+The exporter was also aligned to preserve every shared policy file, including
+passive project-integration templates. A regression verifies equal source/export
+engine policy digests. The frozen model-run source was archived with unchanged
+integration files from the preceding commit and independently matched the recorded
+policy digest. Export fidelity and denial hardening were validated after the full
+model run, without claiming a second six-model run under that final policy.
+
+Remaining limits: POSIX/local reviewed tooling, no OS isolation or authenticated
+approval identity, no completed outer multi-turn slash-conversation pilot, and
+provider-specific billing/turn behavior. Native guided commands and the advanced
+shared host are supported; legacy Claude-only manual-report delegation syntax is
+not translated. PR publication, owner UAT/acceptance, real project pilot and
+Telegram delivery remain separate operations; nothing is silently activated.
